@@ -3,11 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default class CalendarView extends React.Component {
   static navigationOptions = ({ navigation }) => {
+    var day = navigation.getParam('day');
+    console.log(day);
     return {
-      title: navigation.getParam('otherParam', 'A Nested Details Screen'),
+      title: day.toString(),
     };
   };
-  
+
   render() {
     return (
       <View style={styles.container}>

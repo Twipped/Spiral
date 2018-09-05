@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { FluidNavigator } from 'react-navigation-fluid-transitions';
+import { createStackNavigator } from 'react-navigation';
 import CalendarView from './views/calendar';
 import EntryView from './views/entry';
 
-const Navigator = FluidNavigator({
+const Navigator = createStackNavigator({
     Home: { screen: CalendarView },
     Entry: { screen: EntryView },
 },{
@@ -12,9 +12,9 @@ const Navigator = FluidNavigator({
   /* The header config from HomeScreen is now here */
   navigationOptions: {
     headerStyle: {
-      backgroundColor: '#f4511e',
+      backgroundColor: '#fdc9ff',
     },
-    headerTintColor: '#fff',
+    headerTintColor: '#000',
     headerTitleStyle: {
       fontWeight: 'bold',
     },
