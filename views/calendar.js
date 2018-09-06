@@ -1,27 +1,27 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { MaterialHeaderButtons, Item } from '../components/HeaderButtons'
+import { StyleSheet, View } from 'react-native';
+import { MaterialHeaderButtons, Item } from '../components/HeaderButtons';
 
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import { CalendarList } from 'react-native-calendars';
 
 export default class CalendarView extends React.Component {
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = ({ navigation }) => ({
     title: 'Spiral',
     headerRight: (
       <MaterialHeaderButtons>
-        <Item title="add" iconName="add" onPress={()=>navigation.navigate('Entry', {day: new Date()})} />
+        <Item title="add" iconName="add" onPress={() => navigation.navigate('Entry', { day: new Date() })} />
       </MaterialHeaderButtons>
     ),
   });
-  
-  render() {
-    const {navigate} = this.props.navigation;
+
+  render () {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <CalendarList
-          horizontal={true}
-          pagingEnabled={true}
-          onDayPress={(day)=>navigate('Entry', {day: new Date(day.year, day.month, day.day)})}
+          horizontal
+          pagingEnabled
+          onDayPress={(day) => navigate('Entry', { day: new Date(day.year, day.month, day.day) })}
         />
       </View>
     );
