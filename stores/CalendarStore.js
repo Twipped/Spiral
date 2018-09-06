@@ -28,7 +28,7 @@ class Store {
       return;
     }
 
-    const d = m.get(day);
+    const d = m.get(String(day));
     if (d) {
       Object.assign(d, state);
     } else {
@@ -39,12 +39,27 @@ class Store {
 
   getDayState (year, month, day) {
     assertDate(year, month, day);
-    return this.months.get(`${year}-${month}`)[day];
+    const m = this.months.get(`${year}-${month}`);
+    let d = m.get(String(day));
+    if (!d) {
+      d = observable({});
+      m.set(day, d);
+    }
+
+    return d;
   }
 
   _writeMonth (year, month, state) {
     const p = AsyncStorage.setItem(`@CalendarStore:${year}-${month}`, state);
     this._pending = Promise.all([ this.pending, p ]);
+  }
+
+  async clear (write) {
+    this.months = new Map();
+    if (write) {
+      var keys = await AsyncStorage.getAllKeys().filter((k) => k.startsWith('@CalendarStore'));
+      await AsyncStorage.multiRemove(keys);
+    }
   }
 }
 
