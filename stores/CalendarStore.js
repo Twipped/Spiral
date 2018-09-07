@@ -1,6 +1,6 @@
 
 import { AsyncStorage } from 'react-native';
-import { observable, toJS } from 'mobx';
+import { action, observable, toJS } from 'mobx';
 import Promise from 'bluebird';
 
 class Store {
@@ -15,6 +15,21 @@ class Store {
     this.months.set(`${year}-${month}`, observable.map(state));
   }
 
+  @action
+  clearDayState (year, month, day) {
+    if (arguments.length === 1) {
+      day = year.day;
+      month = year.month;
+      year = year.year;
+    }
+    assertDate(year, month, day);
+    const m = this.months.get(`${year}-${month}`);
+    if (!m) return; // no month for that day exists, nothing to do
+    m.delete(String(day));
+    this._writeMonth(year, month, toJS(m));
+  }
+
+  @action
   setDayState (year, month, day, state) {
     if (arguments.length === 2) {
       state = month;
@@ -55,14 +70,12 @@ class Store {
 
     let m = this.months.get(`${year}-${month}`);
     if (!m) {
-      m = observable.map({});
-      this.months.set(`${year}-${month}`, m);
+      return {};
     }
 
     let d = m.get(String(day));
     if (!d) {
-      d = observable({});
-      m.set(day, d);
+      return {};
     }
 
     return d;

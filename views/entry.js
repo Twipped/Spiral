@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { MaterialHeaderButtons, Item } from '../components/HeaderButtons';
 import { Card, FormLabel, FormInput } from 'react-native-elements';
 import { observer } from 'mobx-react';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
@@ -12,6 +13,17 @@ class EntryView extends React.Component {
     var d = moment([ date.year, date.month - 1, date.day ]);
     return {
       title: d.format('dddd, MMM Do, YYYY'),
+      headerRight: (
+        <MaterialHeaderButtons>
+          <Item
+            title="settings"
+            iconName="reorder"
+            onPress={() =>
+              navigation.navigate('Settings')
+            }
+          />
+        </MaterialHeaderButtons>
+      ),
     };
   };
 

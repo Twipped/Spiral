@@ -1,13 +1,16 @@
 import React from 'react';
+import { Root } from "native-base";
 import { createStackNavigator } from 'react-navigation';
-import CalendarView from './views/calendar';
-import EntryView from './views/entry';
+import CalendarView from './views/Calendar';
+import EntryView from './views/Entry';
+import SettingsView from './views/Settings';
 import CalendarStore from './stores/CalendarStore';
 
 const Navigator = createStackNavigator(
   {
     Home: { screen: (CalendarView) },
     Entry: { screen: (EntryView) },
+    Settings: { screen: (SettingsView) },
   },
   {
     initialRouteName: 'Home',
@@ -26,6 +29,8 @@ const Navigator = createStackNavigator(
 
 export default function App () {
   return (
-    <Navigator screenProps={{ calendarStore: CalendarStore }} />
+    <Root>
+      <Navigator screenProps={{ calendarStore: CalendarStore }} />
+    </Root>
   );
 }

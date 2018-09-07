@@ -36,6 +36,7 @@
     "mobx": "~5.1.0",
     "mobx-react": "~5.2.6",
     "moment": "~2.22.2",
+    "native-base": "~2.8.0",
     "react": "16.3.1",
     "react-native": "~0.55.2",
     "react-native-calendars": "~1.20.0",
