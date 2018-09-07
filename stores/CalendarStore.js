@@ -1,6 +1,6 @@
 
 import { AsyncStorage } from 'react-native';
-import { observable } from 'mobx';
+import { observable, toJS } from 'mobx';
 import Promise from 'bluebird';
 
 class Store {
@@ -9,17 +9,25 @@ class Store {
   _pending = Promise.resolve();
 
   async ensureMonth (year, month) {
-    const data = await AsyncStorage.getItem(`@CalendarStore:${year}-${month}`);
-    this.months.set(`${year}-${month}`, observable.map(data));
+    let state = await AsyncStorage.getItem(`@CalendarStore:${year}-${month}`);
+    state = state ? JSON.parse(state) : {};
+    console.log('Read AsyncStorage', { year, month, state });
+    this.months.set(`${year}-${month}`, observable.map(state));
   }
 
   setDayState (year, month, day, state) {
+    if (arguments.length === 2) {
+      state = month;
+      day = year.day;
+      month = year.month;
+      year = year.year;
+    }
     assertDate(year, month, day);
     const m = this.months.get(`${year}-${month}`);
     if (!m) {
       this.months.set(`${year}-${month}`,
         observable.map({
-          [day]: state,
+          [day]: observable(state),
         })
       );
       this._writeMonth(year, month, {
@@ -34,12 +42,23 @@ class Store {
     } else {
       m.set(day, state);
     }
-    this._writeMonth(year, month, m.toJSON());
+    this._writeMonth(year, month, toJS(m));
   }
 
   getDayState (year, month, day) {
+    if (typeof year == 'object' || arguments.length === 1) {
+      day = year.day;
+      month = year.month;
+      year = year.year;
+    }
     assertDate(year, month, day);
-    const m = this.months.get(`${year}-${month}`);
+
+    let m = this.months.get(`${year}-${month}`);
+    if (!m) {
+      m = observable.map({});
+      this.months.set(`${year}-${month}`, m);
+    }
+
     let d = m.get(String(day));
     if (!d) {
       d = observable({});
@@ -49,8 +68,24 @@ class Store {
     return d;
   }
 
+  getMonthState (year, month) {
+    if (typeof year == 'object' || arguments.length === 1) {
+      month = year.month;
+      year = year.year;
+    }
+
+    let m = this.months.get(`${year}-${month}`);
+    if (!m) {
+      m = observable.map({});
+      this.months.set(`${year}-${month}`, m);
+    }
+
+    return m;
+  }
+
   _writeMonth (year, month, state) {
-    const p = AsyncStorage.setItem(`@CalendarStore:${year}-${month}`, state);
+    console.log('Writing AsyncStorage', { year, month, state });
+    const p = AsyncStorage.setItem(`@CalendarStore:${year}-${month}`, JSON.stringify(state));
     this._pending = Promise.all([ this.pending, p ]);
   }
 

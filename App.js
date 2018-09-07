@@ -2,11 +2,12 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 import CalendarView from './views/calendar';
 import EntryView from './views/entry';
+import CalendarStore from './stores/CalendarStore';
 
 const Navigator = createStackNavigator(
   {
-    Home: { screen: CalendarView },
-    Entry: { screen: EntryView },
+    Home: { screen: (CalendarView) },
+    Entry: { screen: (EntryView) },
   },
   {
     initialRouteName: 'Home',
@@ -25,6 +26,6 @@ const Navigator = createStackNavigator(
 
 export default function App () {
   return (
-    <Navigator />
+    <Navigator screenProps={{ calendarStore: CalendarStore }} />
   );
 }
