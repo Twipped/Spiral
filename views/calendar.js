@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { MaterialHeaderButtons, Item } from '../components/HeaderButtons';
 import { observer } from 'mobx-react';
+import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import { CalendarList } from 'react-native-calendars';
-
 
 @observer
 class CalendarView extends React.Component {
@@ -32,12 +32,12 @@ class CalendarView extends React.Component {
 
   componentDidMount () {
     const d = new Date();
-    this.props.screenProps.calendarStore.ensureMonth(d.getFullYear(), d.getMonth() + 1);
+    this.props.calendarStore.ensureMonth(d.getFullYear(), d.getMonth() + 1);
   };
 
   render () {
     const { navigate } = this.props.navigation;
-    const { calendarStore } = this.props.screenProps;
+    const { calendarStore } = this.props;
     const marks = prepareCalendarMarks(calendarStore.months);
     return (
       <View style={styles.container}>
@@ -52,7 +52,7 @@ class CalendarView extends React.Component {
   }
 }
 
-export default CalendarView;
+export default withMappedNavigationProps()(CalendarView);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Card, FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import { StyleSheet, View } from 'react-native';
+import { Card, FormLabel, FormInput } from 'react-native-elements';
 import { observer } from 'mobx-react';
+import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import moment from 'moment';
 
 @observer
@@ -15,8 +16,8 @@ class EntryView extends React.Component {
   };
 
   render () {
-    const { date, calendarStore } = this.props.navigation.state.params;
-    const day = this.props.screenProps.calendarStore.getDayState(date);
+    const { date, calendarStore } = this.props;
+    const day = calendarStore.getDayState(date);
     return (
       <View style={styles.container}>
         <Card>
@@ -24,7 +25,7 @@ class EntryView extends React.Component {
           <FormInput
             keyboardType="decimal-pad"
             value={day.weight && Number(day.weight) && String(day.weight) || ''}
-            onChangeText={(text) => this.props.screenProps.calendarStore.setDayState(date, { weight: text })}
+            onChangeText={(text) => calendarStore.setDayState(date, { weight: text })}
           />
         </Card>
       </View>
@@ -32,7 +33,7 @@ class EntryView extends React.Component {
   }
 }
 
-export default EntryView;
+export default withMappedNavigationProps()(EntryView);
 
 const styles = StyleSheet.create({
   container: {
