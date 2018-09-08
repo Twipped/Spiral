@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { MaterialHeaderButtons, Item } from '../components/HeaderButtons';
 import { observer } from 'mobx-react';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import { CalendarList } from 'react-native-calendars';
@@ -9,39 +8,6 @@ import moment from 'moment';
 
 @observer
 class CalendarView extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    const d = new Date();
-    const date = {
-      day: d.getDate(),
-      month: d.getMonth() + 1,
-      year: d.getFullYear(),
-    };
-    return {
-      title: 'Spiral',
-      headerLeft: (
-        <MaterialHeaderButtons>
-          <Item
-            title="settings"
-            iconName="settings"
-            onPress={() =>
-              navigation.navigate('Settings')
-            }
-          />
-        </MaterialHeaderButtons>
-      ),
-      headerRight: (
-        <MaterialHeaderButtons>
-          <Item
-            title="add"
-            iconName="add"
-            onPress={() =>
-              navigation.navigate('Entry', { date })
-            }
-          />
-        </MaterialHeaderButtons>
-      ),
-    };
-  };
 
   componentDidMount () {
     const d = new Date();
