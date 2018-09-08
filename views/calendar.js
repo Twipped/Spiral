@@ -66,7 +66,7 @@ class CalendarView extends React.Component {
                 options: [ 'Clear Recorded Data' ],
                 cancelButtonIndex: -1,
                 destructiveButtonIndex: 0,
-                title: d.format('dddd, MMM Do, YYYY')
+                title: d.format('dddd, MMM Do, YYYY'),
               },
               (buttonIndex) => {
                 switch (buttonIndex) {

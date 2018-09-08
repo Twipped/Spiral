@@ -1,3 +1,8 @@
 {
-	"extends": "twipped/react-native"
+	"extends": "twipped/react-native",
+	"settings": {
+		"react": {
+			"version": "16.0"
+		}
+	}
 }

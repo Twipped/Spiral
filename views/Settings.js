@@ -18,7 +18,7 @@ class SettingsView extends React.Component {
           <Separator />
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#FF9501" }}>
+              <Button style={{ backgroundColor: '#FF9501' }}>
                 <Icon active name="plane" />
               </Button>
             </Left>
@@ -31,7 +31,7 @@ class SettingsView extends React.Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#007AFF" }}>
+              <Button style={{ backgroundColor: '#007AFF' }}>
                 <Icon active name="wifi" />
               </Button>
             </Left>
@@ -45,7 +45,7 @@ class SettingsView extends React.Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <Button style={{ backgroundColor: "#007AFF" }}>
+              <Button style={{ backgroundColor: '#007AFF' }}>
                 <Icon active name="bluetooth" />
               </Button>
             </Left>

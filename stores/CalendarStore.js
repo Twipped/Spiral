@@ -68,12 +68,12 @@ class Store {
     }
     assertDate(year, month, day);
 
-    let m = this.months.get(`${year}-${month}`);
+    const m = this.months.get(`${year}-${month}`);
     if (!m) {
       return {};
     }
 
-    let d = m.get(String(day));
+    const d = m.get(String(day));
     if (!d) {
       return {};
     }
