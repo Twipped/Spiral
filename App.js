@@ -1,59 +1,42 @@
 import React from 'react';
+import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
-import { StatusBar } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { StatusBar, TouchableWithoutFeedback, View, Image, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from 'react-navigation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
-import CalendarView from './views/Calendar';
-import EntryView from './views/Entry';
+import { BottomTabBar } from 'react-navigation-tabs';
+import CalendarView from './views/Calendar'
 import SettingsView from './views/Settings';
-import CalendarStore from './stores/CalendarStore';
-import moment from 'moment';
 
-StatusBar.setBarStyle('dark-content');
+import buttonImg from './graphics/button.png';
 
-const BRAND_COLOR = '#912291';
+const TouchableWithoutFeedbackWrapper = (p) => {
+  const { onPress, testID, accessibilityLabel, ...props } = p;
 
-const Navigator = createStackNavigator(
-  {
-    Home: {
-      screen: (props) => (<CalendarView {...props} calendarStore={CalendarStore} />),
-      navigationOptions: {
-        title: 'Spiral',
-      },
-    },
-    Entry: {
-      screen: (props) => (<EntryView {...props} calendarStore={CalendarStore} />),
-      navigationOptions: ({ navigation }) => {
-        var date = navigation.getParam('date');
-        var d = moment([ date.year, date.month - 1, date.day ]);
-        return {
-          title: d.format('dddd, MMM Do, YYYY'),
-        };
-      }
-    },
-    Settings: { screen: (SettingsView) },
-  },
-  {
-    initialRouteName: 'Home',
-    /* The header config from HomeScreen is now here */
-    navigationOptions: {
-      barStyle: 'dark-content',
-      headerStyle: {
-        backgroundColor: BRAND_COLOR,
-      },
-      headerTintColor: '#FFF',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
-    },
-  }
-);
+  return (
+    <TouchableWithoutFeedback
+      onPress={onPress}
+      testID={testID}
+      accessibilityLabel={accessibilityLabel}
+    >
+      <View {...props} />
+    </TouchableWithoutFeedback>
+  );
+};
+
+const TABBAR_DEFAULT_HEIGHT = 49;
+const iconSize = TABBAR_DEFAULT_HEIGHT * 1.8;
+const tabBarStyles = {
+  bottom: iconSize - TABBAR_DEFAULT_HEIGHT,
+  width: iconSize,
+  height: iconSize
+};
 
 const TabBar = createBottomTabNavigator(
   {
     Home: {
-      screen: Navigator,
+      screen: CalendarView,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <FontAwesomeIcons
@@ -78,7 +61,14 @@ const TabBar = createBottomTabNavigator(
     },
   },
   {
-    /* Other configuration remains unchanged */
+    tabBarComponent: (props) => (
+      <View>
+        <TouchableWithoutFeedbackWrapper style={styles.buttonWrapper} >
+          <Image source={buttonImg} style={tabBarStyles} />
+        </TouchableWithoutFeedbackWrapper>
+        <BottomTabBar {...props} />
+      </View>
+    ),
   }
 );
 
@@ -89,7 +79,19 @@ export default function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <TabBar screenProps={{ calendarStore: CalendarStore }} />
+      <TabBar />
     </Root>
   );
 }
+
+const styles = StyleSheet.create({
+  buttonWrapper: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: 0,
+    top: 0,
+    zIndex: 5,
+  },
+});

@@ -1,13 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import { CalendarList } from 'react-native-calendars';
 import { ActionSheet } from 'native-base';
 import moment from 'moment';
 
 @observer
-class CalendarView extends React.Component {
+class CalendarMain extends React.Component {
 
   componentDidMount () {
     const d = new Date();
@@ -24,7 +23,7 @@ class CalendarView extends React.Component {
           horizontal
           pagingEnabled
           markedDates={marks}
-          onDayPress={(date) => navigate('Entry', { date })}
+          onDayPress={(date) => navigate('CalendarEntry', { date })}
           onDayLongPress={(date) => {
             var d = moment([ date.year, date.month - 1, date.day ]);
             ActionSheet.show(
@@ -51,7 +50,7 @@ class CalendarView extends React.Component {
   }
 }
 
-export default withMappedNavigationProps()(CalendarView);
+export default CalendarMain;
 
 const styles = StyleSheet.create({
   container: {

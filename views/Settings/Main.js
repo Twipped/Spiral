@@ -1,12 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-// import { observer } from 'mobx-react';
-import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import { Container, Separator, Content, Button, List, ListItem, Text, Icon, Left, Body, Right, Switch } from 'native-base';
 
 
 // @observer
-class SettingsView extends React.Component {
+class SettingsMain extends React.Component {
   static navigationOptions = {
     title: 'Settings',
   };
@@ -63,18 +60,4 @@ class SettingsView extends React.Component {
   }
 }
 
-export default withMappedNavigationProps()(SettingsView);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-
-  },
-
-  field: {
-    flexDirection: 'row',
-    marginLeft: -50,
-    marginRight: -50,
-  },
-});
+export default SettingsMain;
