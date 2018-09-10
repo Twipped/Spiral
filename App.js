@@ -1,39 +1,17 @@
 import React from 'react';
 import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
-import { StatusBar, TouchableWithoutFeedback, View, Image, StyleSheet } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
 import { BottomTabBar } from 'react-navigation-tabs';
-import CalendarView from './views/Calendar'
+
+import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
+import { SymptomPallet, SymptomButton, panHandlers } from './components/SymptomPallet';
 
-import buttonImg from './graphics/button.png';
-
-const TouchableWithoutFeedbackWrapper = (p) => {
-  const { onPress, testID, accessibilityLabel, ...props } = p;
-
-  return (
-    <TouchableWithoutFeedback
-      onPress={onPress}
-      testID={testID}
-      accessibilityLabel={accessibilityLabel}
-    >
-      <View {...props} />
-    </TouchableWithoutFeedback>
-  );
-};
-
-const TABBAR_DEFAULT_HEIGHT = 49;
-const iconSize = TABBAR_DEFAULT_HEIGHT * 1.8;
-const tabBarStyles = {
-  bottom: iconSize - TABBAR_DEFAULT_HEIGHT,
-  width: iconSize,
-  height: iconSize
-};
-
-const TabBar = createBottomTabNavigator(
+const TabbedNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: CalendarView,
@@ -61,11 +39,19 @@ const TabBar = createBottomTabNavigator(
     },
   },
   {
+    tabBarOptions: {
+      allowFontScaling: true,
+      activeTintColor: '#BBF',
+      // activeBackgroundColor: BRAND_COLOR,
+      inactiveTintColor: '#FFF',
+      // inactiveBackgroundColor: BRAND_COLOR,
+      style: {
+        backgroundColor: BRAND_COLOR,
+      },
+    },
     tabBarComponent: (props) => (
       <View>
-        <TouchableWithoutFeedbackWrapper style={styles.buttonWrapper} >
-          <Image source={buttonImg} style={tabBarStyles} />
-        </TouchableWithoutFeedbackWrapper>
+        <SymptomButton />
         <BottomTabBar {...props} />
       </View>
     ),
@@ -79,19 +65,8 @@ export default function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <TabBar />
+      <TabbedNavigator />
+      <SymptomPallet />
     </Root>
   );
 }
-
-const styles = StyleSheet.create({
-  buttonWrapper: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    height: 0,
-    top: 0,
-    zIndex: 5,
-  },
-});
