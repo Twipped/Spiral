@@ -9,7 +9,7 @@ import { BottomTabBar } from 'react-navigation-tabs';
 
 import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
-import { SymptomPallet, SymptomButton, panHandlers } from './components/SymptomPallet';
+import { SymptomPallet, SymptomButton, GestureBindings } from './components/SymptomPallet';
 
 const TabbedNavigator = createBottomTabNavigator(
   {
@@ -65,8 +65,10 @@ export default function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <TabbedNavigator />
-      <SymptomPallet />
+      <View style={{ flex: 1 }} {...GestureBindings}>
+        <TabbedNavigator />
+        <SymptomPallet />
+      </View>
     </Root>
   );
 }

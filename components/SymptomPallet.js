@@ -1,12 +1,39 @@
 
 import React from 'react';
-import { TouchableWithoutFeedback, View, Image, StyleSheet, Dimensions, Text, SafeAreaView, PanResponder } from 'react-native';
+import { TouchableWithoutFeedback, View, Image, StyleSheet, Dimensions, Text, SafeAreaView, Animated } from 'react-native';
+import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree'
 import buttonImg from '../graphics/button.png';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
+const PRESS_DURATION = 500;
 const state = observable({
   visible: false,
+  lastPressDown: null,
+});
+
+const GestureBindings = ({
+  // onStartShouldSetResponder: () => true,
+  onStartShouldSetResponderCapture: (ev) => {
+    const { memoizedProps } = ReactNativeComponentTree.getInstanceFromNode(ev.target);
+    return memoizedProps && !!memoizedProps.isPalletButton;
+  },
+  // onMoveShouldSetResponder: () => true,
+  // onMoveShouldSetResponderCapture: () => true,
+  onResponderTerminationRequest: () => true,
+  onResponderGrant: () => {
+    state.visible = true;
+    state.lastPressDown = Date.now();
+  },
+  // onResponderMove: () => {
+  //   console.log('move');
+  // },
+  onResponderRelease: () => {
+    if (!state.lastPressDown || Date.now() - state.lastPressDown > PRESS_DURATION) {
+      state.visible = false;
+    }
+    state.lastPressDown = false;
+  },
 });
 
 const TouchableWithoutFeedbackWrapper = (p) => {
@@ -19,58 +46,51 @@ const TouchableWithoutFeedbackWrapper = (p) => {
       onPressOut={onPressOut}
       testID={testID}
       accessibilityLabel={accessibilityLabel}
-
     >
-      <View {...props}      {...PR.panHandlers} />
+      <View {...props} />
     </TouchableWithoutFeedback>
   );
 };
 
-const PR = PanResponder.create({
-  onPanResponderGrant: () => {
-    state.visible = true;
-    console.log('start');
-  },
-  onPanResponderRelease: () => {
-    state.visible = false;
-  },
-});
+const onPalletButtonPress = () => {
+  state.visible = false;
+};
 
 @observer
 class SymptomPallet extends React.Component {
+
   render () {
     const dimensions = Dimensions.get('window');
     const windowWidth = dimensions.width;
     const windowHeight = dimensions.height;
 
+    if (!state.visible) return null;
 
     return (
-      state.visible && <TouchableWithoutFeedbackWrapper>
-        <View style={[ styles.overlay, { width: windowWidth, height: windowHeight } ]}>
-          <SafeAreaView>
+      <View style={[ styles.overlay, { width: windowWidth, height: windowHeight } ]}>
+        <SafeAreaView style={styles.palletContent}>
+          <TouchableWithoutFeedbackWrapper onPress={onPalletButtonPress}>
             <Image source={buttonImg} style={styles.palletButton} />
-            <Text>test</Text>
-          </SafeAreaView>
-        </View>
-      </TouchableWithoutFeedbackWrapper>
+          </TouchableWithoutFeedbackWrapper>
+          <Text style={{ color: '#fff' }}>test</Text>
+        </SafeAreaView>
+      </View>
     );
   }
 };
 
 const SymptomButton = () => (
-  <TouchableWithoutFeedbackWrapper
+  <View
     style={styles.buttonWrapper}
-    {...PR.panHandlers}
   >
-    <Image source={buttonImg} style={styles.button} />
-  </TouchableWithoutFeedbackWrapper>
+    <Image source={buttonImg} style={styles.button} isPalletButton />
+  </View>
 );
-
-export const panHandlers = PR.panHandlers;
 
 export {
   SymptomPallet,
   SymptomButton,
+  GestureBindings,
 };
 
 const TABBAR_DEFAULT_HEIGHT = 49;
@@ -81,11 +101,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+    zIndex: 100,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, .4)',
+  },
+
+  palletContent: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    zIndex: 100,
-    backgroundColor: 'rgba(0, 0, 0, .4)',
   },
 
   palletButton: {
