@@ -1,22 +1,8 @@
 
 import React from 'react';
-import { View, StyleSheet, Dimensions, SafeAreaView, Animated } from 'react-native';
+import { TouchableWithoutFeedback, View, StyleSheet, Dimensions, SafeAreaView, Animated, ART } from 'react-native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree'
 import * as d3 from 'd3-shape';
-import Svg,{
-    Circle,
-    Ellipse,
-    G,
-    LinearGradient,
-    RadialGradient,
-    Line,
-    Path,
-    Polygon,
-    Polyline,
-    Rect,
-    TextPath,
-    Text,
-} from 'react-native-svg';
 
 import {
   MB_CONTROL_HEIGHT,
@@ -60,13 +46,60 @@ const GestureBindings = ({
   },
 });
 
+function Circle (props) {
+  const { radius, r, ...rest } = props;
+  const rad = r || radius || 0;
+
+  const path = ART.Path()
+    .move(rad, 0)
+    .arc(0, rad * 2, rad)
+    .arc(0, rad * -2, rad);
+
+  rest.x = (rest.x || 0) - rad;
+  rest.y = (rest.y || 0) - rad;
+
+  return <ART.Shape {...rest} d={path} />;
+}
+
+function Rect (props) {
+  const { width, height, ...rest } = props;
+
+  const path = ART.Path()
+    .move(0, 0)
+    .line(width, 0)
+    .line(0, height)
+    .line(-width, 0)
+    .line(0, -height);
+
+  return <ART.Shape {...rest} d={path} />;
+}
+
+function Text (props) {
+  const { fontSize, fontWeight, fontFamily, fontStyle, textAnchor, ...rest } = props;
+
+  const alignment = [
+    'end': 'right',
+    'start': 'left',
+    'middle': 'center',
+  ][textAnchor || 'start'];
+
+  const font = {
+    fontFamily: fontFamily || 'Helvetica, Neue Helvetica, Arial',
+    fontSize,
+    fontWeight,
+    fontStyle,
+  };
+
+  return <ART.Text font={font} alignment={alignment} {...rest} />;
+}
+
 class SymptomPallet extends React.Component {
 
   constructor () {
     super();
 
     this.state = {
-      open: false,
+      open: true,
       lastPressDown: null,
     };
   }
@@ -83,28 +116,22 @@ class SymptomPallet extends React.Component {
     const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
     const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
     const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
-    const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 20;
+    const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 2;
     const CONTROL_CENTER_X = WINDOW_WIDTH / 2;
     const CONTROL_CENTER_Y = (MB_CONTROL_HEIGHT / 2) + TABBAR_DEFAULT_HEIGHT;
-    const BUTTON_PROPS = this.state.show
+    const BUTTON_PROPS = this.state.open
       ? MB_BUTTON_ACTIVE_PROPS
       : MB_BUTTON_INACTIVE_PROPS;
 
     function CenterButton (props) {
-      const topPathRadius = BUTTON_RADIUS - 18;
-      const bottomPathRadius = BUTTON_RADIUS - 10;
-
-      const upperCurve = `M${-topPathRadius},0 A${topPathRadius},${topPathRadius},9,1,1,${topPathRadius},0`;
-      const lowerCurve = `M${-bottomPathRadius},0 A${-bottomPathRadius},${-bottomPathRadius},9,1,0,${bottomPathRadius},0`;
-
       return (
-        <G>
-          <Path d={upperCurve} id="BUTTON_UPPER_TEXT" />
-          <Path d={lowerCurve} id="BUTTON_LOWER_TEXT" />
-          <Circle r={BUTTON_RADIUS} {...BUTTON_PROPS} onPress={props.onButtonPress} />
-          <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />
-          <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />
-        </G>
+        <TouchableWithoutFeedback onPress={props.onButtonPress}>
+          <ART.Group>
+            <Circle r={BUTTON_RADIUS} {...BUTTON_PROPS} />
+            <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />
+            <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />
+          </ART.Group>
+        </TouchableWithoutFeedback>
       );
     }
 
@@ -132,21 +159,28 @@ class SymptomPallet extends React.Component {
           const angle = (slice.startAngle + slice.endAngle) / 2;
           const [ textX, textY ] = arc.centroid(slice);
 
-          const transform = `rotate(${(angle * 180 / Math.PI)})`;
+          // const transform = `rotate(${(angle * 180 / Math.PI)})`;
 
-          return (<G key={'mood-' + mood.name}>
-            <Path {...path} />
-            <G x={textX} y={textY} >
-              <Text
-                y={ARC_TEXT_Y}
-                fontSize={14}
-                transform={transform}
-                fontWeight="bold"
-                fill="#111"
-                textAnchor="middle"
-              >{mood.name}</Text>
-            </G>
-          </G>);
+          const transform = ART.Transform()
+            .rotate((angle * 180 / Math.PI));
+
+          return (
+            <ART.Group key={'mood-' + mood.name}>
+              <ART.Shape {...path} />
+              <ART.Group x={textX} y={textY} transform={transform}>
+                <Text
+                  x={0}
+                  y={ARC_TEXT_Y}
+                  fontSize={14}
+                  fontWeight="bold"
+                  fill="#111"
+                  alignment="center"
+                >
+                  {mood.name}
+                </Text>
+              </ART.Group>
+            </ART.Group>
+          );
         });
       ;
 
@@ -165,18 +199,18 @@ class SymptomPallet extends React.Component {
         <SafeAreaView style={styles.palletContent} forceInset={{ bottom: 'always', top: 'never' }}>
           <View style={{ position: 'absolute', width: WINDOW_WIDTH, height: WINDOW_HEIGHT }}>{children}</View>
           {this.state.open && <View style={[ styles.overlay, { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } ]} />}
-          <Svg
+          <ART.Surface
             width={WINDOW_WIDTH}
             height={MB_CONTROL_HEIGHT}
             viewBox={viewBox}
             preserveAspectRatio="XMidYMid meet"
             style={{ zIndex: 150 }}
           >
-            <G x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
+            <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
               <CenterButton onButtonPress={() => { this.setState({ open: !this.state.open }); }} />
               {this.state.open && <MoodButtons />}
-            </G>
-          </Svg>
+            </ART.Group>
+          </ART.Surface>
         </SafeAreaView>
       </View>
     );
