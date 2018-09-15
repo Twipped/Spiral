@@ -96,7 +96,7 @@ class SymptomPallet extends React.Component {
     const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
     const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 2;
     const CONTROL_CENTER_X = WINDOW_WIDTH / 2;
-    const CONTROL_CENTER_Y = (MB_CONTROL_HEIGHT / 2) + BUTTON_RADIUS;
+    const CONTROL_CENTER_Y = MB_CONTROL_HEIGHT - BUTTON_RADIUS;
 
     return {
       WINDOW_WIDTH,
