@@ -1,16 +1,15 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { CalendarList } from 'react-native-calendars';
+import { Agenda } from 'react-native-calendars';
 import { ActionSheet } from 'native-base';
 import moment from 'moment';
 
 @observer
 class CalendarMain extends React.Component {
 
-  componentDidMount () {
-    const d = new Date();
-    this.props.calendarStore.ensureMonth(d.getFullYear(), d.getMonth() + 1);
+  loadItemsForMonth = (date) => {
+    this.props.calendarStore.ensureMonth(date.year, date.month);
   };
 
   render () {
@@ -19,11 +18,11 @@ class CalendarMain extends React.Component {
     const marks = prepareCalendarMarks(calendarStore.months);
     return (
       <View style={styles.container}>
-        <CalendarList
-          horizontal
-          pagingEnabled
+        <Agenda
+          loadItemsForMonth={this.loadItemsForMonth}
           markedDates={marks}
-          onDayPress={(date) => navigate('CalendarEntry', { date })}
+          refreshing={false}
+          
           onDayLongPress={(date) => {
             var d = moment([ date.year, date.month - 1, date.day ]);
             ActionSheet.show(

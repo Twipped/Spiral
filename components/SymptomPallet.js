@@ -10,7 +10,6 @@ import {
   MB_CONTROL_HEIGHT,
   MB_PRESS_DURATION,
   MB_BUTTON_RADIUS,
-  MB_BUTTON_SPACING,
   MB_ARC_THICKNESS_FACTOR,
   MB_ARC_LENGTH_FACTOR,
   MB_BUTTON_PRESSED_PROPS,
@@ -20,6 +19,7 @@ import {
   MB_MOODS,
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
+  MB_MOOD_TEXT_PROPS,
 } from '../constants';
 
 
@@ -262,16 +262,7 @@ class SymptomPallet extends React.Component {
             <ART.Group key={key}>
               <ART.Shape {...path} />
               <ART.Group x={textX} y={textY} transform={transform}>
-                <Text
-                  x={0}
-                  y={ARC_TEXT_Y}
-                  fontSize={14}
-                  fontWeight="bold"
-                  fill="#111"
-                  alignment="center"
-                >
-                  {mood.name}
-                </Text>
+                <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{mood.name}</Text>
               </ART.Group>
             </ART.Group>
           );

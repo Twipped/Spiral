@@ -9,12 +9,17 @@ export const MB_BUTTON_RADIUS = 49;
 export const MB_BUTTON_PRESSED_PROPS = { fill: BRAND_COLOR_TINT, stroke: '#FFF', strokeWidth: 4 };
 export const MB_BUTTON_INACTIVE_PROPS = { fill: '#D16FFF', stroke: '#FFF', strokeWidth: 3, color: '#990099' };
 export const MB_BUTTON_ACTIVE_PROPS = { fill: '#D16FFF', stroke: '#000', strokeWidth: 3, color: '#990099' };
-export const MB_BUTTON_SPACING = 5;
 export const MB_ARC_THICKNESS_FACTOR = 1.8;
 export const MB_ARC_LENGTH_FACTOR = 0.5;
 export const MB_ARC_PADDING = 0.04;
 export const MB_MOOD_INACTIVE_PROPS = { stroke: '#333', strokeWidth: 1, color: '#990099' };
 export const MB_MOOD_ACTIVE_PROPS   = { stroke: '#FFF', strokeWidth: 4, color: '#990099' };
+export const MB_MOOD_TEXT_PROPS = {
+  fontSize: 14,
+  fontWeight: 'bold',
+  fill: '#111',
+  alignment: 'center',
+};
 export const MB_MOODS = [
   { name: 'Anger', fill: '#E23838', emotions: [
 
