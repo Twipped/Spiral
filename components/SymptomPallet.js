@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { View, StyleSheet, Dimensions, SafeAreaView, Animated, ART } from 'react-native';
+import { View, StyleSheet, Dimensions, SafeAreaView, ART } from 'react-native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import * as d3 from 'd3-shape';
+// import { default as d3path } from 'd3-path/src/path';
 
 import pathfinder from '../lib/pathfinder';
 
@@ -10,13 +11,17 @@ import {
   MB_CONTROL_HEIGHT,
   MB_PRESS_DURATION,
   MB_BUTTON_RADIUS,
-  MB_ARC_THICKNESS_FACTOR,
-  MB_ARC_LENGTH_FACTOR,
   MB_BUTTON_PRESSED_PROPS,
   MB_BUTTON_ACTIVE_PROPS,
   MB_BUTTON_INACTIVE_PROPS,
-  MB_ARC_PADDING,
   MB_MOODS,
+  MB_OUTER_BUTTONS,
+  MB_ARCH_SPACING,
+  MB_ARC_LENGTH_FACTOR,
+  MB_INNER_ARC_THICKNESS_FACTOR,
+  MB_INNER_ARC_PADDING,
+  MB_OUTER_ARC_THICKNESS_FACTOR,
+  MB_OUTER_ARC_PADDING,
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
   MB_MOOD_TEXT_PROPS,
@@ -88,26 +93,17 @@ class SymptomPallet extends React.Component {
     const dimensions = Dimensions.get('window');
     const WINDOW_WIDTH = dimensions.width;
     const WINDOW_HEIGHT = dimensions.height;
-    const BUTTON_RADIUS = MB_BUTTON_RADIUS;
-    const ARC_THICKNESS = BUTTON_RADIUS * MB_ARC_THICKNESS_FACTOR;
-    const ARC_INNER_RADIUS = BUTTON_RADIUS + 5;
-    const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
-    const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
-    const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
-    const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 2;
-    const CONTROL_CENTER_X = WINDOW_WIDTH / 2;
-    const CONTROL_CENTER_Y = MB_CONTROL_HEIGHT - BUTTON_RADIUS;
+
+    const CONTROL_WIDTH  = WINDOW_WIDTH;
+    const CONTROL_HEIGHT = MB_CONTROL_HEIGHT
+    const CONTROL_CENTER_X = CONTROL_WIDTH / 2;
+    const CONTROL_CENTER_Y = CONTROL_HEIGHT - MB_BUTTON_RADIUS;
 
     return {
       WINDOW_WIDTH,
       WINDOW_HEIGHT,
-      BUTTON_RADIUS,
-      ARC_THICKNESS,
-      ARC_INNER_RADIUS,
-      ARC_OUTER_RADIUS,
-      ARC_LENGTH,
-      ARC_START_ANGLE,
-      ARC_TEXT_Y,
+      CONTROL_WIDTH,
+      CONTROL_HEIGHT,
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
     };
@@ -197,38 +193,54 @@ class SymptomPallet extends React.Component {
     const {
       WINDOW_WIDTH,
       WINDOW_HEIGHT,
-      BUTTON_RADIUS,
-      ARC_INNER_RADIUS,
-      ARC_OUTER_RADIUS,
-      ARC_START_ANGLE,
-      ARC_TEXT_Y,
+      CONTROL_WIDTH,
+      CONTROL_HEIGHT,
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
     } = this.dimensions();
 
-    let BUTTON_PROPS;
-    if (this.state.pressedButton === 'centerButton') {
-      BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
-    } else if (this.state.open) {
-      BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
-    } else {
-      BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
-    }
-
-    this.currentPaths.push({ nodeName: 'centerButton', nodeType: 'circle', cx: 0, cy: 0, r: BUTTON_RADIUS, ...BUTTON_PROPS });
-
     const self = this;
     function CenterButton () {
+      let BUTTON_PROPS;
+      if (self.state.pressedButton === 'centerButton') {
+        BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
+      } else if (self.state.open) {
+        BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
+      } else {
+        BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
+      }
+
+      self.currentPaths.push({
+        nodeName: 'centerButton',
+        nodeType: 'circle',
+        cx: 0,
+        cy: 0,
+        r: MB_BUTTON_RADIUS,
+        ...BUTTON_PROPS
+      });
+
       return (
         <ART.Group>
-          <Circle r={BUTTON_RADIUS} {...BUTTON_PROPS} />
+          <Circle r={MB_BUTTON_RADIUS} {...BUTTON_PROPS} />
           <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />
           <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />
         </ART.Group>
       );
     }
 
+    const INNER_ARC_THICKNESS = (CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING) * MB_INNER_ARC_THICKNESS_FACTOR;
+    const OUTER_ARC_THICKNESS = (
+      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING - INNER_ARC_THICKNESS
+    ) * MB_OUTER_ARC_THICKNESS_FACTOR;
+
     function MoodButtons () {
+      const ARC_THICKNESS = INNER_ARC_THICKNESS;
+      const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + 5;
+      const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
+      const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
+      const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
+      const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 2;
+
       const arc = d3.arc()
         .innerRadius(ARC_INNER_RADIUS)
         .outerRadius(ARC_OUTER_RADIUS)
@@ -237,13 +249,13 @@ class SymptomPallet extends React.Component {
       const pie = d3.pie()
         .startAngle(ARC_START_ANGLE)
         .endAngle(-ARC_START_ANGLE)
-        .padAngle(MB_ARC_PADDING)
+        .padAngle(MB_INNER_ARC_PADDING)
         .sort(null)
       ;
-      const arcs = pie(MB_MOODS.map((m) => (m.factor || 1)))
+      return pie(MB_MOODS.map((m) => (m.factor || 1)))
         .map((slice, i) => {
           const mood = MB_MOODS[i];
-          const key = 'mood-' + mood.name;
+          const key = 'tab-' + mood.name;
           const pressed = (self.state.pressedTarget === key);
           const path = {
             ...(pressed ? MB_MOOD_ACTIVE_PROPS : MB_MOOD_INACTIVE_PROPS),
@@ -266,17 +278,72 @@ class SymptomPallet extends React.Component {
               </ART.Group>
             </ART.Group>
           );
-        });
+        })
       ;
+    }
 
-      return arcs;
+    function OuterArcs () {
+      const ARC_THICKNESS = OUTER_ARC_THICKNESS;
+      const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + MB_ARCH_SPACING + INNER_ARC_THICKNESS + MB_ARCH_SPACING;
+      const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
+      const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
+      const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
+      const ARC_TEXT_Y = -8;
+
+      // const path = ART.Path()
+      //   .move(rad, 0)
+      //   .arc(0, rad * 2, rad)
+      //   .arc(0, rad * -2, rad);
+
+      const arc = d3.arc()
+        .innerRadius(ARC_INNER_RADIUS)
+        .outerRadius(ARC_OUTER_RADIUS)
+        .cornerRadius(3)
+      ;
+      const pie = d3.pie()
+        .startAngle(ARC_START_ANGLE)
+        .endAngle(-ARC_START_ANGLE)
+        .padAngle(MB_OUTER_ARC_PADDING)
+        .sort(null)
+      ;
+      return pie(MB_OUTER_BUTTONS.map((m) => (m.factor || 1)))
+        .map((slice, i) => {
+          const mood = MB_OUTER_BUTTONS[i];
+          const key = 'tab-' + mood.name;
+          const pressed = (self.state.pressedTarget === key);
+          const path = {
+            ...(pressed ? MB_MOOD_ACTIVE_PROPS : MB_MOOD_INACTIVE_PROPS),
+            d: arc(slice),
+            fill: mood.fill,
+          };
+          const angle = (slice.startAngle + slice.endAngle) / 2;
+          const [ textX, textY ] = arc.centroid(slice);
+
+          self.currentPaths.push({ nodeName: key, nodeType: 'path', ...path });
+
+          const transform = ART.Transform()
+            .rotate((angle * 180 / Math.PI));
+
+          // const textPath = d3path()
+          //   .arc(0, 0, (ARC_THICKNESS / 2) + ARC_INNER_RADIUS, slice.startAngle, slice.endAngle);
+
+          return (
+            <ART.Group key={key}>
+              <ART.Shape {...path} />
+              <ART.Group x={textX} y={textY} transform={transform}>
+                <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{mood.name}</Text>
+              </ART.Group>
+            </ART.Group>
+          );
+        })
+      ;
     }
 
     const viewBox = [
       0,
       0,
-      WINDOW_WIDTH,
-      MB_CONTROL_HEIGHT,
+      CONTROL_WIDTH,
+      CONTROL_HEIGHT,
     ].join(' ');
 
     return (
@@ -294,6 +361,7 @@ class SymptomPallet extends React.Component {
               <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
                 <CenterButton  />
                 {this.state.open && <MoodButtons />}
+                {this.state.open && <OuterArcs />}
               </ART.Group>
             </ART.Surface>
           </View>
