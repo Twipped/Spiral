@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { TouchableWithoutFeedback, View, StyleSheet, Dimensions, SafeAreaView, Animated, ART } from 'react-native';
-import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree'
+import { View, StyleSheet, Dimensions, SafeAreaView, Animated, ART } from 'react-native';
+import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import * as d3 from 'd3-shape';
+
+import pathfinder from '../lib/pathfinder';
 
 import {
   MB_CONTROL_HEIGHT,
@@ -11,16 +13,15 @@ import {
   MB_BUTTON_SPACING,
   MB_ARC_THICKNESS_FACTOR,
   MB_ARC_LENGTH_FACTOR,
+  MB_BUTTON_PRESSED_PROPS,
   MB_BUTTON_ACTIVE_PROPS,
   MB_BUTTON_INACTIVE_PROPS,
   MB_ARC_PADDING,
   MB_MOODS,
-  MB_MOOD_STROKE_WIDTH_INACTIVE,
-  MB_MOOD_STROKE_WIDTH_ACTIVE,
-  MB_MOOD_STROKE_COLOR_INACTIVE,
-  MB_MOOD_STROKE_COLOR_ACTIVE,
+  MB_MOOD_INACTIVE_PROPS,
+  MB_MOOD_ACTIVE_PROPS,
 } from '../constants';
-import { map } from 'lodash';
+
 
 function Circle (props) {
   const { radius, r, ...rest } = props;
@@ -75,8 +76,9 @@ class SymptomPallet extends React.Component {
     super();
 
     this.state = {
-      open: false,
+      open: true,
       lastPressDown: null,
+      pressedTarget: null,
     };
   }
 
@@ -111,65 +113,86 @@ class SymptomPallet extends React.Component {
     };
   }
 
+  evToXY (ev) {
+    const {
+      CONTROL_CENTER_X,
+      CONTROL_CENTER_Y,
+    } = this.dimensions();
+    return [ ev.nativeEvent.locationX - CONTROL_CENTER_X, ev.nativeEvent.locationY - CONTROL_CENTER_Y ];
+  };
+
+  currentPaths = {};
+
   gestureBindings = {
     // onStartShouldSetResponder: () => true,
-    onStartShouldSetResponder: (ev) => {
-      const {
-        BUTTON_RADIUS,
-        CONTROL_CENTER_X,
-        CONTROL_CENTER_Y,
-      } = this.dimensions();
-      const [ x, y ] = [ ev.nativeEvent.locationX, ev.nativeEvent.locationY ];
-      console.log('capture', { x, y });
-      if (this.state.open) {
-        return true;
-      }
+    onStartShouldSetResponderCapture: (ev) => {
+      const node = ReactNativeComponentTree.getInstanceFromNode(ev.target);
+      if (node.type !== 'ARTSurfaceView') return false;
 
-      const withinCircle =
-        x > CONTROL_CENTER_X - BUTTON_RADIUS
-        && x < CONTROL_CENTER_X + BUTTON_RADIUS
-        && y > CONTROL_CENTER_Y - BUTTON_RADIUS
-        && y < CONTROL_CENTER_Y + BUTTON_RADIUS
-      ;
-
-      return withinCircle;
+      const [ x, y ] = this.evToXY(ev);
+      const match = pathfinder(x, y, this.currentPaths);
+      return !!match;
     },
-    // onMoveShouldSetResponder: () => true,
+    onMoveShouldSetResponder: () => this.state.open,
     // onMoveShouldSetResponderCapture: () => true,
     onResponderTerminationRequest: () => true,
-    onResponderGrant: () => {
-      console.log('granted');
-      if (this.state.open) {
-        this.lastPressDown = false;
+    onResponderGrant: (ev) => {
+      const [ x, y ] = this.evToXY(ev);
+      const match = pathfinder(x, y, this.currentPaths);
+      // console.log('pressIn', x, y, match && match.nodeName);
+
+      this.setState({ pressedTarget: match.nodeName });
+
+      if (match.nodeName === 'centerButton') {
+        if (this.state.open) {
+          this.lastPressDown = false;
+          return;
+        }
+
+        this.setState({
+          open: true,
+        });
+        this.lastPressDown = Date.now();
         return;
       }
 
-      this.setState({
-        open: true,
-      });
-      this.lastPressDown = Date.now();
     },
-    // onResponderMove: () => {
-    //   console.log('move');
-    // },
-    onResponderRelease: () => {
-      if (!this.lastPressDown || Date.now() - this.lastPressDown > MB_PRESS_DURATION) {
-        this.setState({
-          open: false,
-        });
-        console.log('released');
+    onResponderMove: (ev) => {
+      const [ x, y ] = this.evToXY(ev);
+      const match = pathfinder(x, y, this.currentPaths);
+      // console.log('move', x, y, match && match.nodeName);
+      if (this.state.pressedTarget !== match.nodeName) {
+        this.setState({ pressedTarget: match.nodeName });
       }
-      this.lastPressDown = false;
+    },
+    onResponderRelease: (ev) => {
+      const [ x, y ] = this.evToXY(ev);
+      const match = pathfinder(x, y, this.currentPaths);
+      // console.log('pressOut', x, y, match && match.nodeName);
+
+      const newState = { pressedTarget: null };
+
+      if (match.nodeName === 'centerButton') {
+        if (!this.lastPressDown || Date.now() - this.lastPressDown > MB_PRESS_DURATION) {
+          newState.open = false;
+        }
+        this.lastPressDown = false;
+        return this.setState(newState);
+      }
+
+      this.handlePress(match.nodeName);
+      return this.setState(newState);
     },
 
-    // onPressIn: (ev) => {
-    //   const node = ReactNativeComponentTree.getInstanceFromNode(ev.currentTarget);
-    //   console.log(Object.keys(node), Object.keys(node.memoizedProps));
-    // },
+  }
+
+  handlePress (buttonName) {
+    console.log('pressed ' + buttonName);
   }
 
   render () {
-    console.log('render', this.state);
+    this.currentPaths = [];
+
     const { style, children } = this.props;
     const {
       WINDOW_WIDTH,
@@ -182,10 +205,19 @@ class SymptomPallet extends React.Component {
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
     } = this.dimensions();
-    const BUTTON_PROPS = this.state.open
-      ? MB_BUTTON_ACTIVE_PROPS
-      : MB_BUTTON_INACTIVE_PROPS;
 
+    let BUTTON_PROPS;
+    if (this.state.pressedButton === 'centerButton') {
+      BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
+    } else if (this.state.open) {
+      BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
+    } else {
+      BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
+    }
+
+    this.currentPaths.push({ nodeName: 'centerButton', nodeType: 'circle', cx: 0, cy: 0, r: BUTTON_RADIUS, ...BUTTON_PROPS });
+
+    const self = this;
     function CenterButton () {
       return (
         <ART.Group>
@@ -211,22 +243,23 @@ class SymptomPallet extends React.Component {
       const arcs = pie(MB_MOODS.map((m) => (m.factor || 1)))
         .map((slice, i) => {
           const mood = MB_MOODS[i];
+          const key = 'mood-' + mood.name;
+          const pressed = (self.state.pressedTarget === key);
           const path = {
+            ...(pressed ? MB_MOOD_ACTIVE_PROPS : MB_MOOD_INACTIVE_PROPS),
             d: arc(slice),
-            stroke: MB_MOOD_STROKE_COLOR_INACTIVE,
-            strokeWidth: MB_MOOD_STROKE_WIDTH_INACTIVE,
-            fill: mood.color,
+            fill: mood.fill,
           };
           const angle = (slice.startAngle + slice.endAngle) / 2;
           const [ textX, textY ] = arc.centroid(slice);
 
-          // const transform = `rotate(${(angle * 180 / Math.PI)})`;
+          self.currentPaths.push({ nodeName: key, nodeType: 'path', ...path });
 
           const transform = ART.Transform()
             .rotate((angle * 180 / Math.PI));
 
           return (
-            <ART.Group key={'mood-' + mood.name}>
+            <ART.Group key={key}>
               <ART.Shape {...path} />
               <ART.Group x={textX} y={textY} transform={transform}>
                 <Text
@@ -256,11 +289,11 @@ class SymptomPallet extends React.Component {
     ].join(' ');
 
     return (
-      <View style={style}>
+      <View style={style}  {...this.gestureBindings} >
         <SafeAreaView style={styles.palletContent} forceInset={{ bottom: 'always', top: 'never' }}>
           <View style={{ position: 'absolute', width: WINDOW_WIDTH, height: WINDOW_HEIGHT }} >{children}</View>
           {this.state.open && <View style={[ styles.overlay, { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } ]} />}
-          <View style={{ zIndex: 150 }} {...this.gestureBindings}>
+          <View style={{ zIndex: 150 }}>
             <ART.Surface
               width={WINDOW_WIDTH}
               height={MB_CONTROL_HEIGHT}
@@ -271,7 +304,8 @@ class SymptomPallet extends React.Component {
                 <CenterButton  />
                 {this.state.open && <MoodButtons />}
               </ART.Group>
-            </ART.Surface></View>
+            </ART.Surface>
+          </View>
         </SafeAreaView>
       </View>
     );

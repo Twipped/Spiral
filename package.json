@@ -46,6 +46,7 @@
     "react-navigation": "~2.12.1",
     "react-navigation-fluid-transitions": "~0.2.5",
     "react-navigation-header-buttons": "~2.1.0",
-    "react-navigation-props-mapper": "~0.3.0"
+    "react-navigation-props-mapper": "~0.3.0",
+    "svg-intersections": "~0.4.0"
   }
 }
