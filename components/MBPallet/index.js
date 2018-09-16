@@ -27,7 +27,7 @@ class MBPallet extends React.Component {
     super();
 
     this.state = {
-      open: true,
+      open: false,
       lastPressDown: null,
       pressedTarget: null,
       currentTab: 'tab/Anger',
