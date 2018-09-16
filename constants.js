@@ -23,19 +23,44 @@ export const MB_MOOD_TEXT_PROPS = {
 };
 export const MB_MOODS = [
   { name: 'Anger', fill: '#E23838', emotions: [
-
+    'Angry',
+    'Disapproving', 'Detestable', 'Judgmental', 'Critical',
+    'Disrespected', 'Ridiculed', 'Embarrassed', 'Persecuted',
+    'Bitter', 'Disgruntled', 'Indignant', 'Violated',
+    'Horrified', 'Nauseated', 'Revolted', 'Appalled',
+    'Frustrated', 'Furious', 'Annoyed', 'Mad',
+    'Aggressive', 'Hostile', 'Bitey', 'Provoked',
+    'Jealousy', 'Envy', 'Spite', 'Rage',
   ] },
-  { name: 'Anxiety', fill: '#F78200', emotions: [
+  // { name: 'Orange', fill: '#F78200', emotions: [
 
-  ] },
-  { name: 'Neutral', fill: '#FFB900', factor: 1.3, emotions: [
-
+  // ] },
+  { name: 'Anxiety', fill: '#FFB900', emotions: [
+    'Anxious',
+    'Stressed', 'Overwhelmed', 'Pressured', 'Rushed',
+    'Tired', 'Unfocused', 'Distracted', 'Disorganized',
+    'Apathetic', 'Indifferent', 'Bored', 'Impatient',
+    'Nervous', 'Threatened', 'Insecure', 'Worried',
+    'Fearful', 'Emotional', 'Startled', 'Confused',
+    'Betrayed', 'Excluded', 'Distant', 'Numb',
   ] },
   { name: 'Joy', fill: '#5EBD3E', emotions: [
-
+    'Happy',
+    'Calm', 'Content', 'Peaceful', 'Zen',
+    'Confident', 'Proud', 'Powerful', 'Motivated',
+    'Respected', 'Inspired', 'Courageous', 'Hopeful',
+    'Loving', 'Thankful', 'Trusting', 'Intimate',
+    'Frisky', 'Cheeky', 'Aroused', 'Playful',
+    'Excited', 'Energetic', 'Curious', 'Inquisitive',
   ] },
   { name: 'Sadness', fill: '#009CDF', emotions: [
-
+    'Sad',
+    'Dismayed', 'Disappointed', 'Disillusioned', 'Depressed',
+    'Embarrassed', 'Rejected', 'Dismissed', 'Ignored',
+    'Lonely', 'Isolated', 'Abandoned', 'Vulnerable',
+    'Victimized', 'Fragile', 'Grief', 'Weepy',
+    'Anguish', 'Despair', 'Powerless', 'Empty',
+    'Guilt', 'Shame', 'Reproachful', 'Worthless',
   ] },
 ];
 
