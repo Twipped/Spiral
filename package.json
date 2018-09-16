@@ -31,8 +31,10 @@
   },
   "dependencies": {
     "bluebird": "~3.5.2",
+    "color": "~3.0.0",
     "d3-shape": "~1.2.2",
     "expo": "^27.0.1",
+    "immutable": "~3.8.2",
     "lodash": "~4.17.10",
     "mobx": "~5.1.0",
     "mobx-react": "~5.2.6",

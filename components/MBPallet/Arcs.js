@@ -2,6 +2,7 @@
 import React from 'react';
 import { ART } from 'react-native';
 import * as d3 from 'd3-shape';
+import color from 'color';
 
 import {
   MB_BUTTON_RADIUS,
@@ -15,6 +16,7 @@ import {
   MB_OUTER_ARC_PADDING,
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
+  MB_MOOD_PRESSED_PROPS,
   MB_MOOD_TEXT_PROPS,
 } from '../../constants';
 
@@ -59,26 +61,40 @@ function InnerArcs (props) {
   return pie(MB_MOODS.map((m) => (m.factor || 1)))
     .map((slice, i) => {
       const mood = MB_MOODS[i];
-      const key = 'tab-' + mood.name;
-      const pressed = (props.pressedTarget === key);
-      const path = {
-        ...(pressed ? MB_MOOD_ACTIVE_PROPS : MB_MOOD_INACTIVE_PROPS),
-        d: arc(slice),
-        fill: mood.fill,
+      const key = 'tab/' + mood.name;
+      const d = arc(slice);
+
+      let pathProps;
+      if (props.pressedTarget === key) {
+        const c = color(mood.fill).alpha(0.5).hsl().toString();
+        pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
+      } else if (props.currentTarget === key) {
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS, d };
+      } else {
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
+      }
+
+      const textProps = {
+        ...MB_MOOD_TEXT_PROPS,
+        x: 0,
+        y: ARC_TEXT_Y,
       };
+
+      if (pathProps.textFill) textProps.fill = pathProps.textFill
+
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arc.centroid(slice);
 
-      props.registerShape({ nodeName: key, nodeType: 'path', ...path });
+      props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps });
 
       const transform = ART.Transform()
         .rotate((angle * 180 / Math.PI));
 
       return (
         <ART.Group key={key}>
-          <ART.Shape {...path} />
+          <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{mood.name}</Text>
+            <Text {...textProps}>{mood.name}</Text>
           </ART.Group>
         </ART.Group>
       );
@@ -113,17 +129,23 @@ function OuterArcs (props) {
   return pie(MB_OUTER_BUTTONS.map((m) => (m.factor || 1)))
     .map((slice, i) => {
       const mood = MB_OUTER_BUTTONS[i];
-      const key = 'tab-' + mood.name;
-      const pressed = (props.pressedTarget === key);
-      const path = {
-        ...(pressed ? MB_MOOD_ACTIVE_PROPS : MB_MOOD_INACTIVE_PROPS),
-        d: arc(slice),
-        fill: mood.fill,
-      };
+      const key = 'tab/' + mood.name;
+      const d = arc(slice);
+
+      let pathProps;
+      if (props.pressedTarget === key) {
+        const c = color(mood.fill).alpha(0.5).hsl().toString();
+        pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
+      } else if (props.currentTarget === key) {
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS, d };
+      } else {
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
+      }
+
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arc.centroid(slice);
 
-      props.registerShape({ nodeName: key, nodeType: 'path', ...path });
+      props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps });
 
       const transform = ART.Transform()
         .rotate((angle * 180 / Math.PI));
@@ -133,7 +155,7 @@ function OuterArcs (props) {
 
       return (
         <ART.Group key={key}>
-          <ART.Shape {...path} />
+          <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
             <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{mood.name}</Text>
           </ART.Group>

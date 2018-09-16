@@ -13,8 +13,9 @@ export const MB_BUTTON_ACTIVE_PROPS = { fill: '#D16FFF', stroke: '#000', strokeW
 export const MB_ARC_LENGTH_FACTOR = 0.5;
 export const MB_INNER_ARC_THICKNESS_FACTOR = 0.6;
 export const MB_INNER_ARC_PADDING = 0.04;
-export const MB_MOOD_INACTIVE_PROPS = { stroke: '#333', strokeWidth: 1, color: '#990099' };
-export const MB_MOOD_ACTIVE_PROPS   = { stroke: '#FFF', strokeWidth: 4, color: '#990099' };
+export const MB_MOOD_INACTIVE_PROPS = { stroke: '#333', strokeWidth: 1 };
+export const MB_MOOD_PRESSED_PROPS  = { stroke: '#333', strokeWidth: 1 };
+export const MB_MOOD_ACTIVE_PROPS   = { stroke: '#FFF', strokeWidth: 4 };
 export const MB_MOOD_TEXT_PROPS = {
   fontSize: 14,
   fontWeight: 'bold',
@@ -24,11 +25,11 @@ export const MB_MOOD_TEXT_PROPS = {
 export const MB_MOODS = [
   { name: 'Anger', fill: '#E23838', emotions: [
     'Angry',
-    'Disapproving', 'Detestable', 'Judgmental', 'Critical',
+    'Disapproving', 'Detesting', 'Judgmental', 'Critical',
     'Disrespected', 'Ridiculed', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant', 'Violated',
     'Horrified', 'Nauseated', 'Revolted', 'Appalled',
-    'Frustrated', 'Furious', 'Annoyed', 'Mad',
+    'Frustrated', 'Annoyed', 'Mad', 'Furious',
     'Aggressive', 'Hostile', 'Bitey', 'Provoked',
     'Jealousy', 'Envy', 'Spite', 'Rage',
   ] },
@@ -63,13 +64,14 @@ export const MB_MOODS = [
     'Guilt', 'Shame', 'Reproachful', 'Worthless',
   ] },
 ];
+export const MB_MOOD_MAP = MB_MOODS.reduce((obj, mood, i) => {obj[mood.name] = i;return obj;}, {});
 
 export const MB_OUTER_ARC_THICKNESS_FACTOR = 0.9;
 export const MB_OUTER_ARC_PADDING = 0.03;
 export const MB_OUTER_BUTTONS = [
-  { name: 'Marker', fill: '#CCC', factor: 0.6 },
+  { name: 'Marker',      fill: '#CCC', factor: 0.6 },
   { name: 'Medications', fill: '#CCC' },
-  { name: 'Symptoms', fill: '#CCC' },
-  { name: 'Activities', fill: '#CCC' },
-  { name: 'Note', fill: '#CCC', factor: 0.6 },
+  { name: 'Symptoms',    fill: '#CCC' },
+  { name: 'Activities',  fill: '#CCC' },
+  { name: 'Note',        fill: '#CCC', factor: 0.6 },
 ];

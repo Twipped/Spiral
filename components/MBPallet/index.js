@@ -1,14 +1,19 @@
+/* eslint new-cap:0 */
 
 import React from 'react';
 import { View, StyleSheet, Dimensions, SafeAreaView, ART } from 'react-native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+import { get } from 'lodash';
+import { Map, Set } from 'immutable';
 
 import pathfinder from '../../lib/pathfinder';
 import Arcs from './Arcs';
-// import MoodMenu from './MoodMenu';
+import MoodMenu from './MoodMenu';
 import ThumbButton from './ThumbButton';
 
 import {
+  MB_MOODS,
+  MB_MOOD_MAP,
   MB_CONTROL_HEIGHT,
   MB_PRESS_DURATION,
   MB_BUTTON_RADIUS,
@@ -16,7 +21,7 @@ import {
 
 
 
-class SymptomPallet extends React.Component {
+class MBPallet extends React.Component {
 
   constructor () {
     super();
@@ -25,6 +30,11 @@ class SymptomPallet extends React.Component {
       open: true,
       lastPressDown: null,
       pressedTarget: null,
+      currentTab: 'tab/Anger',
+      moods: Set(),
+      symptoms: Map(),
+      note: '',
+      marker: '',
     };
   }
 
@@ -124,12 +134,18 @@ class SymptomPallet extends React.Component {
   }
 
   handlePress (buttonName) {
-    console.log('pressed ' + buttonName);
+    if (!buttonName || buttonName === 'centerButton') return;
+    this.setState({ currentTab: buttonName });
   }
 
   render () {
     this.currentPaths = [];
     const registerShape = (shape) => { this.currentPaths.push(shape); };
+    const toggleMood = (key) => {
+      const isSet = this.state.moods.has(key);
+      const state = isSet ? this.state.moods.delete(key) : this.state.moods.add(key);
+      this.setState({ moods: state });
+    };
 
     const { style, children } = this.props;
     const dimensions = this.dimensions();
@@ -151,9 +167,30 @@ class SymptomPallet extends React.Component {
 
     const props = {
       registerShape,
+      currentTarget: this.state.currentTab,
       pressedTarget: this.state.pressedTarget,
       ...dimensions,
     };
+
+    const tabName = this.state.currentTab.split('/')[1];
+    let tabbedComponent;
+    switch (tabName) {
+    case 'Anger':
+    case 'Anxiety':
+    case 'Joy':
+    case 'Sadness':
+      tabbedComponent = (
+        <MoodMenu
+          activeEmotions={this.state.moods}
+          mood={MB_MOODS[MB_MOOD_MAP[tabName]]}
+          toggleMood={toggleMood}
+        />
+      );
+      break;
+
+    default:
+      tabbedComponent = null;
+    }
 
     return (
       <View style={style} {...this.gestureBindings} >
@@ -161,6 +198,7 @@ class SymptomPallet extends React.Component {
           <View style={{ position: 'absolute', width: WINDOW_WIDTH, height: WINDOW_HEIGHT }} >{children}</View>
           {this.state.open && <View style={[ styles.overlay, { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } ]} />}
           <View style={{ zIndex: 150 }}>
+            {tabbedComponent}
             <ART.Surface
               width={WINDOW_WIDTH}
               height={MB_CONTROL_HEIGHT}
@@ -179,7 +217,7 @@ class SymptomPallet extends React.Component {
   }
 };
 
-export default SymptomPallet;
+export default MBPallet;
 
 
 
