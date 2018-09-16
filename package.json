@@ -5,7 +5,7 @@
   "devDependencies": {
     "babel-eslint": "~9.0.0",
     "eslint": "~5.5.0",
-    "eslint-config-twipped": "*",
+    "eslint-config-twipped": "~2.4.0",
     "eslint-plugin-jest": "~21.22.0",
     "eslint-plugin-node": "~7.0.1",
     "eslint-plugin-promise": "~4.0.0",
