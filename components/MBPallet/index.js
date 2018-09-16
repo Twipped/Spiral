@@ -173,23 +173,26 @@ class MBPallet extends React.Component {
     };
 
     const tabName = this.state.currentTab.split('/')[1];
-    let tabbedComponent;
-    switch (tabName) {
-    case 'Anger':
-    case 'Anxiety':
-    case 'Joy':
-    case 'Sadness':
-      tabbedComponent = (
-        <MoodMenu
-          activeEmotions={this.state.moods}
-          mood={MB_MOODS[MB_MOOD_MAP[tabName]]}
-          toggleMood={toggleMood}
-        />
-      );
-      break;
+    let tabbedComponent = null;
 
-    default:
-      tabbedComponent = null;
+    if (this.state.open) {
+      switch (tabName) {
+      case 'Anger':
+      case 'Anxiety':
+      case 'Joy':
+      case 'Sadness':
+        tabbedComponent = (
+          <MoodMenu
+            activeEmotions={this.state.moods}
+            mood={MB_MOODS[MB_MOOD_MAP[tabName]]}
+            toggleMood={toggleMood}
+          />
+        );
+        break;
+
+      default:
+        tabbedComponent = null;
+      }
     }
 
     return (
