@@ -4,7 +4,7 @@ export const BRAND_COLOR = '#973999';
 export const BRAND_COLOR_TINT = '#990099';
 
 export const MB_CONTROL_HEIGHT = 250;
-export const MB_PRESS_DURATION = 250;
+export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 49;
 export const MB_ARCH_SPACING = 5;
 export const MB_BUTTON_PRESSED_PROPS = { fill: BRAND_COLOR_TINT, stroke: '#FFF', strokeWidth: 4 };
