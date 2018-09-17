@@ -9,10 +9,12 @@ class Store {
   _pending = Promise.resolve();
 
   async ensureMonth (year, month) {
+    const key = `${year}-${month}`;
+    if (this.months.has(key)) return;
     let state = await AsyncStorage.getItem(`@CalendarStore:${year}-${month}`);
     state = state ? JSON.parse(state) : {};
     console.log('Read AsyncStorage', { year, month, state });
-    this.months.set(`${year}-${month}`, observable.map(state));
+    this.months.set(key, observable.map(state));
   }
 
   @action
