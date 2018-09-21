@@ -4,7 +4,7 @@ import { Agenda } from 'react-native-calendars';
 import { xdateToData } from 'react-native-calendars/src/interface';
 import { dateToData } from '../../lib/common';
 import { ListItem, Body, Card, CardItem, Text, variables } from 'native-base';
-import { observable } from 'mobx';
+// import { observable, computed } from 'mobx';
 import { observer } from 'mobx-react/native';
 import moment from 'moment';
 import { set } from 'lodash';
@@ -38,7 +38,6 @@ class SymptomAgenda extends Agenda {
 
   constructor (props) {
     super(props);
-    this.monthsNeeded = observable.array();
 
     const d = new Date();
     props.calendarStore.ensureMonthLoaded(d.getFullYear(), d.getMonth() + 1);
@@ -64,7 +63,11 @@ class SymptomAgenda extends Agenda {
   };
 
   renderHour = ({ item, ...props }) => (
-    <ListItem {...props} key={item.key} onPress={() => { if (this.props.onHourSelected) this.props.onHourSelected(item.targetHour); }}>
+    <ListItem
+      {...props}
+      key={item.key}
+      onPress={() => { if (this.props.onHourSelected) this.props.onHourSelected(item.targetHour); }}
+    >
       <HourText hour={item.hour} isNow={item.isNow} />
       <Body>
         {item.hasRecords && <Card>
@@ -77,6 +80,7 @@ class SymptomAgenda extends Agenda {
   );
 
 
+  // @computed
   generateHours = () => {
     const selected = xdateToData(this.state.selectedDay);
     const today = dateToData(new Date);
@@ -99,21 +103,20 @@ class SymptomAgenda extends Agenda {
     return hours;
   }
 
+  // @computed
   generateMarkings = () => {
     const selected = xdateToData(this.state.selectedDay);
     const selectedDayKey = selected.dateString;
-    const marks = this.monthsNeeded.reduce((results, m) => {
+    const marks = (this.state.monthsNeeded || []).reduce((results, m) => {
       const { year, month } = m;
       const daysInMonth = moment([ year, month - 1, 1 ]).endOf('month').date();
       for (let day = 1; day <= daysInMonth; day++) {
         const dayKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const record = this.props.calendarStore.getDay(year, month, day);
         const hasRecords = record && record.hasData;
-        const isSelected = dayKey === selectedDayKey;
-        if (hasRecords || isSelected) {
+        if (hasRecords) {
           results[dayKey] = {
-            marked: hasRecords,
-            selected: isSelected,
+            marked: !!hasRecords,
           };
         }
       }
@@ -121,7 +124,6 @@ class SymptomAgenda extends Agenda {
     }, {});
 
     set(marks, [ selectedDayKey, 'selected' ], true);
-
     return marks;
   }
 
@@ -129,7 +131,7 @@ class SymptomAgenda extends Agenda {
     months.forEach(({ year, month }) => {
       this.props.calendarStore.ensureMonthLoaded(year, month);
     });
-    this.monthsNeeded.replace(months);
+    this.setState({ monthsNeeded: months });
   }
 
 }

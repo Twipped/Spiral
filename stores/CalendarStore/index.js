@@ -37,16 +37,25 @@ class CalendarStore {
   @action
   async ensureMonthLoaded (year, month) {
     const key = Month.generateKey(year, month);
-    if (this.months.has(key) || this.ensured[key]) return;
+    if (this.ensured[key]) return;
     this.ensured[key] = true;
 
     let data = await AsyncStorage.getItem(`@CalendarStore:${key}`);
-    data = data ? JSON.parse(data) : {};
+    data = data && JSON.parse(data);
+
+    if (!data) return;
+
+    let state = this.getMonth(year, month);
+    if (state) {
+      console.log('CalendarStore update', { year, month }, data);
+      state.deserializeFrom(data);
+      return;
+    }
 
     console.log('CalendarStore read', { year, month }, data);
-
-    const state = Month.deserialize(data);
+    state = Month.deserialize(data);
     this.startReacting(key, state);
+    this.months.set(key, state);
   }
 
   getDay (year, month, day, init) {
@@ -66,7 +75,7 @@ class CalendarStore {
   startReacting (key, state) {
     this.reactions[key] = reaction(
       () => (state.hasData ? JSON.stringify(state.serialize()) : ''),
-      (json) => { console.log('changed'); CalendarStore.write(key, json); },
+      (json) => { CalendarStore.write(key, json); },
       { delay: 100 }
     );
   }
@@ -87,4 +96,4 @@ class CalendarStore {
   }
 }
 
-export default new CalendarStore;
+export default new CalendarStore();

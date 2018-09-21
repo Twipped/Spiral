@@ -2,21 +2,22 @@
 import { action, observable, computed } from 'mobx';
 import {
   primitive,
-  list,
   map,
   object,
   serializable,
   serialize,
   deserialize,
+  update,
 } from 'serializr';
 import ObservableSet, { set } from '../../lib/observable-set';
 import { some } from 'lodash';
 
 export class Hour {
-  @serializable(primitive()) year = 0;
-  @serializable(primitive()) month = 0;
-  @serializable(primitive()) day = 0;
-  @serializable(primitive()) hour = 0;
+  @serializable(primitive()) key = '';
+  @serializable(primitive()) year = '';
+  @serializable(primitive()) month = '';
+  @serializable(primitive()) day = '';
+  @serializable(primitive()) hour = '';
 
   @serializable(set(primitive()))
   @observable
@@ -27,17 +28,15 @@ export class Hour {
   conditions = new Map();
 
   constructor (year, month, day, hour) {
-    this.year = Number(year);
-    this.month = Number(month);
-    this.day = Number(day);
-    this.hour = Number(hour);
+    this.year = String(year);
+    this.month = String(month);
+    this.day = String(day);
+    this.hour = String(hour);
+    this.key = Hour.generateKey(this.year, this.month, this.day, this.hour);
   }
 
   static generateKey (year, month, day, hour) {
-    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')} `;
-  }
-  get key () {
-    return Hour.generateKey(this.year, this.month, this.day, this.hour);
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${String(hour).padStart(2, '0')}`;
   }
 
   @computed
@@ -60,25 +59,24 @@ export class Hour {
 }
 
 export class Day {
-  @serializable(primitive()) year = 0;
-  @serializable(primitive()) month = 0;
-  @serializable(primitive()) day = 0;
+  @serializable(primitive()) key = '';
+  @serializable(primitive()) year = '';
+  @serializable(primitive()) month = '';
+  @serializable(primitive()) day = '';
 
   @serializable(map(object(Hour)))
   @observable
   hours = new Map();
 
   constructor (year, month, day) {
-    this.year = Number(year);
-    this.month = Number(month);
-    this.day = Number(day);
+    this.year = String(year);
+    this.month = String(month);
+    this.day = String(day);
+    this.key = Day.generateKey(this.year, this.month, this.day);
   }
 
   static generateKey (year, month, day) {
     return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  }
-  get key () {
-    return Day.generateKey(this.year, this.month, this.day);
   }
 
   @computed
@@ -87,13 +85,13 @@ export class Day {
   }
 
   getHour (hour, init) {
-    hour = Number(hour);
+    hour = String(hour);
     return this.hours.get(hour) || (init && this.createHour(hour)) || undefined;
   }
 
   @action
   createHour (hour, overwrite) {
-    hour = Number(hour);
+    hour = String(hour);
     if (!overwrite && this.hours.has(hour)) return this.hours.get(hour);
     const h = new Hour(this.year, this.month, this.day, hour);
     this.hours.set(hour, h);
@@ -102,23 +100,25 @@ export class Day {
 }
 
 export class Month {
-  @serializable(primitive()) year = 0;
-  @serializable(primitive()) month = 0;
+  static version = '0.0.2';
+
+  @serializable(primitive()) version = Month.version;
+  @serializable(primitive()) key = '';
+  @serializable(primitive()) year = '';
+  @serializable(primitive()) month = '';
 
   @serializable(map(object(Day)))
   @observable
   days = new Map();
 
   constructor (year, month) {
-    this.year = Number(year);
-    this.month = Number(month);
+    this.year = String(year);
+    this.month = String(month);
+    this.key = Month.generateKey(year, month);
   }
 
   static generateKey (year, month) {
     return `${year}-${String(month).padStart(2, '0')}`;
-  }
-  get key () {
-    return Month.generateKey(this.year, this.month);
   }
 
   @computed
@@ -127,13 +127,13 @@ export class Month {
   }
 
   getDay (day, init) {
-    day = Number(day);
+    day = String(day);
     return this.days.get(day) || (init && this.createDay(day)) || undefined;
   }
 
   @action
   createDay (day, overwrite) {
-    day = Number(day);
+    day = String(day);
     if (!overwrite && this.days.has(day)) return this.days.get(day);
     const d = new Day(this.year, this.month, day);
     this.days.set(day, d);
@@ -144,7 +144,34 @@ export class Month {
     return serialize(this);
   }
 
+  deserializeFrom (data) {
+    data = upgradeSerializedVersion(data);
+    try {
+      return update(Month, this, data);
+    } catch (e) {
+      console.log('Month could not be deserialized');
+      return null;
+    }
+  }
+
   static deserialize (data) {
-    return deserialize(Month, data);
+    data = upgradeSerializedVersion(data);
+    try {
+      return deserialize(Month, data);
+    } catch (e) {
+      console.log('Month could not be deserialized');
+      return null;
+    }
   }
 }
+
+function upgradeSerializedVersion (data) {
+  if (data.version === Month.version) {
+    return data;
+  }
+
+  if (!data.version) {
+    return {};
+  }
+}
+
