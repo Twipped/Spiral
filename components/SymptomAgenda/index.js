@@ -39,6 +39,9 @@ class SymptomAgenda extends Agenda {
   constructor (props) {
     super(props);
     this.monthsNeeded = observable.array();
+
+    const d = new Date();
+    props.calendarStore.ensureMonthLoaded(d.getFullYear(), d.getMonth() + 1);
   }
 
   renderReservations () {
