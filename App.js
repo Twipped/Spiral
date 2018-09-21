@@ -5,10 +5,13 @@ import { StatusBar } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
+import { dateToData } from './lib/common';
+import navigate from './lib/navigate';
 
 import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
-import MBPallet from './components/MBPallet';
+import ThumbButton from './components/ThumbButton';
+
 
 const TabbedNavigator = createBottomTabNavigator(
   {
@@ -41,9 +44,7 @@ const TabbedNavigator = createBottomTabNavigator(
     tabBarOptions: {
       allowFontScaling: true,
       activeTintColor: '#BBF',
-      // activeBackgroundColor: BRAND_COLOR,
       inactiveTintColor: '#FFF',
-      // inactiveBackgroundColor: BRAND_COLOR,
       style: {
         backgroundColor: BRAND_COLOR,
       },
@@ -58,9 +59,12 @@ export default function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <MBPallet style={{ flex: 1 }}>
-        <TabbedNavigator />
-      </MBPallet>
+      <TabbedNavigator
+        ref={(navigatorRef) => {
+          navigate.setTopLevelNavigator(navigatorRef);
+        }}
+      />
+      <ThumbButton onPress={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }} />
     </Root>
   );
 }

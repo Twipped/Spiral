@@ -1,26 +1,68 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-
-import { Card, FormLabel, FormInput } from 'react-native-elements';
-import { observer } from 'mobx-react';
+import { computed, observable } from 'mobx';
+import { observer } from 'mobx-react/native';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
+import MBPallet from '../../components/MBPallet';
+import MoodMenu from '../../components/MBPallet/MoodMenu';
+
+import {
+  MB_MOODS,
+  MB_MOOD_MAP,
+} from '../../constants';
+
 
 @observer
 class EntryView extends React.Component {
 
+  constructor (props) {
+    super(props);
+
+    const currentHour = props.navigation.getParam('hour');
+    const { year, month, day, hour } = currentHour;
+
+    this.state = {
+      currentTab: null,
+      currentHour,
+      entry: props.calendarStore.getHour(year, month, day, hour, true),
+    };
+
+  }
+
+  onTabSwitch = (tab) => {
+    this.setState({ currentTab: tab });
+  };
+
+  onToggleEmotion = (emotionKey, selected) => {
+    this.state.entry.setEmotion(emotionKey, selected);
+  };
+
   render () {
-    const { date, calendarStore } = this.props;
-    const day = calendarStore.getDayState(date);
+    const tabName = this.state.currentTab;
+    let tabbedComponent = null;
+
+    switch (tabName) {
+    case 'Anger':
+    case 'Anxiety':
+    case 'Joy':
+    case 'Sadness':
+      tabbedComponent = (
+        <MoodMenu
+          entryEmotions={this.state.entry.emotions}
+          mood={MB_MOODS[MB_MOOD_MAP[tabName]]}
+          onToggleEmotion={this.onToggleEmotion}
+        />
+      );
+      break;
+
+    default:
+      tabbedComponent = null;
+    }
+
     return (
       <View style={styles.container}>
-        <Card>
-          <FormLabel>Today&#039;s Weight</FormLabel>
-          <FormInput
-            keyboardType="decimal-pad"
-            value={day.weight && Number(day.weight) && String(day.weight) || ''}
-            onChangeText={(text) => calendarStore.setDayState(date, { weight: text })}
-          />
-        </Card>
+        {tabbedComponent}
+        <MBPallet onTabSwitch={this.onTabSwitch} />
       </View>
     );
   }
@@ -31,13 +73,9 @@ export default withMappedNavigationProps()(EntryView);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-
-  },
-
-  field: {
-    flexDirection: 'row',
-    marginLeft: -50,
-    marginRight: -50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    backgroundColor: '#000',
   },
 });

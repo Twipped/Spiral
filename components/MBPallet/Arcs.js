@@ -41,7 +41,7 @@ function Text (props) {
 
 function InnerArcs (props) {
   const ARC_THICKNESS = props.INNER_ARC_THICKNESS;
-  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + 5;
+  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + MB_ARCH_SPACING;
   const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
   const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
   const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
@@ -80,7 +80,7 @@ function InnerArcs (props) {
         y: ARC_TEXT_Y,
       };
 
-      if (pathProps.textFill) textProps.fill = pathProps.textFill
+      if (pathProps.textFill) textProps.fill = pathProps.textFill;
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arc.centroid(slice);

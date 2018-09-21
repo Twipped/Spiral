@@ -2,7 +2,8 @@ import React from 'react';
 import { FlatList, View } from 'react-native';
 import { Agenda } from 'react-native-calendars';
 import { xdateToData } from 'react-native-calendars/src/interface';
-import { List, ListItem, Left, Body, Right, Text, Button, variables } from 'native-base';
+import { dateToData } from '../../lib/common';
+import { ListItem, Body, Card, CardItem, Text, variables } from 'native-base';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import moment from 'moment';
@@ -59,11 +60,15 @@ class SymptomAgenda extends Agenda {
     );
   };
 
-  renderHour = ({ item, ...params }) => (
-    <ListItem {...params} key={item.key}>
+  renderHour = ({ item, ...props }) => (
+    <ListItem {...props} key={item.key} onPress={() => { if (this.props.onHourSelected) this.props.onHourSelected(item.targetHour); }}>
       <HourText hour={item.hour} isNow={item.isNow} />
       <Body>
-        <Text></Text>
+        {item.hasRecords && <Card>
+          <CardItem>
+
+          </CardItem>
+        </Card>}
       </Body>
     </ListItem>
   );
@@ -75,15 +80,17 @@ class SymptomAgenda extends Agenda {
     const { year, month, day } = selected;
     const isToday = today.year === year && today.month === month && today.day === day;
     const nowHour = moment().hour();
-    console.log({ selected, today, isToday });
+    // console.log({ selected, today, isToday });
     const hours = [];
     for (let hour = 0; hour < 24; hour++) {
-      const hourState = this.props.calendarStore.getHourState(year, month, day, hour);
+      const hourState = this.props.calendarStore.getHour(year, month, day, hour);
       hours.push({
         key: [ year, month, day, hour ].join('-'),
         isNow: isToday && nowHour === hour,
+        targetHour: { year, month, day, hour },
         hour,
-        ...hourState,
+        hasRecords: hourState && hourState.hasData,
+        state: hourState,
       });
     }
     return hours;
@@ -97,8 +104,8 @@ class SymptomAgenda extends Agenda {
       const daysInMonth = moment([ year, month - 1, 1 ]).endOf('month').date();
       for (let day = 1; day <= daysInMonth; day++) {
         const dayKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        const record = this.props.calendarStore.getDayState(year, month, day);
-        const hasRecords = record && !!Object.keys(record).length;
+        const record = this.props.calendarStore.getDay(year, month, day);
+        const hasRecords = record && record.hasData;
         const isSelected = dayKey === selectedDayKey;
         if (hasRecords || isSelected) {
           results[dayKey] = {
@@ -116,26 +123,13 @@ class SymptomAgenda extends Agenda {
   }
 
   onVisibleMonthsChange (months) {
+    months.forEach(({ year, month }) => {
+      this.props.calendarStore.ensureMonthLoaded(year, month);
+    });
     this.monthsNeeded.replace(months);
   }
 
 }
 
 export default SymptomAgenda;
-
-function dateToData (date) {
-  const isUTC = date.toString === Date.prototype.toUTCString;
-  const year = isUTC ? date.getUTCFullYear() : date.getFullYear();
-  const month = (isUTC ? date.getUTCFullYear() : date.getMonth()) + 1;
-  const day = isUTC ? date.getUTCFullYear() : date.getDate();
-
-  return {
-    year,
-    month,
-    day,
-    timestamp: date.valueOf(),
-    dateString: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
-    tz: date.getTimezoneOffset(),
-  };
-}
 
