@@ -24,7 +24,7 @@ export class Hour {
 
   @serializable(map(primitive()))
   @observable
-  symptoms = new Map();
+  conditions = new Map();
 
   constructor (year, month, day, hour) {
     this.year = Number(year);
@@ -42,13 +42,13 @@ export class Hour {
 
   @computed
   get hasData () {
-    return !!this.emotions.size && !!this.symptoms.size;
+    return !!this.emotions.size || !!this.conditions.size;
   }
 
   @action
   setEmotion (emotionKey, on) {
     if (typeof on === 'undefined') on = !this.emotions.has(emotionKey);
-    if (!on) this.emotions.remove(emotionKey);
+    if (!on) this.emotions.delete(emotionKey);
     if (on) this.emotions.add(emotionKey);
     console.log('setEmotion', emotionKey, on, this.emotions.has(emotionKey));
   }
@@ -83,7 +83,7 @@ export class Day {
 
   @computed
   get hasData () {
-    return this.hours.size && some({ ...this.hours.values() }, (h) => h.hasData);
+    return !!this.hours.size && some([ ...this.hours.values() ], (h) => h.hasData);
   }
 
   getHour (hour, init) {
@@ -95,7 +95,6 @@ export class Day {
   createHour (hour, overwrite) {
     hour = Number(hour);
     if (!overwrite && this.hours.has(hour)) return this.hours.get(hour);
-    console.log('created hour');
     const h = new Hour(this.year, this.month, this.day, hour);
     this.hours.set(hour, h);
     return h;
@@ -124,7 +123,7 @@ export class Month {
 
   @computed
   get hasData () {
-    return this.days.size && some({ ...this.days.values() }, (h) => h.hasData);
+    return !!this.days.size && some([ ...this.days.values() ], (h) => h.hasData);
   }
 
   getDay (day, init) {
@@ -136,7 +135,6 @@ export class Month {
   createDay (day, overwrite) {
     day = Number(day);
     if (!overwrite && this.days.has(day)) return this.days.get(day);
-    console.log('created day');
     const d = new Day(this.year, this.month, day);
     this.days.set(day, d);
     return d;

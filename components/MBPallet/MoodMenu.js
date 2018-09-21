@@ -12,7 +12,6 @@ const MoodMenu = observer((props) => {
 
   const MoodButton = ({ emotion, selected, pill, prime }) => {
     const key = `${mood.name}/${emotion}`;
-    if (emotion === 'Anxious') console.log(selected);
 
     const [ buttonStyle, textStyle ] = buildStyles(mood.fill, { pill, prime, selected });
 

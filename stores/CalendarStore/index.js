@@ -64,16 +64,16 @@ class CalendarStore {
   }
 
   startReacting (key, state) {
-    this.reactions[key] = false || reaction(
-      () => state.hasData && state.serialize(),
-      (raw) => { if (raw) CalendarStore.write(key, raw); },
+    this.reactions[key] = reaction(
+      () => (state.hasData ? JSON.stringify(state.serialize()) : ''),
+      (json) => { console.log('changed'); CalendarStore.write(key, json); },
       { delay: 100 }
     );
   }
 
-  static write (key, raw) {
-    console.log('CalendarStore write', key, raw);
-    const p = AsyncStorage.setItem(`@CalendarStore:${key}`, JSON.stringify(raw));
+  static write (key, json) {
+    console.log('CalendarStore write', key, json);
+    const p = AsyncStorage.setItem(`@CalendarStore:${key}`, json);
     CalendarStore.writeIsPending = Promise.all([ CalendarStore.writeIsPending, p ]);
     return CalendarStore.writeIsPending;
   }
