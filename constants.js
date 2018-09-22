@@ -3,7 +3,6 @@
 export const BRAND_COLOR = '#973999';
 export const BRAND_COLOR_TINT = '#990099';
 
-export const MB_CONTROL_HEIGHT = 200;
 export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 46;
 export const MB_ARCH_SPACING = 5;
@@ -22,8 +21,8 @@ export const MB_MOOD_TEXT_PROPS = {
   fill: '#111',
   alignment: 'center',
 };
-export const MB_MOODS = [
-  { name: 'Anger', fill: '#E23838', emotions: [
+export const MB_MOODS = {
+  Anger: { name: 'Anger', fill: '#E23838', emotions: [
     'Angry',
     'Disapproving', 'Detesting', 'Judgmental', 'Critical',
     'Disrespected', 'Ridiculed', 'Embarrassed', 'Persecuted',
@@ -36,7 +35,7 @@ export const MB_MOODS = [
   // { name: 'Orange', fill: '#F78200', emotions: [
 
   // ] },
-  { name: 'Anxiety', fill: '#FFB900', emotions: [
+  Anxiety: { name: 'Anxiety', fill: '#FFB900', emotions: [
     'Anxious',
     'Stressed', 'Overwhelmed', 'Pressured', 'Rushed',
     'Tired', 'Unfocused', 'Distracted', 'Disorganized',
@@ -45,7 +44,7 @@ export const MB_MOODS = [
     'Fearful', 'Emotional', 'Startled', 'Confused',
     'Betrayed', 'Excluded', 'Distant', 'Numb',
   ] },
-  { name: 'Joy', fill: '#5EBD3E', emotions: [
+  Joy: { name: 'Joy', fill: '#5EBD3E', emotions: [
     'Happy',
     'Calm', 'Content', 'Peaceful', 'Zen',
     'Confident', 'Proud', 'Powerful', 'Motivated',
@@ -54,7 +53,7 @@ export const MB_MOODS = [
     'Frisky', 'Cheeky', 'Aroused', 'Playful',
     'Excited', 'Energetic', 'Curious', 'Inquisitive',
   ] },
-  { name: 'Sadness', fill: '#009CDF', emotions: [
+  Sadness: { name: 'Sadness', fill: '#009CDF', emotions: [
     'Sad',
     'Dismayed', 'Disappointed', 'Disillusioned', 'Depressed',
     'Embarrassed', 'Rejected', 'Dismissed', 'Ignored',
@@ -63,15 +62,15 @@ export const MB_MOODS = [
     'Anguish', 'Despair', 'Powerless', 'Empty',
     'Guilt', 'Shame', 'Reproachful', 'Worthless',
   ] },
-];
-export const MB_MOOD_MAP = MB_MOODS.reduce((obj, mood, i) => {obj[mood.name] = i;return obj;}, {});
+};
 
 export const MB_OUTER_ARC_THICKNESS_FACTOR = 0.9;
 export const MB_OUTER_ARC_PADDING = 0.03;
 export const MB_OUTER_BUTTONS = [
-  { name: 'Marker',      fill: '#CCC', factor: 0.6 },
-  { name: 'Medications', fill: '#CCC' },
-  { name: 'Symptoms',    fill: '#CCC' },
-  { name: 'Activities',  fill: '#CCC' },
-  { name: 'Note',        fill: '#CCC', factor: 0.6 },
+  // { name: 'Marker',       fill: '#CCC', factor: 0.7 },
+  { name: 'Medications',  fill: '#CCC' },
+  { name: 'Symptoms',     fill: '#CCC' },
+  { name: 'Mental State', fill: '#CCC' },
+  { name: 'Activities',   fill: '#CCC' },
+  // { name: 'Note',         fill: '#CCC', factor: 0.7 },
 ];

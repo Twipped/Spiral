@@ -62,10 +62,11 @@ function InnerArcs (props) {
     .padAngle(MB_INNER_ARC_PADDING)
     .sort(null)
   ;
-  return pie(MB_MOODS.map((m) => (m.factor || 1)))
+  return pie(Object.values(MB_MOODS).map((m) => (m.factor || 1)))
     .map((slice, i) => {
-      const mood = MB_MOODS[i];
-      const key = 'tab/' + mood.name;
+      const moodName = Object.keys(MB_MOODS)[i];
+      const mood = MB_MOODS[moodName];
+      const key = 'tab/' + moodName;
       const d = arc(slice);
 
       let pathProps;
@@ -132,18 +133,18 @@ function OuterArcs (props) {
   ;
   return pie(MB_OUTER_BUTTONS.map((m) => (m.factor || 1)))
     .map((slice, i) => {
-      const mood = MB_OUTER_BUTTONS[i];
-      const key = 'tab/' + mood.name;
+      const buttonTab = MB_OUTER_BUTTONS[i];
+      const key = 'tab/' + buttonTab.name;
       const d = arc(slice);
 
       let pathProps;
       if (props.pressedTarget === key) {
-        const c = color(mood.fill).alpha(0.5).hsl().toString();
+        const c = color(buttonTab.fill).alpha(0.5).hsl().toString();
         pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
       } else if (props.currentTarget === key) {
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS, d };
+        pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_ACTIVE_PROPS, d };
       } else {
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
+        pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_INACTIVE_PROPS, d };
       }
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
@@ -161,7 +162,7 @@ function OuterArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{mood.name}</Text>
+            <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
           </ART.Group>
         </ART.Group>
       );
