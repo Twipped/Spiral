@@ -3,12 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import { computed, observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import { withMappedNavigationProps } from 'react-navigation-props-mapper';
-import MBPallet from '../../components/MBPallet';
+import Arcs from '../../components/MBPallet/Arcs';
 import MoodMenu from '../../components/MBPallet/MoodMenu';
 
 import {
   MB_MOODS,
-  MB_MOOD_MAP,
 } from '../../constants';
 
 
@@ -49,7 +48,7 @@ class EntryView extends React.Component {
       tabbedComponent = (
         <MoodMenu
           entryEmotions={this.state.entry.emotions}
-          mood={MB_MOODS[MB_MOOD_MAP[tabName]]}
+          mood={MB_MOODS[tabName]}
           onToggleEmotion={this.onToggleEmotion}
         />
       );
@@ -62,7 +61,7 @@ class EntryView extends React.Component {
     return (
       <View style={styles.container}>
         {tabbedComponent}
-        <MBPallet onTabSwitch={this.onTabSwitch} />
+        <Arcs onTabSwitch={this.onTabSwitch} />
       </View>
     );
   }
