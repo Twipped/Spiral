@@ -67,7 +67,7 @@ class EntryView extends React.Component {
   }
 }
 
-export default (EntryView);
+export default EntryView;
 
 const styles = StyleSheet.create({
   container: {

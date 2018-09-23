@@ -7,11 +7,25 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
+import { observable } from 'mobx';
 
 import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
 
+const isEditingEntry = observable.box(false);
+
+function getActiveRouteName(navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
 
 const TabbedNavigator = createBottomTabNavigator(
   {
@@ -63,8 +77,13 @@ export default function App () {
         ref={(navigatorRef) => {
           navigate.setTopLevelNavigator(navigatorRef);
         }}
+        onNavigationStateChange={(prevState, currentState) => {
+          const currentScreen = getActiveRouteName(currentState);
+
+          isEditingEntry.set(currentScreen == 'CalendarEntry');
+        }}
       />
-      <ThumbButton onPress={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }} />
+      <ThumbButton isActive={isEditingEntry} onPress={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }} />
     </Root>
   );
 }

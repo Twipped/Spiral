@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { View, SafeAreaView, Dimensions, ART } from 'react-native';
+import { SafeAreaView, Dimensions, ART } from 'react-native';
+import { observer } from 'mobx-react/native';
 
 import {
   MB_BUTTON_RADIUS,
@@ -39,6 +40,7 @@ function Rect (props) {
   return <ART.Shape {...rest} d={path} />;
 }
 
+@observer
 class ThumbButton extends React.Component {
 
   constructor () {
@@ -92,7 +94,7 @@ class ThumbButton extends React.Component {
     let BUTTON_PROPS;
     if (this.state.pressed) {
       BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
-    } else if (this.props.isActive) {
+    } else if (this.props.isActive.get()) {
       BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
     } else {
       BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
