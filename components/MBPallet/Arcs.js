@@ -5,8 +5,9 @@ import { View, Dimensions, ART } from 'react-native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import * as d3 from 'd3-shape';
 import color from 'color';
+import sumBy from 'lodash/sumBy';
 
-import pathfinder from '../../lib/pathfinder';
+import pathfinder, { artToSVG } from '../../lib/pathfinder';
 
 import {
   MB_BUTTON_RADIUS,
@@ -170,6 +171,103 @@ function OuterArcs (props) {
   ;
 }
 
+function CornerButton (props) {
+  const buttonTab = {
+    fill: props.fill,
+    name: props.tab,
+  };
+  const key = 'tab/' + buttonTab.name;
+  const isRight = props.side === 'right';
+
+  let pathProps;
+  if (props.pressedTarget === key) {
+    const c = color(buttonTab.fill).alpha(0.5).hsl().toString();
+    pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
+  } else if (props.currentTarget === key) {
+    pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_ACTIVE_PROPS };
+  } else {
+    pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_INACTIVE_PROPS };
+  }
+
+  const MAX_STROKE = Math.max(
+    MB_MOOD_PRESSED_PROPS.strokeWidth,
+    MB_MOOD_ACTIVE_PROPS.strokeWidth,
+    MB_MOOD_INACTIVE_PROPS.strokeWidth
+  );
+  const STROKE_DELTA = MAX_STROKE / 2;
+  const AXIS_DIFF = props.CONTROL_CENTER_Y - props.CONTROL_CENTER_X;
+  const INNER_CORNER_DELTA = MB_ARCH_SPACING + STROKE_DELTA + 40;
+
+  const corners = {
+    left: [
+      {
+        x: -props.CONTROL_CENTER_X + STROKE_DELTA,
+        y: -INNER_CORNER_DELTA - AXIS_DIFF - AXIS_DIFF,
+      },
+      {
+        x:  -INNER_CORNER_DELTA + AXIS_DIFF,
+        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
+      },
+      {
+        x: -props.CONTROL_CENTER_X + STROKE_DELTA,
+        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
+      },
+    ],
+    right: [
+      {
+        x: INNER_CORNER_DELTA - AXIS_DIFF,
+        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
+      },
+      {
+        x: props.CONTROL_CENTER_X - STROKE_DELTA,
+        y: -INNER_CORNER_DELTA - AXIS_DIFF - AXIS_DIFF,
+      },
+      {
+        x: props.CONTROL_CENTER_X - STROKE_DELTA,
+        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
+      },
+    ],
+  }[props.side];
+
+  const d = ART.Path()
+    .move(corners[0].x, corners[0].y)
+    .arcTo(
+      corners[1].x,
+      corners[1].y,
+      -props.CONTROL_CENTER_X + AXIS_DIFF,
+      -props.CONTROL_CENTER_Y + AXIS_DIFF
+    )
+    .lineTo(corners[2].x, corners[2].y)
+    .close()
+  ;
+
+  const [ textX, textY ] = [
+    Math.ceil(sumBy(corners, 'x') / corners.length),
+    Math.ceil(sumBy(corners, 'y') / corners.length),
+  ];
+
+  const textAngle = isRight
+    ? angle(0, 0, props.CONTROL_CENTER_X,  props.CONTROL_CENTER_Y)
+    : angle(0, 0, -props.CONTROL_CENTER_X, -props.CONTROL_CENTER_Y) + 90
+  ;
+
+  props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps, d: artToSVG(d.toJSON()) });
+
+  const transform = ART.Transform()
+    .rotate((textAngle));
+
+  return (
+    <ART.Group key={key}>
+      <ART.Shape {...pathProps} d={d} />
+      <ART.Group x={textX} y={textY} transform={transform}>
+        <Text x={0} y={-25} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
+      </ART.Group>
+    </ART.Group>
+  );
+}
+
+
+
 class MBPallet extends React.Component {
 
   constructor () {
@@ -258,14 +356,6 @@ class MBPallet extends React.Component {
       CONTROL_CENTER_Y,
     } = dimensions;
 
-    const INNER_ARC_THICKNESS = (
-      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING
-    ) * MB_INNER_ARC_THICKNESS_FACTOR;
-
-    const OUTER_ARC_THICKNESS = (
-      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING - INNER_ARC_THICKNESS
-    ) * MB_OUTER_ARC_THICKNESS_FACTOR;
-
     const viewBox = [
       0,
       0,
@@ -280,6 +370,14 @@ class MBPallet extends React.Component {
       ...dimensions,
     };
 
+    props.INNER_ARC_THICKNESS = (
+      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING
+    ) * MB_INNER_ARC_THICKNESS_FACTOR;
+
+    props.OUTER_ARC_THICKNESS = (
+      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING - props.INNER_ARC_THICKNESS
+    ) * MB_OUTER_ARC_THICKNESS_FACTOR;
+
     return (
       <View style={{ ...styles.palletContent, ...style }} {...this.gestureBindings} >
         {children}
@@ -290,8 +388,10 @@ class MBPallet extends React.Component {
           preserveAspectRatio="XMidYMid meet"
         >
           <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
-            <InnerArcs {...props} {...{ INNER_ARC_THICKNESS, OUTER_ARC_THICKNESS }} />
-            <OuterArcs {...props} {...{ INNER_ARC_THICKNESS, OUTER_ARC_THICKNESS }} />
+            <InnerArcs {...props} />
+            <OuterArcs {...props} />
+            <CornerButton tab="Marker" fill="#CCC" side="left"  {...props} />
+            <CornerButton tab="Note"   fill="#CCC" side="right" {...props} />
           </ART.Group>
         </ART.Surface>
       </View>
@@ -312,3 +412,11 @@ const styles = {
   },
 
 };
+
+function angle (cx, cy, ex, ey) {
+  var dy = ey - cy;
+  var dx = ex - cx;
+  var theta = Math.atan2(dy, dx); // range (-PI, PI]
+  theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+  return theta;
+}
