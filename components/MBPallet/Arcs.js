@@ -189,78 +189,40 @@ function CornerButton (props) {
     pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_INACTIVE_PROPS };
   }
 
-  const MAX_STROKE = Math.max(
-    MB_MOOD_PRESSED_PROPS.strokeWidth,
-    MB_MOOD_ACTIVE_PROPS.strokeWidth,
-    MB_MOOD_INACTIVE_PROPS.strokeWidth
-  );
-  const STROKE_DELTA = MAX_STROKE / 2;
-  const AXIS_DIFF = props.CONTROL_CENTER_Y - props.CONTROL_CENTER_X;
-  const INNER_CORNER_DELTA = MB_ARCH_SPACING + STROKE_DELTA + 40;
+  const ARC_THICKNESS = 35;
+  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS
+    + MB_ARCH_SPACING
+    + props.INNER_ARC_THICKNESS
+    + MB_ARCH_SPACING
+    + props.OUTER_ARC_THICKNESS
+    + MB_ARCH_SPACING;
+  const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
+  const START_ANGLE = 0.95 * (isRight ? 1 : -1);
+  const END_ANGLE   = 0.65 * (isRight ? 1 : -1);
 
-  const corners = {
-    left: [
-      {
-        x: -props.CONTROL_CENTER_X + STROKE_DELTA,
-        y: -INNER_CORNER_DELTA - AXIS_DIFF - AXIS_DIFF,
-      },
-      {
-        x:  -INNER_CORNER_DELTA + AXIS_DIFF,
-        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
-      },
-      {
-        x: -props.CONTROL_CENTER_X + STROKE_DELTA,
-        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
-      },
-    ],
-    right: [
-      {
-        x: INNER_CORNER_DELTA - AXIS_DIFF,
-        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
-      },
-      {
-        x: props.CONTROL_CENTER_X - STROKE_DELTA,
-        y: -INNER_CORNER_DELTA - AXIS_DIFF - AXIS_DIFF,
-      },
-      {
-        x: props.CONTROL_CENTER_X - STROKE_DELTA,
-        y: -props.CONTROL_CENTER_Y + STROKE_DELTA,
-      },
-    ],
-  }[props.side];
-
-  const d = ART.Path()
-    .move(corners[0].x, corners[0].y)
-    .arcTo(
-      corners[1].x,
-      corners[1].y,
-      -props.CONTROL_CENTER_X + AXIS_DIFF,
-      -props.CONTROL_CENTER_Y + AXIS_DIFF
-    )
-    .lineTo(corners[2].x, corners[2].y)
-    .close()
+  const arc = d3.arc()
+    .innerRadius(ARC_INNER_RADIUS)
+    .outerRadius(ARC_OUTER_RADIUS)
+    .startAngle(START_ANGLE)
+    .endAngle(END_ANGLE)
+    .cornerRadius(3)
   ;
 
-  const [ textX, textY ] = [
-    Math.ceil(sumBy(corners, 'x') / corners.length),
-    Math.ceil(sumBy(corners, 'y') / corners.length),
-  ];
+  const d = arc();
 
-  const textAngle = isRight
-    ? angle(0, 0, props.CONTROL_CENTER_X,  props.CONTROL_CENTER_Y)
-    : angle(0, 0, -props.CONTROL_CENTER_X, -props.CONTROL_CENTER_Y) + 90
-  ;
+  const textAngle = ((START_ANGLE + END_ANGLE) / 2) * 180 / Math.PI;
+  const [ textX, textY ] = arc.centroid();
 
-  props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps, d: artToSVG(d.toJSON()) });
+  props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps, d });
 
   const transform = ART.Transform()
-    .rotate((textAngle));
+    .rotate(textAngle);
 
   return (
     <ART.Group key={key}>
       <ART.Shape {...pathProps} d={d} />
       <ART.Group x={textX} y={textY} transform={transform}>
-        <Text x={0} y={-25} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
+        <Text x={0} y={-8} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
       </ART.Group>
     </ART.Group>
   );
@@ -379,8 +341,7 @@ class MBPallet extends React.Component {
     ) * MB_OUTER_ARC_THICKNESS_FACTOR;
 
     return (
-      <View style={{ ...styles.palletContent, ...style }} {...this.gestureBindings} >
-        {children}
+      <View style={{ ...styles.palletContent, ...style, height: CONTROL_HEIGHT }} {...this.gestureBindings} >
         <ART.Surface
           width={CONTROL_WIDTH}
           height={CONTROL_HEIGHT}
@@ -404,19 +365,9 @@ export default MBPallet;
 const styles = {
 
   palletContent: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    backgroundColor: '#000',
   },
 
 };
-
-function angle (cx, cy, ex, ey) {
-  var dy = ey - cy;
-  var dx = ex - cx;
-  var theta = Math.atan2(dy, dx); // range (-PI, PI]
-  theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
-  return theta;
-}
