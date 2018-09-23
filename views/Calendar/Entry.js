@@ -67,14 +67,15 @@ class EntryView extends React.Component {
   }
 }
 
-export default withMappedNavigationProps()(EntryView);
+export default (EntryView);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    backgroundColor: '#000',
+    backgroundColor: '#111',
   },
 });

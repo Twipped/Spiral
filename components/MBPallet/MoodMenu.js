@@ -42,6 +42,7 @@ export default MoodMenu;
 
 const styles = {
   main: {
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
   },
@@ -50,7 +51,6 @@ const styles = {
     // flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
     alignItems: 'stretch',
     justifyContent: 'flex-end',
   },
