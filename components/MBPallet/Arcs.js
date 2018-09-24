@@ -1,25 +1,24 @@
 /* eslint new-cap:0 */
 
 import React from 'react';
-import { View, Dimensions, ART, StyleSheet } from 'react-native';
+import { View, Dimensions, ART, StyleSheet, TouchableOpacity } from 'react-native';
 import { observer } from 'mobx-react/native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import color from 'color';
+import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../../Icons';
+import Mediator from '../../lib/mediator';
+
 
 import pathfinder from '../../lib/pathfinder';
 
 import {
   MB_BUTTON_RADIUS,
   MB_MOODS,
-  MB_OUTER_BUTTONS,
   MB_ARCH_SPACING,
   MB_ARC_LENGTH_FACTOR,
-  MB_INNER_ARC_THICKNESS_FACTOR,
   MB_INNER_ARC_PADDING,
-  MB_OUTER_ARC_THICKNESS_FACTOR,
-  MB_OUTER_ARC_PADDING,
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
   MB_MOOD_PRESSED_PROPS,
@@ -42,11 +41,9 @@ function Text (props) {
     fontStyle: style && style.fontStyle || fontStyle || 'normal',
   };
 
-  const color = fill || style.color || style.fill;
+  const textColor = fill || style.color || style.fill;
 
-  console.log(font, rest.children);
-
-  return <ART.Text font={font} fill={color} alignment={alignment} {...rest} />;
+  return <ART.Text font={font} fill={textColor} alignment={alignment} {...rest} />;
 }
 
 function InnerArcs (props) {
@@ -112,129 +109,9 @@ function InnerArcs (props) {
   ;
 }
 
-function OuterArcs (props) {
-  const ARC_THICKNESS = props.OUTER_ARC_THICKNESS;
-  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + MB_ARCH_SPACING + props.INNER_ARC_THICKNESS + MB_ARCH_SPACING;
-  const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
-  const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
-  const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
-  const ARC_TEXT_Y = -8;
-
-  // const path = ART.Path()
-  //   .move(rad, 0)
-  //   .arc(0, rad * 2, rad)
-  //   .arc(0, rad * -2, rad);
-
-  const arc = d3.arc()
-    .innerRadius(ARC_INNER_RADIUS)
-    .outerRadius(ARC_OUTER_RADIUS)
-    .cornerRadius(3)
-  ;
-  const pie = d3.pie()
-    .startAngle(ARC_START_ANGLE)
-    .endAngle(-ARC_START_ANGLE)
-    .padAngle(MB_OUTER_ARC_PADDING)
-    .sort(null)
-  ;
-  return pie(MB_OUTER_BUTTONS.map((m) => (m.factor || 1)))
-    .map((slice, i) => {
-      const buttonTab = MB_OUTER_BUTTONS[i];
-      const key = 'tab/' + buttonTab.name;
-      const d = arc(slice);
-
-      let pathProps;
-      if (props.pressedTarget === key) {
-        const c = color(buttonTab.fill).alpha(0.5).hsl().toString();
-        pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
-      } else if (props.currentTarget === key) {
-        pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_ACTIVE_PROPS, d };
-      } else {
-        pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_INACTIVE_PROPS, d };
-      }
-
-      const angle = (slice.startAngle + slice.endAngle) / 2;
-      const [ textX, textY ] = arc.centroid(slice);
-
-      props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps });
-
-      const transform = ART.Transform()
-        .rotate((angle * 180 / Math.PI));
-
-      // const textPath = d3path()
-      //   .arc(0, 0, (ARC_THICKNESS / 2) + ARC_INNER_RADIUS, slice.startAngle, slice.endAngle);
-
-      return (
-        <ART.Group key={key}>
-          <ART.Shape {...pathProps} />
-          <ART.Group x={textX} y={textY} transform={transform}>
-            <Text x={0} y={-styles.arcText.fontSize / 2} style={styles.arcText} alignment="center">{buttonTab.name}</Text>
-          </ART.Group>
-        </ART.Group>
-      );
-    })
-  ;
-}
-
-function CornerButton (props) {
-  const buttonTab = {
-    fill: props.fill,
-    name: props.tab,
-  };
-  const key = 'tab/' + buttonTab.name;
-  const isRight = props.side === 'right';
-
-  let pathProps;
-  if (props.pressedTarget === key) {
-    const c = color(buttonTab.fill).alpha(0.5).hsl().toString();
-    pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
-  } else if (props.currentTarget === key) {
-    pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_ACTIVE_PROPS };
-  } else {
-    pathProps = { fill: buttonTab.fill, stroke: buttonTab.fill, ...MB_MOOD_INACTIVE_PROPS };
-  }
-
-  const ARC_THICKNESS = 35;
-  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS
-    + MB_ARCH_SPACING
-    + props.INNER_ARC_THICKNESS
-    + MB_ARCH_SPACING
-    + props.OUTER_ARC_THICKNESS
-    + MB_ARCH_SPACING;
-  const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
-  const START_ANGLE = 0.95 * (isRight ? 1 : -1);
-  const END_ANGLE   = 0.65 * (isRight ? 1 : -1);
-
-  const arc = d3.arc()
-    .innerRadius(ARC_INNER_RADIUS)
-    .outerRadius(ARC_OUTER_RADIUS)
-    .startAngle(START_ANGLE)
-    .endAngle(END_ANGLE)
-    .cornerRadius(3)
-  ;
-
-  const d = arc();
-
-  const textAngle = ((START_ANGLE + END_ANGLE) / 2) * 180 / Math.PI;
-  const [ textX, textY ] = arc.centroid();
-
-  props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps, d });
-
-  const transform = ART.Transform()
-    .rotate(textAngle);
-
-  return (
-    <ART.Group key={key}>
-      <ART.Shape {...pathProps} d={d} />
-      <ART.Group x={textX} y={textY} transform={transform}>
-        <Text x={0} y={-8} style={styles.arcText} alignment="center">{buttonTab.name}</Text>
-      </ART.Group>
-    </ART.Group>
-  );
-}
-
 
 @observer
-class MBPallet extends React.Component {
+class Arcs extends React.Component {
 
   constructor () {
     super();
@@ -243,6 +120,16 @@ class MBPallet extends React.Component {
       pressedTarget: null,
       currentTab: null,
     };
+
+    Mediator.on('CenterButtonPress', this.onCenterButton);
+  }
+
+  componentWillUnmount () {
+    Mediator.off('CenterButtonPress', this.onCenterButton);
+  }
+
+  onCenterButton = () => {
+    this.handlePress(null);
   }
 
   lastPressDown = false;
@@ -250,16 +137,20 @@ class MBPallet extends React.Component {
   dimensions () {
     const Window = Dimensions.get('window');
 
-    const CONTROL_WIDTH  = Window.width;
-    const CONTROL_HEIGHT = (CONTROL_WIDTH / 2) + MB_ARCH_SPACING;
+    const CONTROL_HEIGHT = MB_BUTTON_RADIUS * 2.5;
+    const CONTROL_WIDTH  = CONTROL_HEIGHT * 2;
     const CONTROL_CENTER_X = CONTROL_WIDTH / 2;
     const CONTROL_CENTER_Y = CONTROL_HEIGHT;
+    const CONTAINER_HEIGHT = CONTROL_HEIGHT;
+    const CONTAINER_WIDTH = Window.width;
 
     return {
       CONTROL_WIDTH,
       CONTROL_HEIGHT,
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
+      CONTAINER_HEIGHT,
+      CONTAINER_WIDTH,
     };
   }
 
@@ -306,7 +197,7 @@ class MBPallet extends React.Component {
   handlePress (buttonName) {
     if (buttonName === this.state.buttonName) return;
     this.setState({ currentTab: buttonName });
-    if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName.split('/')[1]);
+    if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName && buttonName.split('/')[1]);
   }
 
   render () {
@@ -320,6 +211,8 @@ class MBPallet extends React.Component {
       CONTROL_HEIGHT,
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
+      CONTAINER_HEIGHT,
+      CONTAINER_WIDTH,
     } = dimensions;
 
     const viewBox = [
@@ -336,16 +229,26 @@ class MBPallet extends React.Component {
       ...dimensions,
     };
 
-    props.INNER_ARC_THICKNESS = (
-      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING
-    ) * MB_INNER_ARC_THICKNESS_FACTOR;
+    const MAX_STROKE = Math.max(
+      MB_MOOD_PRESSED_PROPS.strokeWidth,
+      MB_MOOD_ACTIVE_PROPS.strokeWidth,
+      MB_MOOD_INACTIVE_PROPS.strokeWidth
+    );
 
-    props.OUTER_ARC_THICKNESS = (
-      CONTROL_CENTER_X - MB_BUTTON_RADIUS - MB_ARCH_SPACING - props.INNER_ARC_THICKNESS
-    ) * MB_OUTER_ARC_THICKNESS_FACTOR;
+    props.INNER_ARC_THICKNESS = (
+      CONTROL_HEIGHT - MB_BUTTON_RADIUS - MB_ARCH_SPACING - MAX_STROKE
+    );
+
+    const IconButton = ({ tab, Icon }) => (
+      <TouchableOpacity style={styles.iconButton} onPress={() => this.handlePress(tab)}><Icon width={40} color={this.state.currentTab === tab ? 'green' : '#FFF'} /></TouchableOpacity>
+    );
 
     return (
-      <View style={{ ...styles.palletContent, ...style, height: CONTROL_HEIGHT }} {...this.gestureBindings} >
+      <View style={{ ...styles.palletContent, ...style, height: CONTAINER_HEIGHT, width: CONTAINER_WIDTH }} {...this.gestureBindings} >
+        <View style={styles.iconColumn}>
+          <IconButton tab="Activities" Icon={HikingIcon} />
+          <IconButton tab="Marker" Icon={MarkerIcon} />
+        </View>
         <ART.Surface
           width={CONTROL_WIDTH}
           height={CONTROL_HEIGHT}
@@ -353,25 +256,47 @@ class MBPallet extends React.Component {
           preserveAspectRatio="XMidYMid meet"
         >
           <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
-            <InnerArcs {...props} />
-            <OuterArcs {...props} />
-            <CornerButton tab="Marker" fill="#CCC" side="left"  {...props} />
-            <CornerButton tab="Note"   fill="#CCC" side="right" {...props} />
+            <InnerArcs {...props} counts={this.props.entry.moodCounts} />
           </ART.Group>
         </ART.Surface>
+        <View style={styles.iconColumn}>
+          <IconButton tab="Medications" Icon={MedicineIcon} />
+          <IconButton tab="Notes" Icon={NoteIcon} />
+        </View>
       </View>
     );
   }
 };
 
-export default MBPallet;
+export default Arcs;
 
 const styles = {
 
   palletContent: {
-    justifyContent: 'center',
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+  },
+
+  iconColumn: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-around',
+    alignContent: 'center',
+    alignItems: 'stretch',
+  },
+
+  iconButton: {
+    flex: 1,
+    flexDirection: 'row',
+    flexShrink: 0,
+    flexGrow: 1,
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 
   arcText: {

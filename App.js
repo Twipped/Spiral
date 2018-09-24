@@ -3,8 +3,7 @@ import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
 import { StatusBar } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
 import { observable } from 'mobx';
@@ -12,10 +11,11 @@ import { observable } from 'mobx';
 import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
+import Mediator from './lib/mediator';
 
 const isEditingEntry = observable.box(false);
 
-function getActiveRouteName(navigationState) {
+function getActiveRouteName (navigationState) {
   if (!navigationState) {
     return null;
   }
@@ -33,7 +33,7 @@ const TabbedNavigator = createBottomTabNavigator(
       screen: CalendarView,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
-          <FontAwesomeIcons
+          <FontAwesome
             name="calendar"
             color={tintColor}
             size={24}
@@ -80,10 +80,14 @@ export default function App () {
         onNavigationStateChange={(prevState, currentState) => {
           const currentScreen = getActiveRouteName(currentState);
 
-          isEditingEntry.set(currentScreen == 'CalendarEntry');
+          isEditingEntry.set(currentScreen === 'CalendarEntry');
         }}
       />
-      <ThumbButton isActive={isEditingEntry} onPress={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }} />
+      <ThumbButton
+        isActive={isEditingEntry}
+        onPressInactive={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }}
+        onPressActive={() => { Mediator.emit('CenterButtonPress' ); }}
+      />
     </Root>
   );
 }

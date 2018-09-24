@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 // import { computed, observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import Arcs from '../../components/MBPallet/Arcs';
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     justifyContent: 'flex-end',
     backgroundColor: '#111',

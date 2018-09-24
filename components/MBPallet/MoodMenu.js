@@ -93,9 +93,9 @@ const styles = {
   },
 
   groupHeader: {
-    ...StyleSheet.flatten(material.caption),
+    ...StyleSheet.flatten(material.subheading),
     color: '#FFF',
-    height: 16,
+    height: 24,
     marginTop: 4,
     marginLeft: 10,
   },
@@ -120,7 +120,6 @@ function buildStyles (fillColor, textColor, flags) {
 
   const text = {
     ...StyleSheet.flatten(material.button),
-    // fontWeight: 'bold',
     color: textColor || '#000',
   };
 
@@ -143,7 +142,6 @@ function buildStyles (fillColor, textColor, flags) {
       paddingVertical: 0,
       paddingLeft: 2,
       paddingRight: 2,
-      fontSize: 12,
     });
   }
 

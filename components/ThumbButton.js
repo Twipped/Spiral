@@ -2,6 +2,7 @@
 import React from 'react';
 import { SafeAreaView, Dimensions, ART } from 'react-native';
 import { observer } from 'mobx-react/native';
+import { BrainIcon } from '../Icons';
 
 import {
   MB_BUTTON_RADIUS,
@@ -86,15 +87,18 @@ class ThumbButton extends React.Component {
       this.setState({ pressed: false });
       if (x < 0 || x > CONTROL_WIDTH || y < 0 || y > CONTROL_HEIGHT) return;
       if (this.props.onPress) this.props.onPress();
+      if (this.props.isActive.get() && this.props.onPressActive) this.props.onPressActive();
+      if (!this.props.isActive.get() && this.props.onPressInactive) this.props.onPressInactive();
     },
 
   }
 
   render () {
+    const isActive = this.props.isActive.get();
     let BUTTON_PROPS;
     if (this.state.pressed) {
       BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
-    } else if (this.props.isActive.get()) {
+    } else if (isActive) {
       BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
     } else {
       BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
@@ -131,10 +135,11 @@ class ThumbButton extends React.Component {
         >
           <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
             <Circle cx={0} cy={0} r={MB_BUTTON_RADIUS} {...BUTTON_PROPS} />
-            <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />
-            <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />
+            {!isActive && <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />}
+            {!isActive && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
           </ART.Group>
         </ART.Surface>
+        {isActive && <BrainIcon width={60} color={BUTTON_PROPS.stroke} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />}
       </SafeAreaView>
     );
   }

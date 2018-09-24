@@ -49,14 +49,14 @@ export const MB_MOODS = {
       'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
     ] },
     { caption: 'Chest', symptoms: [
-      'Breast Swelling', 'Breast Tenderness', 'Breast Pain',
+      'Breast Swelling', 'Tenderness', 'Breast Pain',
     ] },
     { caption: 'Abdomen and Digestion', symptoms: [
       'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
     ] },
-    { caption: 'Genitals', symptoms: [
-      'Genital Itching', 'Genital Redness', 'Genital Discharge', 'Genital Sensitivity','Painful Urination', 'Frequent Urination',
-    ] },
+    // { caption: 'Genitals', symptoms: [
+    //   'Genital Itching', 'Genital Redness', 'Genital Discharge', 'Genital Sensitivity', 'Painful Urination', 'Frequent Urination',
+    // ] },
   ] },
   Joy: { name: 'Joy', fill: '#5EBD3E', color: '#000', emotions: [
     'Happy',
@@ -67,7 +67,7 @@ export const MB_MOODS = {
     'Frisky', 'Cheeky', 'Aroused', 'Playful',
     'Excited', 'Energetic', 'Curious', 'Inquisitive',
   ] },
-  Sadness: { name: 'Sadness', fill: '#009CDF', color: '#000', emotions: [
+  Sad: { name: 'Sad', fill: '#009CDF', color: '#000', emotions: [
     'Sad',
     'Dismayed', 'Disappointed', 'Disillusioned', 'Depressed',
     'Embarrassed', 'Rejected', 'Dismissed', 'Ignored',
