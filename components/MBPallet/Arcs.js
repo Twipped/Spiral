@@ -1,13 +1,14 @@
 /* eslint new-cap:0 */
 
 import React from 'react';
-import { View, Dimensions, ART } from 'react-native';
+import { View, Dimensions, ART, StyleSheet } from 'react-native';
+import { observer } from 'mobx-react/native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import color from 'color';
-import sumBy from 'lodash/sumBy';
 
-import pathfinder, { artToSVG } from '../../lib/pathfinder';
+import pathfinder from '../../lib/pathfinder';
 
 import {
   MB_BUTTON_RADIUS,
@@ -22,11 +23,10 @@ import {
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
   MB_MOOD_PRESSED_PROPS,
-  MB_MOOD_TEXT_PROPS,
 } from '../../constants';
 
 function Text (props) {
-  const { fontSize, fontWeight, fontFamily, fontStyle, textAnchor, ...rest } = props;
+  const { style, fontSize, fontWeight, fontFamily, fontStyle, textAnchor, fill, ...rest } = props;
 
   const alignment = [
     'end': 'right',
@@ -35,13 +35,18 @@ function Text (props) {
   ][textAnchor || 'start'];
 
   const font = {
-    fontFamily: fontFamily || 'Helvetica, Neue Helvetica, Arial',
-    fontSize,
-    fontWeight,
-    fontStyle,
+    ...style,
+    fontFamily: style && style.fontFamily || fontFamily || 'System',
+    fontSize: style && style.fontSize || fontSize || 14,
+    fontWeight: style && style.fontWeight || fontWeight || 'normal',
+    fontStyle: style && style.fontStyle || fontStyle || 'normal',
   };
 
-  return <ART.Text font={font} alignment={alignment} {...rest} />;
+  const color = fill || style.color || style.fill;
+
+  console.log(font, rest.children);
+
+  return <ART.Text font={font} fill={color} alignment={alignment} {...rest} />;
 }
 
 function InnerArcs (props) {
@@ -51,6 +56,8 @@ function InnerArcs (props) {
   const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
   const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
   const ARC_TEXT_Y = (-ARC_THICKNESS / 2) + 2;
+
+  const counts = props.counts;
 
   const arc = d3.arc()
     .innerRadius(ARC_INNER_RADIUS)
@@ -63,12 +70,14 @@ function InnerArcs (props) {
     .padAngle(MB_INNER_ARC_PADDING)
     .sort(null)
   ;
+
   return pie(Object.values(MB_MOODS).map((m) => (m.factor || 1)))
     .map((slice, i) => {
       const moodName = Object.keys(MB_MOODS)[i];
       const mood = MB_MOODS[moodName];
       const key = 'tab/' + moodName;
       const d = arc(slice);
+      const count = counts[moodName];
 
       let pathProps;
       if (props.pressedTarget === key) {
@@ -80,13 +89,7 @@ function InnerArcs (props) {
         pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
       }
 
-      const textProps = {
-        ...MB_MOOD_TEXT_PROPS,
-        x: 0,
-        y: ARC_TEXT_Y,
-      };
-
-      if (pathProps.textFill) textProps.fill = pathProps.textFill;
+      const countColor = color(mood.fill).darken(0.1).hsl().toString();
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arc.centroid(slice);
@@ -100,7 +103,8 @@ function InnerArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <Text {...textProps}>{mood.name}</Text>
+            <Text x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText}>{mood.name}</Text>
+            <Text x={0} y={-styles.arcCount.fontSize / 2} alignment="center" fill={countColor} style={styles.arcCount}>{count && String(count)}</Text>
           </ART.Group>
         </ART.Group>
       );
@@ -163,7 +167,7 @@ function OuterArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <Text x={0} y={ARC_TEXT_Y} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
+            <Text x={0} y={-styles.arcText.fontSize / 2} style={styles.arcText} alignment="center">{buttonTab.name}</Text>
           </ART.Group>
         </ART.Group>
       );
@@ -222,14 +226,14 @@ function CornerButton (props) {
     <ART.Group key={key}>
       <ART.Shape {...pathProps} d={d} />
       <ART.Group x={textX} y={textY} transform={transform}>
-        <Text x={0} y={-8} {...MB_MOOD_TEXT_PROPS}>{buttonTab.name}</Text>
+        <Text x={0} y={-8} style={styles.arcText} alignment="center">{buttonTab.name}</Text>
       </ART.Group>
     </ART.Group>
   );
 }
 
 
-
+@observer
 class MBPallet extends React.Component {
 
   constructor () {
@@ -309,7 +313,7 @@ class MBPallet extends React.Component {
     this.currentPaths = [];
     const registerShape = (shape) => { this.currentPaths.push(shape); };
 
-    const { style, children } = this.props;
+    const { style } = this.props;
     const dimensions = this.dimensions();
     const {
       CONTROL_WIDTH,
@@ -368,6 +372,15 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'flex-end',
+  },
+
+  arcText: {
+    ...StyleSheet.flatten(material.body2),
+    fill: '#111',
+  },
+
+  arcCount: {
+    ...StyleSheet.flatten(material.display2),
   },
 
 };

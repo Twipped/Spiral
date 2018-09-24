@@ -10,7 +10,7 @@ export const MB_BUTTON_PRESSED_PROPS = { fill: BRAND_COLOR_TINT, stroke: '#FFF',
 export const MB_BUTTON_INACTIVE_PROPS = { fill: '#D16FFF', stroke: '#FFF', strokeWidth: 3, color: '#990099' };
 export const MB_BUTTON_ACTIVE_PROPS = { fill: '#D16FFF', stroke: '#000', strokeWidth: 3, color: '#990099' };
 export const MB_ARC_LENGTH_FACTOR = 0.5;
-export const MB_INNER_ARC_THICKNESS_FACTOR = 0.6;
+export const MB_INNER_ARC_THICKNESS_FACTOR = 0.5;
 export const MB_INNER_ARC_PADDING = 0.04;
 export const MB_MOOD_INACTIVE_PROPS = { stroke: '#333', strokeWidth: 1 };
 export const MB_MOOD_PRESSED_PROPS  = { stroke: '#333', strokeWidth: 1 };
@@ -22,7 +22,7 @@ export const MB_MOOD_TEXT_PROPS = {
   alignment: 'center',
 };
 export const MB_MOODS = {
-  Anger: { name: 'Anger', fill: '#E23838', emotions: [
+  Anger: { name: 'Anger', fill: '#e02929', color: '#FFF', emotions: [
     'Angry',
     'Disapproving', 'Detesting', 'Judgmental', 'Critical',
     'Disrespected', 'Ridiculed', 'Embarrassed', 'Persecuted',
@@ -32,10 +32,7 @@ export const MB_MOODS = {
     'Aggressive', 'Hostile', 'Bitey', 'Provoked',
     'Jealousy', 'Envy', 'Spite', 'Rage',
   ] },
-  // { name: 'Orange', fill: '#F78200', emotions: [
-
-  // ] },
-  Anxiety: { name: 'Anxiety', fill: '#FFB900', emotions: [
+  Anxiety: { name: 'Anxiety', fill: '#F78200', color: '#FFF', emotions: [
     'Anxious',
     'Stressed', 'Overwhelmed', 'Pressured', 'Rushed',
     'Tired', 'Unfocused', 'Distracted', 'Disorganized',
@@ -44,7 +41,24 @@ export const MB_MOODS = {
     'Fearful', 'Emotional', 'Startled', 'Confused',
     'Betrayed', 'Excluded', 'Distant', 'Numb',
   ] },
-  Joy: { name: 'Joy', fill: '#5EBD3E', emotions: [
+  Body: { name: 'Body', fill: '#FFB900', color: '#000', groups: [
+    { caption: 'General', symptoms: [
+      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
+    ] },
+    { caption: 'Head and Neck', symptoms: [
+      'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
+    ] },
+    { caption: 'Chest', symptoms: [
+      'Breast Swelling', 'Breast Tenderness', 'Breast Pain',
+    ] },
+    { caption: 'Abdomen and Digestion', symptoms: [
+      'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
+    ] },
+    { caption: 'Genitals', symptoms: [
+      'Genital Itching', 'Genital Redness', 'Genital Discharge', 'Genital Sensitivity','Painful Urination', 'Frequent Urination',
+    ] },
+  ] },
+  Joy: { name: 'Joy', fill: '#5EBD3E', color: '#000', emotions: [
     'Happy',
     'Calm', 'Content', 'Peaceful', 'Zen',
     'Confident', 'Proud', 'Powerful', 'Motivated',
@@ -53,7 +67,7 @@ export const MB_MOODS = {
     'Frisky', 'Cheeky', 'Aroused', 'Playful',
     'Excited', 'Energetic', 'Curious', 'Inquisitive',
   ] },
-  Sadness: { name: 'Sadness', fill: '#009CDF', emotions: [
+  Sadness: { name: 'Sadness', fill: '#009CDF', color: '#000', emotions: [
     'Sad',
     'Dismayed', 'Disappointed', 'Disillusioned', 'Depressed',
     'Embarrassed', 'Rejected', 'Dismissed', 'Ignored',
@@ -64,12 +78,12 @@ export const MB_MOODS = {
   ] },
 };
 
-export const MB_OUTER_ARC_THICKNESS_FACTOR = 0.9;
+export const MB_OUTER_ARC_THICKNESS_FACTOR = 0.6;
 export const MB_OUTER_ARC_PADDING = 0.03;
 export const MB_OUTER_BUTTONS = [
   // { name: 'Marker',       fill: '#CCC', factor: 0.7 },
   { name: 'Medications',  fill: '#CCC' },
-  { name: 'Symptoms',     fill: '#CCC' },
+  // { name: 'Symptoms',     fill: '#CCC' },
   { name: 'Mental State', fill: '#CCC' },
   { name: 'Activities',   fill: '#CCC' },
   // { name: 'Note',         fill: '#CCC', factor: 0.7 },

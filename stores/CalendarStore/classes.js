@@ -10,7 +10,7 @@ import {
   update,
 } from 'serializr';
 import ObservableSet, { set } from '../../lib/observable-set';
-import { some } from 'lodash';
+import { some, groupBy, mapValues } from 'lodash';
 
 export class Hour {
   @serializable(primitive()) key = '';
@@ -42,6 +42,14 @@ export class Hour {
   @computed
   get hasData () {
     return !!this.emotions.size || !!this.conditions.size;
+  }
+
+  @computed
+  get moodCounts () {
+    const moodGroups = groupBy(Array.from(this.emotions), (e) => e.split('/')[0]);
+    const moodCounts = mapValues(moodGroups, (m) => m.length);
+    moodCounts.Conditions = this.conditions.size;
+    return moodCounts;
   }
 
   @action

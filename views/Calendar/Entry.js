@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { computed, observable } from 'mobx';
+import { StyleSheet, View, ScrollView } from 'react-native';
+// import { computed, observable } from 'mobx';
 import { observer } from 'mobx-react/native';
-import { withMappedNavigationProps } from 'react-navigation-props-mapper';
 import Arcs from '../../components/MBPallet/Arcs';
-import MoodMenu from '../../components/MBPallet/MoodMenu';
+import { MoodMenu, BodyMenu } from '../../components/MBPallet/MoodMenu';
+import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
 import {
   MB_MOODS,
@@ -53,6 +53,15 @@ class EntryView extends React.Component {
         />
       );
       break;
+    case 'Body':
+      tabbedComponent = (
+        <BodyMenu
+          entryEmotions={this.state.entry.emotions}
+          mood={MB_MOODS[tabName]}
+          onToggleEmotion={this.onToggleEmotion}
+        />
+      );
+      break;
 
     default:
       tabbedComponent = null;
@@ -60,8 +69,8 @@ class EntryView extends React.Component {
 
     return (
       <View style={styles.container}>
-        {tabbedComponent}
-        <Arcs onTabSwitch={this.onTabSwitch} />
+        <InvertibleScrollView inverted>{tabbedComponent}</InvertibleScrollView>
+        <Arcs onTabSwitch={this.onTabSwitch} entry={this.state.entry} />
       </View>
     );
   }
