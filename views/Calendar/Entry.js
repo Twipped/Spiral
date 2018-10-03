@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 // import { computed, observable } from 'mobx';
 import { observer } from 'mobx-react/native';
 import Arcs from '../../components/MBPallet/Arcs';
-import { MoodMenu, BodyMenu } from '../../components/MBPallet/MoodMenu';
+import { MoodMenu, BodyMenu, MindMenu } from '../../components/MBPallet/MoodMenu';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 
 import {
@@ -36,6 +36,10 @@ class EntryView extends React.Component {
     this.state.entry.setEmotion(emotionKey, selected);
   };
 
+  onSetCondition = (conditionKey, value) => {
+    this.state.entry.setCondition(conditionKey, value);
+  };
+
   render () {
     const tabName = this.state.currentTab;
     let tabbedComponent = null;
@@ -44,7 +48,7 @@ class EntryView extends React.Component {
     case 'Anger':
     case 'Anxiety':
     case 'Joy':
-    case 'Sadness':
+    case 'Sad':
       tabbedComponent = (
         <MoodMenu
           entryEmotions={this.state.entry.emotions}
@@ -64,12 +68,17 @@ class EntryView extends React.Component {
       break;
 
     default:
-      tabbedComponent = null;
+      tabbedComponent = (
+        <MindMenu
+          entryConditions={this.state.entry.conditions}
+          onChange={this.onSetCondition}
+        />
+      );
     }
 
     return (
       <View style={styles.container}>
-        <InvertibleScrollView inverted>{tabbedComponent}</InvertibleScrollView>
+        <InvertibleScrollView inverted style={{ flex: 1 }}>{tabbedComponent}</InvertibleScrollView>
         <Arcs onTabSwitch={this.onTabSwitch} entry={this.state.entry} />
       </View>
     );
@@ -83,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'stretch',
     justifyContent: 'flex-end',
     backgroundColor: '#111',
   },

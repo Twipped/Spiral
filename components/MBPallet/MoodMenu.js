@@ -1,15 +1,22 @@
 
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Text } from 'native-base';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { Button, Card, CardItem } from 'native-base';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
-import { map } from 'lodash';
-import color from 'color';
+import Collapsible from 'react-native-collapsible';
+import { map, chunk } from 'lodash';
 
-const MoodButton = ({ fill, textColor, caption, selected, pill, prime, onPress, ...props }) => {
-  const [ buttonStyle, textStyle ] = buildStyles(fill, textColor, { pill, prime, selected });
-  return <Button onPress={onPress} style={buttonStyle} {...props} ><Text style={textStyle}>{caption}</Text></Button>;
+import {
+  MB_CONDITIONS,
+  BRAND_COLOR_HIGHLIGHT,
+  BRAND_COLOR_TINT,
+} from '../../constants';
+
+const MoodButton = ({ fill, textColor, caption, onPress, ...props }) => {
+  const [ buttonStyle, textStyle ] = buildStyles(fill, textColor, { ...props });
+  console.log(buttonStyle)
+  return <TouchableOpacity onPress={onPress} style={buttonStyle} {...props} ><Text style={textStyle}>{caption}</Text></TouchableOpacity>;
 };
 
 export const MoodMenu = observer(({ mood, entryEmotions, ...props }) => {
@@ -27,7 +34,7 @@ export const MoodMenu = observer(({ mood, entryEmotions, ...props }) => {
       selected,
       onPress,
       prime: i === 0,
-      pill: i > 0 ? 22 : false,
+      pill: i > 0 ? 30 : false,
     };
 
     return (
@@ -39,8 +46,8 @@ export const MoodMenu = observer(({ mood, entryEmotions, ...props }) => {
 
   return (
     <View style={{ ...styles.main, ...props.style }}>
-      <View style={styles.list}>{buttons}</View>
-      {primeButton}
+      <View style={styles.buttonRow}>{buttons}</View>
+      <View style={styles.buttonRow}>{primeButton}</View>
     </View>
   );
 });
@@ -52,7 +59,7 @@ export const BodyMenu = observer(({ mood, entryEmotions, onToggleEmotion, ...pro
       const selected = entryEmotions.has(key);
       const onPress = () => onToggleEmotion(key, !selected);
 
-      var buttonProperties = {
+      const buttonProperties = {
         key,
         caption: symptom,
         fill: mood.fill,
@@ -70,12 +77,79 @@ export const BodyMenu = observer(({ mood, entryEmotions, onToggleEmotion, ...pro
     return (
       <View key={`symptom/${caption}`}>
         <Text style={styles.groupHeader}>{caption}</Text>
-        <View style={styles.list}>{buttons}</View>
+        <View style={styles.buttonRow}>{buttons}</View>
       </View>
     );
   });
   return <View style={{ ...styles.main, ...props.style }}>{groups}</View>;
 });
+
+
+export class MindMenu extends React.Component {
+  state = {
+    activeCondition: null,
+    previousCondition: null,
+  };
+
+  render () {
+    const chunks = chunk(MB_CONDITIONS, 2);
+    const rows = [];
+
+    let rowi = 0;
+    chunks.forEach((pair) => {
+      const siblings = pair.map(({ name }) => name);
+      rows.push(
+        <View key={`mindmenurow-${rowi++}`} style={styles.tabsHeader}>
+          {pair.map((condition) => {
+            const key = `condition/${condition.name}/button`;
+            const collapsed = this.state.activeCondition !== condition.name;
+            const buttonProperties = {
+              key,
+              caption: condition.caption,
+              fill: BRAND_COLOR_HIGHLIGHT,
+              textColor: 'black',
+              onPress: () => this.setState({
+                activeCondition: collapsed ? condition.name : null,
+                previousCondition: this.state.activeCondition,
+              }),
+              tab: 1,
+              collapsed,
+            };
+
+            return <MoodButton {...buttonProperties} />;
+          })}
+        </View>
+      );
+
+      rows.push(
+        <View key={`mindmenurow-${rowi++}`} style={styles.tabsContent}>
+          {pair.map((condition) => (
+            <Collapsible
+              key={`condition/${condition.name}/control`}
+              collapsed={this.state.activeCondition !== condition.name}
+              duration={
+                (
+                    siblings.includes(this.state.activeCondition)
+                    && siblings.includes(this.state.previousCondition)
+                ) ? 10 : 300
+              }
+            >
+              <Card>
+                <CardItem>
+                  <Text>{condition.type}</Text>
+                </CardItem>
+              </Card>
+            </Collapsible>
+          ))}
+        </View>
+      );
+    });
+
+    return (
+      <View style={{ ...styles.main, ...this.props.style }}>{rows}</View>
+    );
+  }
+}
 
 const styles = {
   main: {
@@ -85,12 +159,42 @@ const styles = {
     marginBottom: 5,
   },
 
-  list: {
+  buttonRow: {
     // flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'stretch',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+  },
+
+  tabsHeader: {
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    alignContent: 'space-between',
+    justifyContent: 'space-evenly',
+    paddingLeft: 0,
+    paddingRight: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: 4,
+    marginBottom: 0,
+  },
+
+  tabsContent: {
+    // flex: 1,
+    flexDirection: 'column',
+    paddingLeft: 4,
+    paddingRight: 4,
+    paddingTop: 0,
+    paddingBottom: 0,
+    marginLeft: 4,
+    marginRight: 4,
+    marginTop: 0,
+    marginBottom: 4,
+    backgroundColor: BRAND_COLOR_HIGHLIGHT,
   },
 
   groupHeader: {
@@ -109,6 +213,7 @@ function buildStyles (fillColor, textColor, flags) {
     borderRadius: 0,
     borderWidth: 2,
     justifyContent: 'center',
+    alignItems: 'center',
     alignSelf: 'stretch',
     paddingTop: 0,
     paddingBottom: 0,
@@ -139,14 +244,16 @@ function buildStyles (fillColor, textColor, flags) {
       marginRight: 0,
       marginTop: 0,
       marginBottom: 0,
-      paddingVertical: 0,
-      paddingLeft: 2,
-      paddingRight: 2,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
     });
   }
 
   if (flags.prime) {
     Object.assign(button, {
+      flex: 1,
       marginTop: 3,
       marginLeft: 4,
       marginRight: 4,
@@ -155,6 +262,31 @@ function buildStyles (fillColor, textColor, flags) {
     Object.assign(text, {
       fontSize: 14,
     });
+  }
+
+  if (flags.tab) {
+    Object.assign(button, {
+      height: 44,
+      width: 50 + '%',
+      flexGrow: 1,
+      flexShrink: 1,
+      marginTop: 0,
+      marginBottom: 0,
+      marginLeft: 4,
+      marginRight: 4,
+      borderBottomWidth: 8,
+    });
+
+    Object.assign(text, {
+      fontSize: 14,
+    });
+
+    if (flags.collapsed) {
+      Object.assign(button, {
+        height: 36,
+        borderBottomWidth: 0,
+      });
+    }
   }
 
   if (flags.selected) {

@@ -12,7 +12,6 @@ import {
   MB_BUTTON_INACTIVE_PROPS,
 } from '../constants';
 
-
 function Circle (props) {
   const { radius, r, ...rest } = props;
   const rad = r || radius || 0;
@@ -139,7 +138,7 @@ class ThumbButton extends React.Component {
             {!isActive && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
           </ART.Group>
         </ART.Surface>
-        {isActive && <BrainIcon width={60} color={BUTTON_PROPS.stroke} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />}
+        {isActive && <BrainIcon width={MB_BUTTON_RADIUS * 1.5} color={BUTTON_PROPS.stroke} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: MB_BUTTON_RADIUS * 2 }} />}
       </SafeAreaView>
     );
   }

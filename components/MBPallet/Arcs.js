@@ -16,12 +16,12 @@ import pathfinder from '../../lib/pathfinder';
 import {
   MB_BUTTON_RADIUS,
   MB_MOODS,
-  MB_ARCH_SPACING,
   MB_ARC_LENGTH_FACTOR,
   MB_INNER_ARC_PADDING,
   MB_MOOD_INACTIVE_PROPS,
   MB_MOOD_ACTIVE_PROPS,
   MB_MOOD_PRESSED_PROPS,
+  MB_ARC_SIDEBUTTON_WIDTH,
 } from '../../constants';
 
 function Text (props) {
@@ -48,7 +48,7 @@ function Text (props) {
 
 function InnerArcs (props) {
   const ARC_THICKNESS = props.INNER_ARC_THICKNESS;
-  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS + MB_ARCH_SPACING;
+  const ARC_INNER_RADIUS = MB_BUTTON_RADIUS;
   const ARC_OUTER_RADIUS = ARC_INNER_RADIUS + ARC_THICKNESS;
   const ARC_LENGTH = 2 * MB_ARC_LENGTH_FACTOR;
   const ARC_START_ANGLE = ((((2 - ARC_LENGTH) / 2) - 1) * Math.PI);
@@ -137,7 +137,10 @@ class Arcs extends React.Component {
   dimensions () {
     const Window = Dimensions.get('window');
 
-    const CONTROL_HEIGHT = MB_BUTTON_RADIUS * 2.5;
+    const CONTROL_HEIGHT = Math.max(
+      MB_BUTTON_RADIUS * 2.5,
+      (Window.width / 2) - MB_BUTTON_RADIUS - MB_ARC_SIDEBUTTON_WIDTH
+    );
     const CONTROL_WIDTH  = CONTROL_HEIGHT * 2;
     const CONTROL_CENTER_X = CONTROL_WIDTH / 2;
     const CONTROL_CENTER_Y = CONTROL_HEIGHT;
@@ -236,11 +239,13 @@ class Arcs extends React.Component {
     );
 
     props.INNER_ARC_THICKNESS = (
-      CONTROL_HEIGHT - MB_BUTTON_RADIUS - MB_ARCH_SPACING - MAX_STROKE
+      CONTROL_HEIGHT - MB_BUTTON_RADIUS - MAX_STROKE
     );
 
     const IconButton = ({ tab, Icon }) => (
-      <TouchableOpacity style={styles.iconButton} onPress={() => this.handlePress(tab)}><Icon width={40} color={this.state.currentTab === tab ? 'green' : '#FFF'} /></TouchableOpacity>
+      <TouchableOpacity style={styles.iconButton} onPress={() => this.handlePress(tab)}>
+        <Icon width={MB_ARC_SIDEBUTTON_WIDTH} color={this.state.currentTab === tab ? 'green' : '#FFF'} />
+      </TouchableOpacity>
     );
 
     return (

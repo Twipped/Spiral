@@ -12,7 +12,7 @@ const SettingsView = createStackNavigator(
   {
     CalendarHome: {
       screen: (props) => (<AgendaView {...props} calendarStore={CalendarStore} />),
-      navigationOptions: () => ({ title: 'Spiral' }),
+      navigationOptions: () => ({ title: 'Spiral', headerBackTitle: 'Done', }),
     },
     CalendarEntry: {
       screen: (props) => (<EntryView {...props} calendarStore={CalendarStore} />),
@@ -23,12 +23,22 @@ const SettingsView = createStackNavigator(
         if (relativeDays === 0) return { title: d.format('[Today] [at] h:mma') };
         else if (relativeDays === 1) return { title: d.format('[Yesterday] [at] h:mma') };
         else if (relativeDays < 7) return { title: d.format('[Last] dddd [at] h:mma') };
-        return { title: d.format('MMM Do [at] H:mma') };
+        return {
+          title: d.format('MMM Do [at] H:mma'),
+          headerRight: (
+            <Button
+              onPress={navigation.goBack()}
+              title="Done"
+              color="#fff"
+            />
+          ),
+        };
       },
     },
   },
   {
     initialRouteName: 'CalendarHome',
+    mode: 'modal',
     /* The header config from HomeScreen is now here */
     navigationOptions: {
       barStyle: 'dark-content',

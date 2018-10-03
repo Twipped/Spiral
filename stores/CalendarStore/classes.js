@@ -61,8 +61,8 @@ export class Hour {
   }
 
   @action
-  setSymptom (symptomKey, value) {
-    this.symptoms.set(symptomKey, value);
+  setCondition (conditionKey, value) {
+    this.conditions.set(conditionKey, value);
   }
 }
 
