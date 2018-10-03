@@ -92,7 +92,7 @@ export class MindMenu extends React.Component {
   };
 
   render () {
-    const chunks = chunk(MB_CONDITIONS, 2);
+    const chunks = chunk(Object.values(MB_CONDITIONS), 2);
     const rows = [];
 
     let rowi = 0;
@@ -129,8 +129,8 @@ export class MindMenu extends React.Component {
               collapsed={this.state.activeCondition !== condition.name}
               duration={
                 (
-                    siblings.includes(this.state.activeCondition)
-                    && siblings.includes(this.state.previousCondition)
+                  siblings.includes(this.state.activeCondition)
+                  && siblings.includes(this.state.previousCondition)
                 ) ? 10 : 300
               }
             >

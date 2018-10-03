@@ -76,16 +76,15 @@ export const MB_MOODS = {
   ] },
 };
 
-export const MB_CONDITIONS = [
-  { name: 'dysphoria', caption: 'General Dysphoria', type: 'plusminus5', tags: [ 'Transgender' ] },
-  { name: 'dysphoria:body', caption: 'Body Dysphoria', type: 'plusminus5', tags: [ 'Transgender' ] },
-  // { name: 'dysphoria:social', caption: 'Social Dysphoria', type: 'plusminus5', tags: [ 'Transgender' ] },
-  { name: 'appetite', caption: 'Appetite', type: 'plusminus5' },
-  { name: 'body-confidence', caption: 'Body Confidence', type: 'plusminus5' },
-  { name: 'sex-drive', caption: 'Sex Drive', type: 'stoplight', tags: [ 'Allosexual' ], description: 'How strong is your desire to initiate sex.' },
-  { name: 'sex-crave', caption: 'Sexual Thirst', type: 'plus3', tags: [ 'Allosexual' ], description: 'How strongly do you crave sexual attention.' },
-  { name: 'emotional-stability', caption: 'Emotional Stability', type: 'plusminus5', description: 'Are you experiencing dramatic mood swings?' },
-  { name: 'sleep',
+export const MB_CONDITIONS = {
+  'dysphoria':           { name: 'dysphoria', caption: 'General Dysphoria', type: 'plusminus5', tags: [ 'Transgender' ] },
+  'dysphoria:body':      { name: 'dysphoria:body', caption: 'Body Dysphoria', type: 'plusminus5', tags: [ 'Transgender' ] },
+  'appetite':            { name: 'appetite', caption: 'Appetite', type: 'plusminus5' },
+  'body-confidence':     { name: 'body-confidence', caption: 'Body Confidence', type: 'plusminus5' },
+  'sex-drive':           { name: 'sex-drive', caption: 'Sex Drive', type: 'stoplight', tags: [ 'Allosexual' ], description: 'How strong is your desire to initiate sex.' },
+  'sex-crave':           { name: 'sex-crave', caption: 'Sexual Thirst', type: 'plus3', tags: [ 'Allosexual' ], description: 'How strongly do you crave sexual attention.' },
+  'emotional-stability': { name: 'emotional-stability', caption: 'Emotional Stability', type: 'plusminus5', description: 'Are you experiencing dramatic mood swings?' },
+  'sleep':               { name: 'sleep',
     caption: 'Sleep Quality',
     type: 'chooseone',
     values: [
@@ -96,8 +95,7 @@ export const MB_CONDITIONS = [
       [ 2, 'Well Rested' ],
     ],
   },
-  { name: 'weight', caption: 'Weight', type: 'decimal' },
-  { name: 'temperature', caption: 'Basal Body Temperature', type: 'decimal' },
+  'weight':              { name: 'weight', caption: 'Weight', type: 'decimal' },
+  'temperature':         { name: 'temperature', caption: 'Basal Body Temperature', type: 'decimal' },
 
-
-];
+};

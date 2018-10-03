@@ -45,6 +45,13 @@ export class Hour {
   }
 
   @computed
+  get hash () {
+    const emotions = this.emotions.size && Array.from(this.emotions).join(',') || '';
+    const conditions = this.conditions.size && Array.from(this.conditions).flat(1).join(',');
+    return emotions + ';' + conditions;
+  }
+
+  @computed
   get moodCounts () {
     const moodGroups = groupBy(Array.from(this.emotions), (e) => e.split('/')[0]);
     const moodCounts = mapValues(moodGroups, (m) => m.length);
