@@ -82,6 +82,7 @@ const styles = {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',
+    marginBottom: 5,
   },
 
   list: {
@@ -128,9 +129,9 @@ function buildStyles (fillColor, textColor, flags) {
       flexGrow: 1,
       flexShrink: 1,
       marginTop: 3,
-      marginBottom: 3,
-      marginLeft: 2,
-      marginRight: 2,
+      marginBottom: 5,
+      marginLeft: 4,
+      marginRight: 4,
     });
 
     Object.assign(text, {
@@ -147,8 +148,8 @@ function buildStyles (fillColor, textColor, flags) {
   if (flags.prime) {
     Object.assign(button, {
       marginTop: 3,
-      marginLeft: 2,
-      marginRight: 2,
+      marginLeft: 4,
+      marginRight: 4,
     });
 
     Object.assign(text, {
