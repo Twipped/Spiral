@@ -106,14 +106,13 @@ function buildStyles (fillColor, textColor, flags) {
   const button = {
     height: 30,
     borderRadius: 0,
-    borderWidth: 0,
+    borderWidth: 2,
     justifyContent: 'center',
     alignSelf: 'stretch',
     paddingTop: 0,
     paddingBottom: 0,
     paddingLeft: 2,
     paddingRight: 2,
-    borderWidth: 2,
     backgroundColor: fillColor,
     borderColor: fillColor,
   };
