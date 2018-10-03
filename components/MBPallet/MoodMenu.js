@@ -111,8 +111,8 @@ function buildStyles (fillColor, textColor, flags) {
     alignSelf: 'stretch',
     paddingTop: 0,
     paddingBottom: 0,
-    paddingLeft: 2,
-    paddingRight: 2,
+    paddingLeft: 0,
+    paddingRight: 0,
     backgroundColor: fillColor,
     borderColor: fillColor,
   };
