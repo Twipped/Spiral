@@ -7,16 +7,32 @@ import { material } from 'react-native-typography';
 import Collapsible from 'react-native-collapsible';
 import { map, chunk } from 'lodash';
 
+import Condition from '../Conditions';
+
 import {
   MB_CONDITIONS,
-  BRAND_COLOR_HIGHLIGHT,
-  BRAND_COLOR_TINT,
+  BRAND_COLOR_LIGHT,
 } from '../../constants';
 
-const MoodButton = ({ fill, textColor, caption, onPress, ...props }) => {
-  const [ buttonStyle, textStyle ] = buildStyles(fill, textColor, { ...props });
-  console.log(buttonStyle)
-  return <TouchableOpacity onPress={onPress} style={buttonStyle} {...props} ><Text style={textStyle}>{caption}</Text></TouchableOpacity>;
+class MoodButton extends React.PureComponent {
+
+  handlePress = () => {
+    if (this.props.onPress) this.props.onPress(this.props);
+  }
+
+  render () {
+    const { fill, textColor, caption, ...props } = this.props;
+    const [ buttonStyle, textStyle ] = buildStyles(fill, textColor, { ...props });
+    return (
+      <TouchableOpacity
+        {...props}
+        onPress={this.handlePress}
+        style={buttonStyle}
+      >
+        <Text style={textStyle}>{caption}</Text>
+      </TouchableOpacity>
+    );
+  }
 };
 
 export const MoodMenu = observer(({ mood, entryEmotions, ...props }) => {
@@ -84,12 +100,18 @@ export const BodyMenu = observer(({ mood, entryEmotions, onToggleEmotion, ...pro
   return <View style={{ ...styles.main, ...props.style }}>{groups}</View>;
 });
 
-
 export class MindMenu extends React.Component {
   state = {
     activeCondition: null,
     previousCondition: null,
   };
+
+  handleTabSwitch = ({ collapsed, conditionName }) => {
+    this.setState({
+      activeCondition: collapsed ? conditionName : null,
+      previousCondition: this.state.activeCondition,
+    });
+  }
 
   render () {
     const chunks = chunk(Object.values(MB_CONDITIONS), 2);
@@ -102,18 +124,15 @@ export class MindMenu extends React.Component {
         <View key={`mindmenurow-${rowi++}`} style={styles.tabsHeader}>
           {pair.map((condition) => {
             const key = `condition/${condition.name}/button`;
-            const collapsed = this.state.activeCondition !== condition.name;
             const buttonProperties = {
               key,
               caption: condition.caption,
-              fill: BRAND_COLOR_HIGHLIGHT,
+              fill: BRAND_COLOR_LIGHT,
               textColor: 'black',
-              onPress: () => this.setState({
-                activeCondition: collapsed ? condition.name : null,
-                previousCondition: this.state.activeCondition,
-              }),
+              onPress: this.handleTabSwitch,
+              conditionName: condition.name,
               tab: 1,
-              collapsed,
+              collapsed: this.state.activeCondition !== condition.name,
             };
 
             return <MoodButton {...buttonProperties} />;
@@ -127,18 +146,14 @@ export class MindMenu extends React.Component {
             <Collapsible
               key={`condition/${condition.name}/control`}
               collapsed={this.state.activeCondition !== condition.name}
-              duration={
+              easing={
                 (
                   siblings.includes(this.state.activeCondition)
                   && siblings.includes(this.state.previousCondition)
-                ) ? 10 : 300
+                ) ? 'step0' : 'ease'
               }
             >
-              <Card>
-                <CardItem>
-                  <Text>{condition.type}</Text>
-                </CardItem>
-              </Card>
+              <Condition {...condition} />
             </Collapsible>
           ))}
         </View>
@@ -194,7 +209,7 @@ const styles = {
     marginRight: 4,
     marginTop: 0,
     marginBottom: 4,
-    backgroundColor: BRAND_COLOR_HIGHLIGHT,
+    backgroundColor: BRAND_COLOR_LIGHT,
   },
 
   groupHeader: {

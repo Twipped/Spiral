@@ -12,6 +12,11 @@ import {
 import ObservableSet, { set } from '../../lib/observable-set';
 import { some, groupBy, mapValues } from 'lodash';
 
+import {
+  MB_CONDITIONS,
+  MB_MOODS,
+} from '../../constants';
+
 export class Hour {
   @serializable(primitive()) key = '';
   @serializable(primitive()) year = '';
@@ -21,11 +26,11 @@ export class Hour {
 
   @serializable(set(primitive()))
   @observable
-  emotions = new ObservableSet();
+  _emotions = new ObservableSet();
 
   @serializable(map(primitive()))
   @observable
-  conditions = new Map();
+  _conditions = new Map();
 
   constructor (year, month, day, hour) {
     this.year = String(year);
@@ -41,35 +46,58 @@ export class Hour {
 
   @computed
   get hasData () {
-    return !!this.emotions.size || !!this.conditions.size;
+    return !!this._emotions.size || !!this._conditions.size;
   }
 
   @computed
   get hash () {
-    const emotions = this.emotions.size && Array.from(this.emotions).join(',') || '';
-    const conditions = this.conditions.size && Array.from(this.conditions).flat(1).join(',');
+    const emotions = this._emotions.size && Array.from(this._emotions).join(',') || '';
+    const conditions = this._conditions.size && Array.from(this._conditions).flat(1).join(',');
     return emotions + ';' + conditions;
   }
 
   @computed
   get moodCounts () {
-    const moodGroups = groupBy(Array.from(this.emotions), (e) => e.split('/')[0]);
+    const moodGroups = groupBy(Array.from(this._emotions), (e) => e.split('/')[0]);
     const moodCounts = mapValues(moodGroups, (m) => m.length);
-    moodCounts.Conditions = this.conditions.size;
+    moodCounts.Conditions = this._conditions.size;
     return moodCounts;
   }
 
   @action
   setEmotion (emotionKey, on) {
-    if (typeof on === 'undefined') on = !this.emotions.has(emotionKey);
-    if (!on) this.emotions.delete(emotionKey);
-    if (on) this.emotions.add(emotionKey);
-    console.log('setEmotion', emotionKey, on, this.emotions.has(emotionKey));
+    if (typeof on === 'undefined') on = !this._emotions.has(emotionKey);
+    if (!on) this._emotions.delete(emotionKey);
+    if (on) this._emotions.add(emotionKey);
   }
 
   @action
   setCondition (conditionKey, value) {
-    this.conditions.set(conditionKey, value);
+    this._conditions.set(conditionKey, value);
+  }
+
+  @computed
+  get moods () {
+    return mapValues(MB_MOODS, (m) => (
+      m.emotions.map((e) => ({
+        mood: m.name,
+        emotion: e,
+        fill: m.fill,
+        color: m.color,
+        value: this.emotions.has(`${m.name}/${e}`),
+      }))
+    ));
+  }
+
+  @computed
+  get conditions () {
+    return mapValues(MB_CONDITIONS, (c) => ({
+      ...c,
+      value: this._conditions.has(c.name)
+        ? this._conditions.get(c.name)
+        : (c.default || 0)
+      ,
+    }));
   }
 }
 

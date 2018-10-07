@@ -51,7 +51,7 @@ class HourRow extends React.Component {
 
   render () {
     const state = this.props.state;
-    const emotions = state && Array.from(state.emotions).sort().map((e) => {
+    const emotions = state && Array.from(state._emotions).sort().map((e) => {
       const [ mood, emotion ] = e.split('/');
       const { fill, color } = MB_MOODS[mood];
       return (
@@ -60,7 +60,7 @@ class HourRow extends React.Component {
         </Badge>
       );
     });
-    const conditions = state && Array.from(state.conditions).map(([ conditionKey, value ]) => {
+    const conditions = state && Array.from(state._conditions).map(([ conditionKey, value ]) => {
       const { caption } = MB_CONDITIONS[conditionKey];
       return (
         <Badge key={'condition/' + conditionKey} style={{ backgroundColor: '#ccc', marginRight: 4 }}>
