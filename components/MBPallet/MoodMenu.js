@@ -10,7 +10,7 @@ import { map, chunk } from 'lodash';
 import Condition from '../Conditions';
 
 import {
-  MB_CONDITIONS,
+  BRAND_COLOR_DARK,
   BRAND_COLOR_LIGHT,
 } from '../../constants';
 
@@ -114,7 +114,39 @@ export class MindMenu extends React.Component {
   }
 
   render () {
-    const chunks = chunk(Object.values(MB_CONDITIONS), 2);
+    if (!this.props.conditions) return null;
+
+    return (
+      <View style={{ ...styles.main, ...this.props.style }}>
+        {Object.values(this.props.conditions).map((condition, rowi) => (
+          <View key={`mindmenurow-${rowi}`} >
+            {rowi && <View style={{ backgroundColor: BRAND_COLOR_DARK, marginVertical: 10, marginHorizontal: 10, height: 3, borderRadius: 1 }} />}
+            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>{condition.caption}</Text>
+            {condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
+            <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
+          </View>
+        ))}
+      </View>
+    );
+  }
+}
+
+export class MindMenuCollapsed extends React.Component {
+  state = {
+    activeCondition: null,
+    previousCondition: null,
+  };
+
+  handleTabSwitch = ({ collapsed, conditionName }) => {
+    this.setState({
+      activeCondition: collapsed ? conditionName : null,
+      previousCondition: this.state.activeCondition,
+    });
+  }
+
+  render () {
+    if (!this.props.conditions) return;
+    const chunks = chunk(Object.values(this.props.conditions), 2);
     const rows = [];
 
     let rowi = 0;
@@ -153,7 +185,8 @@ export class MindMenu extends React.Component {
                 ) ? 'step0' : 'ease'
               }
             >
-              <Condition {...condition} />
+              {condition.description && <Text style={styles.tabsDescription}>{condition.description}</Text>}
+              <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
             </Collapsible>
           ))}
         </View>
@@ -172,6 +205,7 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'flex-end',
     marginBottom: 5,
+    paddingTop: 5,
   },
 
   buttonRow: {
@@ -210,6 +244,11 @@ const styles = {
     marginTop: 0,
     marginBottom: 4,
     backgroundColor: BRAND_COLOR_LIGHT,
+  },
+
+  tabsDescription: {
+    alignSelf: 'center',
+    marginTop: 5,
   },
 
   groupHeader: {

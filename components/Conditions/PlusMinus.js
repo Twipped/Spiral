@@ -5,16 +5,16 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { material } from 'react-native-typography';
 
 import {
-  BRAND_COLOR_LIGHT,
+  BGCOLOR_0,
   BGCOLOR_1,
   BGCOLOR_2,
-  BGCOLOR_3,
+  BGCOLOR_4,
 } from '../../constants';
 
 class Option extends React.PureComponent {
 
   handlePress = () => {
-    if (this.props.onPress) this.props.onPress(this.props.value);
+    if (this.props.onPress) this.props.onPress(this.props.selected ? null : this.props.value);
   }
 
   render () {
@@ -29,6 +29,7 @@ class Option extends React.PureComponent {
       child = <Text style={styles.optionLabel}>{value}</Text>;
       break;
     case 'function':
+    case 'object':
       child = label;
       break;
     default:
@@ -48,11 +49,16 @@ class Option extends React.PureComponent {
 
 export default class PlusMinus extends React.PureComponent {
 
+  handlePress = (value) => {
+    if (!this.props.onChange) return;
+    this.props.onChange(this.props.name, value);
+  }
+
   render () {
 
     return (
       <View style={styles.container}>
-        {this.props.options.map(([ v, label ], index) => <Option key={'option-' + index} label={label} value={v} selected={this.props.value} />)}
+        {this.props.options.map(([ v, label, control ], index) => <Option key={'option-' + index} label={control || label} value={v} selected={v === this.props.value} onPress={this.handlePress} />)}
       </View>
     );
   }
@@ -61,40 +67,52 @@ export default class PlusMinus extends React.PureComponent {
 const styles = {
 
   container: {
-    height: 55,
+    height: 46,
     flexDirection: 'row',
     backgroundColor: BGCOLOR_1,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: BGCOLOR_2,
-    borderRadius: 27.5,
+    borderRadius: 23,
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
 
   optionTouchable: {
     flex: 1,
     backgroundColor: 'transparent',
-    borderRadius: 28,
-    height: 54,
+    borderRadius: 23,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 1,
+    marginRight: 1,
+    paddingHorizontal: 5,
   },
 
   optionTouchableActive: {
     flex: 1,
-    backgroundColor: BGCOLOR_3,
+    backgroundColor: BGCOLOR_4,
     borderRadius: 28,
-    height: 54,
+    borderWidth: 1,
+    borderColor: BGCOLOR_0,
+    marginLeft: 0,
+    marginRight: 0,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
     shadowOpacity: 0.31,
-    shadowRadius: 10,
-    shadowColor: BGCOLOR_1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: BGCOLOR_0,
+    paddingHorizontal: 5,
   },
 
   optionLabel: {
     ...StyleSheet.flatten(material.button),
-    color: BRAND_COLOR_LIGHT,
+    color: 'white',
+    textAlign: 'center',
   },
 };

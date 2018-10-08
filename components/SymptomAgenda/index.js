@@ -10,7 +10,7 @@ import { set } from 'lodash';
 
 import {
   MB_MOODS,
-  MB_CONDITIONS,
+  BRAND_COLOR_LIGHT,
 } from '../../constants';
 
 class HourText extends React.PureComponent {
@@ -60,11 +60,12 @@ class HourRow extends React.Component {
         </Badge>
       );
     });
-    const conditions = state && Array.from(state._conditions).map(([ conditionKey, value ]) => {
-      const { caption } = MB_CONDITIONS[conditionKey];
+    const conditions = state && Object.values(state.conditions).map((condition) => {
+      const { name, caption, valueLabel } = condition;
+      if (condition.value === null || (condition.default === undefined && !condition.value)) return null;
       return (
-        <Badge key={'condition/' + conditionKey} style={{ backgroundColor: '#ccc', marginRight: 4 }}>
-          <Text style={{ color: '#111' }}>{caption}: {value}</Text>
+        <Badge key={'condition/' + name} style={{ backgroundColor: BRAND_COLOR_LIGHT, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
+          <Text style={{ color: 'white' }}>{caption}: {valueLabel}</Text>
         </Badge>
       );
     });

@@ -51,7 +51,7 @@ class EntryView extends React.Component {
     case 'Sad':
       tabbedComponent = (
         <MoodMenu
-          entryEmotions={this.state.entry.emotions}
+          entryEmotions={this.state.entry._emotions}
           mood={MB_MOODS[tabName]}
           onToggleEmotion={this.onToggleEmotion}
         />
@@ -60,7 +60,7 @@ class EntryView extends React.Component {
     case 'Body':
       tabbedComponent = (
         <BodyMenu
-          entryEmotions={this.state.entry.emotions}
+          entryEmotions={this.state.entry._emotions}
           mood={MB_MOODS[tabName]}
           onToggleEmotion={this.onToggleEmotion}
         />
@@ -70,7 +70,7 @@ class EntryView extends React.Component {
     default:
       tabbedComponent = (
         <MindMenu
-          entryConditions={this.state.entry.conditions}
+          conditions={this.state.entry.conditions}
           onChange={this.onSetCondition}
         />
       );

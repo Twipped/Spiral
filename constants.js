@@ -1,13 +1,28 @@
 /* eslint object-property-newline:0 */
 
+import React from 'react';
+import Emoji from 'react-native-emoji';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+
 export const BRAND_COLOR = '#973999';
 export const BRAND_COLOR_DARK = '#990099';
 export const BRAND_COLOR_LIGHT = '#D16FFF';
+export const COLOR_RED = '#e02929';
+export const COLOR_ORANGE = '#F78200';
+export const COLOR_YELLOW = '#FFB900';
+export const COLOR_GREEN = '#5EBD3E';
+export const COLOR_BLUE = '#009CDF';
 
 export const BGCOLOR_0 = '#1e2124';
 export const BGCOLOR_1 = '#282b30';
 export const BGCOLOR_2 = '#36393e';
 export const BGCOLOR_3 = '#424549';
+export const BGCOLOR_4 = '#5a5e64';
+export const BGCOLOR_5 = '#72787f';
+export const BGCOLOR_6 = '#8c9197';
+export const BGCOLOR_7 = '#a7abb0';
+export const BGCOLOR_8 = '#cbcdd0';
+export const BGCOLOR_9 = '#efeff0';
 
 export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 46;
@@ -30,7 +45,7 @@ export const MB_MOOD_TEXT_PROPS = {
   alignment: 'center',
 };
 export const MB_MOODS = {
-  Anger: { name: 'Anger', fill: '#e02929', color: '#FFF', emotions: [
+  Anger: { name: 'Anger', fill: COLOR_RED, color: '#FFF', emotions: [
     'Angry',
     'Disrespected', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant',
@@ -39,7 +54,7 @@ export const MB_MOODS = {
     'Aggressive', 'Hostile', 'Snappy',
     'Jealous', 'Envious', 'Spiteful',
   ] },
-  Anxiety: { name: 'Anxiety', fill: '#F78200', color: '#FFF', emotions: [
+  Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#FFF', emotions: [
     'Anxious',
     'Stressed', 'Overwhelmed', 'Rushed',
     'Tired', 'Unfocused', 'Distracted',
@@ -47,7 +62,7 @@ export const MB_MOODS = {
     'Fearful', 'Emotional', 'Impatient',
     'Apathetic', 'Numb', 'Bored',
   ] },
-  Body: { name: 'Body', fill: '#FFB900', color: '#000', groups: [
+  Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
     { caption: 'General', symptoms: [
       'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
     ] },
@@ -61,7 +76,7 @@ export const MB_MOODS = {
       'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
     ] },
   ] },
-  Joy: { name: 'Joy', fill: '#5EBD3E', color: '#000', emotions: [
+  Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000', emotions: [
     'Happy',
     'Calm', 'Content', 'Peaceful',
     'Confident', 'Proud', 'Motivated',
@@ -70,7 +85,7 @@ export const MB_MOODS = {
     'Frisky', 'Cheeky', 'Playful',
     'Excited', 'Energetic', 'Curious',
   ] },
-  Sad: { name: 'Sad', fill: '#009CDF', color: '#000', emotions: [
+  Sad: { name: 'Sad', fill: COLOR_BLUE, color: '#000', emotions: [
     'Sad',
     'Disappointed', 'Disillusioned', 'Depressed',
     'Embarrassed', 'Rejected', 'Ignored',
@@ -81,82 +96,95 @@ export const MB_MOODS = {
   ] },
 };
 
+export const MB_EMOJI_SIZE = 30;
 export const MB_CONDITIONS = {
-  'dysphoria':           {
-    name: 'dysphoria',
-    caption: 'General Dysphoria',
+  'sleep': {
+    name: 'sleep',
+    caption: 'Sleep Quality',
+    description: 'How well did you sleep last night?',
     type: 'PlusMinus',
-    tags: [ 'Transgender' ],
     options: [
-      [ -2, 'High' ],
-      [  0, 'Average' ],
-      [  1, 'None' ],
-      [  2, 'Euphoric' ],
+      [ -1, 'Poor', <Emoji name="thumbsdown" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  0, 'OK',   <Emoji name="ok_hand" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  1, 'Good', <Emoji name="thumbsup" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
     ],
-    default: 0,
   },
-  'dysphoria:body':           {
-    name: 'dysphoria:body',
-    caption: 'Body Dysphoria',
-    type: 'PlusMinus',
-    tags: [ 'Transgender' ],
-    options: [
-      [ -2, 'High' ],
-      [  0, 'Average' ],
-      [  1, 'None' ],
-      [  2, 'Euphoric' ],
-    ],
-    default: 0,
-  },
-  'appetite':            {
+  'temperature':         { name: 'temperature', caption: 'Basal Body Temperature', type: 'Decimal' },
+  'weight':              { name: 'weight', caption: 'Weight', type: 'Decimal' },
+  'appetite': {
     name: 'appetite',
     caption: 'Appetite',
     type: 'PlusMinus',
     options: [
-      [ -2, 'Absent' ],
-      [ -1, 'Reduced' ],
+      [ -2, 'Absent', <MaterialIcons name="exposure-neg-2" size={MB_EMOJI_SIZE} color='white' /> ],
+      [ -1, 'Reduced', <MaterialIcons name="exposure-neg-1" size={MB_EMOJI_SIZE} color='white' /> ],
       [  0, 'Average' ],
-      [  1, 'Increased' ],
-      [  2, 'Ravenous' ],
+      [  1, 'Increased', <MaterialIcons name="exposure-plus-1" size={MB_EMOJI_SIZE} color='white' /> ],
+      [  2, 'Ravenous', <MaterialIcons name="exposure-plus-2" size={MB_EMOJI_SIZE} color='white' /> ],
     ],
     default: 0,
   },
-  'body-confidence':     {
-    name: 'body-confidence',
-    caption: 'Body Confidence',
+  'sex-crave': {
+    name: 'sex-crave',
+    caption: 'Sexual Thirst',
     type: 'PlusMinus',
+    tags: [ 'Allosexual' ],
+    description: 'How strongly do you crave physical attention.',
     options: [
-      [ -2, 'Very Poor' ],
-      [ -1, 'Poor' ],
-      [  0, 'Average' ],
-      [  1, 'Good' ],
-      [  2, 'Very Good' ],
+      [ -1, 'Stay Away', <FontAwesome name="minus-circle" size={MB_EMOJI_SIZE} color={COLOR_RED} />  ],
+      [  0, 'Meh',       <FontAwesome name="circle" size={MB_EMOJI_SIZE} color='yellow' /> ],
+      [  1, 'Want',      <FontAwesome name="plus-circle" size={MB_EMOJI_SIZE} color={COLOR_GREEN} />  ],
+      // [  2, 'Need',      <FontAwesome name="exclamation-circle" size={MB_EMOJI_SIZE} color="white" /> ],
     ],
     default: 0,
   },
-  'sex-drive':           {
+  'sex-drive': {
     name: 'sex-drive',
     caption: 'Sex Drive',
     type: 'PlusMinus',
     tags: [ 'Allosexual' ],
     description: 'How strong is your desire to initiate sex.',
     options: [
-      [ -1, 'Absent' ],
-      [  0, 'Normal' ],
-      [  1, 'Horny' ],
+      [ -1, 'Absent', <FontAwesome name="minus-circle" size={MB_EMOJI_SIZE} color={COLOR_RED} /> ],
+      [  0, 'Normal', <FontAwesome name="circle" size={MB_EMOJI_SIZE} color='yellow' /> ],
+      [  1, 'Horny',  <FontAwesome name="plus-circle" size={MB_EMOJI_SIZE} color={COLOR_GREEN} /> ],
     ],
     default: 0,
   },
-  'sex-crave':           {
-    name: 'sex-crave',
-    caption: 'Sexual Thirst',
+  'gender-dysphoria': {
+    name: 'gender-dysphoria',
+    caption: 'Gender Dysphoria',
     type: 'PlusMinus',
-    tags: [ 'Allosexual' ],
-    description: 'How strongly do you crave sexual attention.',
+    tags: [ 'Transgender' ],
     options: [
-      [ -1, 'Nope' ],
-      [  0, 'Normal' ],
-      [  1, 'Want' ],
+      [ -2, 'High' ],
+      [  0, 'Average' ],
+      [  1, 'None' ],
+      [  2, 'Euphoric' ],
+    ],
+    default: 0,
+  },
+  'body-confidence': {
+    name: 'body-confidence',
+    caption: 'Body Confidence',
+    type: 'PlusMinus',
+    options: [
+      [ -2, 'Very Poor', <Emoji name="worried" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [ -1, 'Poor',      <Emoji name="disappointed" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  0, 'Average',   <Emoji name="relieved" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  1, 'Good',      <Emoji name="blush" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  2, 'Very Good', <Emoji name="grin" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+    ],
+    default: 0,
+  },
+  'social-anxiety': {
+    name: 'social-anxiety',
+    caption: 'Social Anxiety',
+    type: 'PlusMinus',
+    options: [
+      [  0, 'None'  ],
+      [ -1, 'Low'  ],
+      [ -2, 'High'  ],
     ],
     default: 0,
   },
@@ -164,26 +192,27 @@ export const MB_CONDITIONS = {
     name: 'emotional-stability',
     caption: 'Emotional Stability',
     type: 'PlusMinus',
-    description: 'Are you experiencing dramatic mood swings?',
+    description: 'How rapidly are you shifting between strong moods.',
     options: [
-      [  0, 'No' ],
-      [ -1, 'Yes' ],
-      [ -2, 'Significantly' ],
+      [  0, 'Stable' ],
+      [ -1, 'Unstable' ],
+      [ -2, 'Wild' ],
     ],
     default: 0,
   },
-  'sleep':               { name: 'sleep',
-    caption: 'Sleep Quality',
+  'general-mood': {
+    name: 'general-mood',
+    caption: 'General Mood',
     type: 'PlusMinus',
     options: [
-      [ -2, 'No Sleep' ],
-      [ -1, 'Some Insomnia' ],
-      [ 0, 'Average' ],
-      // [ 1, 'Good' ],
-      [ 2, 'Well Rested' ],
+      [ -2, 'Sad',        <Emoji name="worried" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [ -1, 'Unhappy',    <Emoji name="disappointed" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  0, 'Neutral',    <Emoji name="neutral_face" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  1, 'Happy',      <Emoji name="relieved" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  2, 'Very Happy', <Emoji name="grin" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
     ],
+    default: 0,
   },
-  'weight':              { name: 'weight', caption: 'Weight', type: 'Decimal' },
-  'temperature':         { name: 'temperature', caption: 'Basal Body Temperature', type: 'Decimal' },
+
 
 };

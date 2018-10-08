@@ -12,6 +12,14 @@ import {
 import ObservableSet, { set } from '../../lib/observable-set';
 import { some, groupBy, mapValues } from 'lodash';
 
+function first (array, iteratee) {
+  for (const item of array) {
+    const r = iteratee(item);
+    if (r) return item;
+    if (r === false) return;
+  }
+}
+
 import {
   MB_CONDITIONS,
   MB_MOODS,
@@ -91,13 +99,25 @@ export class Hour {
 
   @computed
   get conditions () {
-    return mapValues(MB_CONDITIONS, (c) => ({
-      ...c,
-      value: this._conditions.has(c.name)
+    return mapValues(MB_CONDITIONS, (c) => {
+      const value = this._conditions.has(c.name)
         ? this._conditions.get(c.name)
-        : (c.default || 0)
-      ,
-    }));
+        : null
+      ;
+
+      let valueLabel = null;
+      if (value !== null) {
+        if (c.options) {
+          valueLabel = first(c.options, ([ v, l ]) =>
+            (v === value ? l : null)
+          )[1];
+        } else {
+          valueLabel = value;
+        }
+      }
+
+      return { ...c, value, valueLabel };
+    });
   }
 }
 
