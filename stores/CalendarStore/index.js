@@ -3,8 +3,9 @@ import { AsyncStorage } from 'react-native';
 import { action, observable, reaction } from 'mobx';
 import { Month } from './classes';
 import Promise from 'bluebird';
+import deepAssign from 'deep-assign';
 
-class CalendarStore {
+export class CalendarStore {
   @observable months = new Map();
   reactions = {};
   ensured = {};
@@ -35,13 +36,21 @@ class CalendarStore {
   }
 
   @action
-  async ensureMonthLoaded (year, month) {
+  async ensureMonthLoaded (year, month, overwrite) {
     const key = Month.generateKey(year, month);
-    if (this.ensured[key]) return;
-    this.ensured[key] = true;
+    if (!overwrite && this.ensured[key]) return;
+    this.ensured[key] = [ year, month ];
 
     let data = await AsyncStorage.getItem(`@CalendarStore:${key}`);
-    data = data && JSON.parse(data);
+    try {
+      data = data && JSON.parse(data);
+    } catch (e) {
+      data = null;
+    }
+
+    if (overwrite) {
+      data = deepAssign(data || {}, overwrite);
+    }
 
     if (!data) return;
 
@@ -56,6 +65,11 @@ class CalendarStore {
     state = Month.deserialize(data);
     this.startReacting(key, state);
     this.months.set(key, state);
+
+    if (overwrite) {
+      // trigger a write if we've updated with new data
+      await CalendarStore.write(key, state.hasData ? JSON.stringify(state.serialize()) : '');
+    }
   }
 
   getDay (year, month, day, init) {
@@ -87,12 +101,42 @@ class CalendarStore {
     return CalendarStore.writeIsPending;
   }
 
-  static async clear (write) {
+  async clear (write) {
     this.months.clear();
     if (write) {
-      var keys = await AsyncStorage.getAllKeys().filter((k) => k.startsWith('@CalendarStore'));
+      var keys = (await AsyncStorage.getAllKeys()).filter((k) => k.startsWith('@CalendarStore'));
       await AsyncStorage.multiRemove(keys);
     }
+  }
+
+  async export () {
+    var keys = (await AsyncStorage.getAllKeys()).filter((k) => k.startsWith('@CalendarStore'));
+    var collection = await Promise.map(keys, async (key) => [ key, await AsyncStorage.getItem(key) ]);
+    return JSON.stringify(collection);
+  }
+
+  async import (collection) {
+    try {
+      collection = JSON.parse(collection);
+    } catch (e) {
+      return false;
+    }
+    var failed = await Promise.map(collection, async ([ key, data ]) => {
+      try {
+        data = data && JSON.parse(data) || null;
+        if (!data || !data.year || !data.month) return `Data for ${key} was blank`;
+      } catch (e) {
+        return `Encountered an error loading for ${key}`;
+      }
+      await this.ensureMonthLoaded(data.year, data.month, data);
+      return false;
+    });
+    failed = failed.filter(Boolean);
+    if (failed.length) {
+      console.error(failed);
+      return false;
+    }
+    return true;
   }
 }
 

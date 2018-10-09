@@ -113,9 +113,7 @@ class SymptomAgenda extends Agenda {
         contentOffset={{ x: 0, y: 43.5 * nowIndex }}
         initialNumToRender={24}
         ListFooterComponent={() => <View style={{ height: 50 }} />}
-        onScrollToIndexFailed={(info) => {
-          // this.list.scrollToOffset({ offset: info.averageItemLength * info.index, animated: false });
-        }}
+        onScrollToIndexFailed={() => {}}
       />
     );
   };
@@ -138,7 +136,6 @@ class SymptomAgenda extends Agenda {
   );
 
 
-  // @computed
   generateHours = () => {
     const { year, month, day } = xdateToData(this.state.selectedDay);
     const hours = [];
@@ -157,7 +154,6 @@ class SymptomAgenda extends Agenda {
     return hours;
   }
 
-  // @computed
   generateMarkings = () => {
     const selected = xdateToData(this.state.selectedDay);
     const selectedDayKey = selected.dateString;

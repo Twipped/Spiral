@@ -81,6 +81,10 @@ export class Hour {
 
   @action
   setCondition (conditionKey, value) {
+    if (value === null) {
+      this._conditions.delete(conditionKey);
+      return;
+    }
     this._conditions.set(conditionKey, value);
   }
 
