@@ -21,6 +21,12 @@ import {
   MB_ARC_SIDEBUTTON_WIDTH,
 } from '../../constants';
 
+const MAX_STROKE = Math.max(
+  MB_MOOD_PRESSED_PROPS.strokeWidth,
+  MB_MOOD_ACTIVE_PROPS.strokeWidth,
+  MB_MOOD_INACTIVE_PROPS.strokeWidth
+);
+
 function Text (props) {
   const { style, fontSize, fontWeight, fontFamily, fontStyle, textAnchor, fill, ...rest } = props;
 
@@ -53,11 +59,17 @@ function InnerArcs (props) {
 
   const counts = props.counts;
 
-  const arc = d3.arc()
+  const arcInactive = d3.arc()
     .innerRadius(ARC_INNER_RADIUS)
     .outerRadius(ARC_OUTER_RADIUS)
     .cornerRadius(3)
   ;
+  const arcActive = d3.arc()
+    .innerRadius(ARC_INNER_RADIUS + MAX_STROKE - 1)
+    .outerRadius(ARC_OUTER_RADIUS)
+    .cornerRadius(3)
+  ;
+
   const pie = d3.pie()
     .startAngle(ARC_START_ANGLE)
     .endAngle(-ARC_START_ANGLE)
@@ -70,23 +82,27 @@ function InnerArcs (props) {
       const moodName = Object.keys(MB_MOODS)[i];
       const mood = MB_MOODS[moodName];
       const key = 'tab/' + moodName;
-      const d = arc(slice);
       const count = counts[moodName];
 
       let pathProps;
+      let arc;
       if (props.pressedTarget === key) {
         const c = color(mood.fill).alpha(0.5).hsl().toString();
-        pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
+        arc = arcInactive;
+        pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
       } else if ('tab/' + props.currentTarget === key) {
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS, d };
+        arc = arcActive;
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS };
       } else {
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
+        arc = props.currentTarget === 'Mind' ? arcActive : arcInactive;
+        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS };
       }
+      pathProps.d = arc(slice);
 
       const countColor = color(mood.fill).darken(0.1).hsl().toString();
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
-      const [ textX, textY ] = arc.centroid(slice);
+      const [ textX, textY ] = arcInactive.centroid(slice);
 
       props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps });
 
@@ -235,12 +251,6 @@ class Arcs extends React.Component {
       pressedTarget: this.state.pressedTarget,
       ...dimensions,
     };
-
-    const MAX_STROKE = Math.max(
-      MB_MOOD_PRESSED_PROPS.strokeWidth,
-      MB_MOOD_ACTIVE_PROPS.strokeWidth,
-      MB_MOOD_INACTIVE_PROPS.strokeWidth
-    );
 
     props.INNER_ARC_THICKNESS = (
       CONTROL_HEIGHT - MB_BUTTON_RADIUS - MAX_STROKE

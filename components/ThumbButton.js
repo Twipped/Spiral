@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { SafeAreaView, Dimensions, ART } from 'react-native';
-import { observer } from 'mobx-react/native';
 import { BrainIcon } from '../Icons';
 
 import {
