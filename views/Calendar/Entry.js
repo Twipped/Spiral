@@ -147,5 +147,5 @@ const styles = StyleSheet.create({
     fontFamily: variables.titleFontfamily,
     color: '#EEE',
     textAlign: 'center',
-  }
+  },
 });

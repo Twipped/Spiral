@@ -6,9 +6,10 @@ import { observer } from 'mobx-react/native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
-import color from 'color';
+import Color from 'color';
 import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../../Icons';
 import pathfinder from '../../lib/pathfinder';
+import Circle from '../shapes/Circle';
 
 import {
   MB_BUTTON_RADIUS,
@@ -79,7 +80,7 @@ function InnerArcs (props) {
     .sort(null)
   ;
 
-  var { Body, ...moods } = MB_MOODS;
+  var { Body, ...moods } = MB_MOODS; // eslint-disable-line no-unused-vars
   moods = Object.values(moods).map((m) => (m.factor || 1));
 
   return pie(moods)
@@ -92,7 +93,7 @@ function InnerArcs (props) {
       let pathProps;
       let arc;
       if (props.pressedTarget === moodName) {
-        const c = color(mood.fill).alpha(0.5).hsl().toString();
+        const c = Color(mood.fill).alpha(0.5).hsl().toString();
         arc = arcInactive;
         pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
       } else if (props.currentTarget === moodName) {
@@ -104,7 +105,7 @@ function InnerArcs (props) {
       }
       pathProps.d = arc(slice);
 
-      const countColor = color(mood.fill).darken(0.1).hsl().toString();
+      const countColor = Color(mood.fill).darken(0.4).hsl().toString();
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arcInactive.centroid(slice);
@@ -118,8 +119,8 @@ function InnerArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <SmartText x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText}>{mood.name}</SmartText>
-            <SmartText x={0} y={-styles.arcCount.fontSize / 2} alignment="center" fill={countColor} style={styles.arcCount}>{count && String(count)}</SmartText>
+            <SmartText x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText} fill={mood.color} >{mood.name}</SmartText>
+            {count && <Circle x={0} y={(ARC_THICKNESS / 2) - 15} r={5} fill={countColor} />}
           </ART.Group>
         </ART.Group>
       );

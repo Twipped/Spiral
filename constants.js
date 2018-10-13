@@ -47,7 +47,7 @@ export const MB_MOOD_TEXT_PROPS = {
   alignment: 'center',
 };
 export const MB_MOODS = {
-  Anger: { name: 'Anger', fill: COLOR_RED, color: '#AFA', emotions: [
+  Anger: { name: 'Anger', fill: COLOR_RED, color: '#f1a0a0', emotions: [
     'Angry',
     'Disrespected', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant',
@@ -56,7 +56,7 @@ export const MB_MOODS = {
     'Aggressive', 'Hostile', 'Snappy',
     'Jealous', 'Envious', 'Spiteful',
   ] },
-  Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#000', emotions: [
+  Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#000099', emotions: [
     'Anxious',
     'Stressed', 'Overwhelmed', 'Rushed',
     'Nervous', 'Insecure', 'Worried',
@@ -69,7 +69,7 @@ export const MB_MOODS = {
     'Blah', 'Empty', 'Unmotivated',
     'Tired', 'Unfocused', 'Distracted',
   ] },
-  Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000', emotions: [
+  Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000000', emotions: [
     'Happy',
     'Calm', 'Content', 'Peaceful',
     'Confident', 'Proud', 'Motivated',
