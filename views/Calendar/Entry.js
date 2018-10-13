@@ -79,6 +79,7 @@ class EntryView extends React.Component {
     switch (tabName) {
     case 'Anger':
     case 'Anxiety':
+    case 'Neutral':
     case 'Joy':
     case 'Sad':
       tabbedComponent = (

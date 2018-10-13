@@ -42,7 +42,7 @@ export const MB_MOOD_TEXT_PROPS = {
   alignment: 'center',
 };
 export const MB_MOODS = {
-  Anger: { name: 'Anger', fill: COLOR_RED, color: '#FFF', emotions: [
+  Anger: { name: 'Anger', fill: COLOR_RED, color: '#AFA', emotions: [
     'Angry',
     'Disrespected', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant',
@@ -51,27 +51,18 @@ export const MB_MOODS = {
     'Aggressive', 'Hostile', 'Snappy',
     'Jealous', 'Envious', 'Spiteful',
   ] },
-  Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#FFF', emotions: [
+  Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#000', emotions: [
     'Anxious',
     'Stressed', 'Overwhelmed', 'Rushed',
-    'Tired', 'Unfocused', 'Distracted',
     'Nervous', 'Insecure', 'Worried',
     'Fearful', 'Emotional', 'Impatient',
-    'Apathetic', 'Numb', 'Bored',
+
   ] },
-  Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
-    { caption: 'General', symptoms: [
-      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
-    ] },
-    { caption: 'Head and Neck', symptoms: [
-      'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
-    ] },
-    { caption: 'Chest', symptoms: [
-      'Breast Swelling', 'Tenderness', 'Breast Pain',
-    ] },
-    { caption: 'Abdomen and Digestion', symptoms: [
-      'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
-    ] },
+  Neutral: { name: 'Neutral', fill: COLOR_YELLOW, color: '#000', emotions: [
+    'Neutral',
+    'Apathetic', 'Numb', 'Bored',
+    'Blah', 'Empty', 'Unmotivated',
+    'Tired', 'Unfocused', 'Distracted',
   ] },
   Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000', emotions: [
     'Happy',
@@ -88,8 +79,22 @@ export const MB_MOODS = {
     'Embarrassed', 'Rejected', 'Ignored',
     'Lonely', 'Isolated', 'Abandoned',
     'Fragile', 'Grief', 'Weepy',
-    'Anguish', 'Despair', 'Powerless', 'Empty',
+    'Anguish', 'Despair', 'Powerless',
     'Guilt', 'Shame', 'Vulnerable',
+  ] },
+  Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
+    { caption: 'General', symptoms: [
+      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
+    ] },
+    { caption: 'Head and Neck', symptoms: [
+      'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
+    ] },
+    { caption: 'Chest', symptoms: [
+      'Breast Swelling', 'Tenderness', 'Breast Pain',
+    ] },
+    { caption: 'Abdomen and Digestion', symptoms: [
+      'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
+    ] },
   ] },
 };
 

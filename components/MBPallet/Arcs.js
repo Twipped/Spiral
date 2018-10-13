@@ -77,7 +77,10 @@ function InnerArcs (props) {
     .sort(null)
   ;
 
-  return pie(Object.values(MB_MOODS).map((m) => (m.factor || 1)))
+  var { Body, ...moods } = MB_MOODS;
+  moods = Object.values(moods).map((m) => (m.factor || 1));
+
+  return pie(moods)
     .map((slice, i) => {
       const moodName = Object.keys(MB_MOODS)[i];
       const mood = MB_MOODS[moodName];
@@ -262,7 +265,7 @@ class Arcs extends React.Component {
     return (
       <View style={style} hitSlop={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={styles.iconColumn}>
-          <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
+          <IconButton tab="Body" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
           <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
         </View>
         <View {...this.gestureBindings} >
