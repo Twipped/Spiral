@@ -5,11 +5,10 @@ import { observer } from 'mobx-react/native';
 import { BrainIcon } from '../Icons';
 
 import {
+  BRAND_COLOR_DARK,
+  BRAND_COLOR_LIGHT,
   MB_BUTTON_RADIUS,
   MB_ARCH_SPACING,
-  MB_BUTTON_PRESSED_PROPS,
-  MB_BUTTON_ACTIVE_PROPS,
-  MB_BUTTON_INACTIVE_PROPS,
 } from '../constants';
 
 function Circle (props) {
@@ -40,8 +39,7 @@ function Rect (props) {
   return <ART.Shape {...rest} d={path} />;
 }
 
-@observer
-class ThumbButton extends React.Component {
+class ThumbButton extends React.PureComponent {
 
   constructor () {
     super();
@@ -86,21 +84,26 @@ class ThumbButton extends React.Component {
       this.setState({ pressed: false });
       if (x < 0 || x > CONTROL_WIDTH || y < 0 || y > CONTROL_HEIGHT) return;
       if (this.props.onPress) this.props.onPress();
-      if (this.props.isActive.get() && this.props.onPressActive) this.props.onPressActive();
-      if (!this.props.isActive.get() && this.props.onPressInactive) this.props.onPressInactive();
     },
 
   }
 
   render () {
-    const isActive = this.props.isActive.get();
-    let BUTTON_PROPS;
+    const BUTTON_PROPS = {
+      fill: BRAND_COLOR_LIGHT,
+      stroke: '#FFF',
+      strokeWidth: 3,
+      color: BRAND_COLOR_DARK,
+    };
     if (this.state.pressed) {
-      BUTTON_PROPS = MB_BUTTON_PRESSED_PROPS;
-    } else if (isActive) {
-      BUTTON_PROPS = MB_BUTTON_ACTIVE_PROPS;
-    } else {
-      BUTTON_PROPS = MB_BUTTON_INACTIVE_PROPS;
+      BUTTON_PROPS.fill = BRAND_COLOR_DARK;
+    }
+    if (this.props.editing) {
+      BUTTON_PROPS.stroke = '#000';
+      BUTTON_PROPS.color = '#000';
+      if (this.props.selected) {
+        BUTTON_PROPS.stroke = '#FFF';
+      }
     }
 
     const Window = Dimensions.get('window');
@@ -134,11 +137,11 @@ class ThumbButton extends React.Component {
         >
           <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
             <Circle cx={0} cy={0} r={MB_BUTTON_RADIUS} {...BUTTON_PROPS} />
-            {!isActive && <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />}
-            {!isActive && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
+            {!this.props.editing && <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />}
+            {!this.props.editing && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
           </ART.Group>
         </ART.Surface>
-        {isActive && <BrainIcon width={MB_BUTTON_RADIUS * 1.5} color={BUTTON_PROPS.stroke} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: MB_BUTTON_RADIUS * 2 }} />}
+        {this.props.editing && <BrainIcon width={MB_BUTTON_RADIUS * 1.5} color={BUTTON_PROPS.color} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: MB_BUTTON_RADIUS * 2 }} />}
       </SafeAreaView>
     );
   }

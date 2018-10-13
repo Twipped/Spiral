@@ -6,26 +6,12 @@ import { createBottomTabNavigator } from 'react-navigation';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
-import { observable } from 'mobx';
+import { observer } from 'mobx-react/native';
 
 import CalendarView from './views/Calendar';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
-import Mediator from './lib/mediator';
-
-const isEditingEntry = observable.box(false);
-
-function getActiveRouteName (navigationState) {
-  if (!navigationState) {
-    return null;
-  }
-  const route = navigationState.routes[navigationState.index];
-  // dive into nested navigators
-  if (route.routes) {
-    return getActiveRouteName(route);
-  }
-  return route.routeName;
-}
+import { EntryEditor } from './views/Calendar/Entry';
 
 const TabbedNavigator = createBottomTabNavigator(
   {
@@ -66,7 +52,15 @@ const TabbedNavigator = createBottomTabNavigator(
   }
 );
 
-export default function App () {
+function onThumbButtonPress () {
+  if (EntryEditor.entry && EntryEditor.currentTab !== 'Mind') {
+    EntryEditor.currentTab = 'Mind';
+  } else if (!EntryEditor.entry) {
+    navigate('CalendarEntry', { hour: dateToData(new Date()) });
+  }
+}
+
+const App = observer(function App () {
   return (
     <Root>
       <StatusBar
@@ -77,17 +71,14 @@ export default function App () {
         ref={(navigatorRef) => {
           navigate.setTopLevelNavigator(navigatorRef);
         }}
-        onNavigationStateChange={(prevState, currentState) => {
-          const currentScreen = getActiveRouteName(currentState);
-
-          isEditingEntry.set(currentScreen === 'CalendarEntry');
-        }}
       />
       <ThumbButton
-        isActive={isEditingEntry}
-        onPressInactive={() => { navigate('CalendarEntry', { hour: dateToData(new Date()) }); }}
-        onPressActive={() => { Mediator.emit('CenterButtonPress' ); }}
+        editing={!!EntryEditor.entry}
+        selected={EntryEditor.currentTab === 'Mind'}
+        onPress={onThumbButtonPress}
       />
     </Root>
   );
-}
+});
+
+export default App;

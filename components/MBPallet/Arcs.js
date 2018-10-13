@@ -8,9 +8,6 @@ import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import color from 'color';
 import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../../Icons';
-import Mediator from '../../lib/mediator';
-
-
 import pathfinder from '../../lib/pathfinder';
 
 import {
@@ -80,7 +77,7 @@ function InnerArcs (props) {
       if (props.pressedTarget === key) {
         const c = color(mood.fill).alpha(0.5).hsl().toString();
         pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS, d };
-      } else if (props.currentTarget === key) {
+      } else if ('tab/' + props.currentTarget === key) {
         pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS, d };
       } else {
         pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS, d };
@@ -109,6 +106,27 @@ function InnerArcs (props) {
   ;
 }
 
+class IconButton extends React.PureComponent {
+  onPress = () => {
+    if (this.props.onPress) this.props.onPress('tab/' + this.props.tab);
+  }
+
+  render () {
+    const { tab, currentTab, Icon } = this.props;
+    const style = { ...styles.iconButton };
+    const selected = tab === currentTab;
+
+    if (selected) {
+      style.backgroundColor = '#FFF';
+    }
+
+    return (
+      <TouchableOpacity style={style} onPress={this.onPress}>
+        <Icon width={MB_ARC_SIDEBUTTON_WIDTH} color={selected ? '#000' : '#FFF'} />
+      </TouchableOpacity>
+    );
+  }
+}
 
 @observer
 class Arcs extends React.Component {
@@ -118,18 +136,7 @@ class Arcs extends React.Component {
 
     this.state = {
       pressedTarget: null,
-      currentTab: null,
     };
-
-    Mediator.on('CenterButtonPress', this.onCenterButton);
-  }
-
-  componentWillUnmount () {
-    Mediator.off('CenterButtonPress', this.onCenterButton);
-  }
-
-  onCenterButton = () => {
-    this.handlePress(null);
   }
 
   lastPressDown = false;
@@ -197,9 +204,7 @@ class Arcs extends React.Component {
 
   }
 
-  handlePress (buttonName) {
-    if (buttonName === this.state.buttonName) return;
-    this.setState({ currentTab: buttonName });
+  handlePress = (buttonName) => {
     if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName && buttonName.split('/')[1]);
   }
 
@@ -207,7 +212,6 @@ class Arcs extends React.Component {
     this.currentPaths = [];
     const registerShape = (shape) => { this.currentPaths.push(shape); };
 
-    const { style } = this.props;
     const dimensions = this.dimensions();
     const {
       CONTROL_WIDTH,
@@ -227,7 +231,7 @@ class Arcs extends React.Component {
 
     const props = {
       registerShape,
-      currentTarget: this.state.currentTab,
+      currentTarget: this.props.currentTab,
       pressedTarget: this.state.pressedTarget,
       ...dimensions,
     };
@@ -242,17 +246,13 @@ class Arcs extends React.Component {
       CONTROL_HEIGHT - MB_BUTTON_RADIUS - MAX_STROKE
     );
 
-    const IconButton = ({ tab, Icon }) => (
-      <TouchableOpacity style={styles.iconButton} onPress={() => this.handlePress(tab)}>
-        <Icon width={MB_ARC_SIDEBUTTON_WIDTH} color={this.state.currentTab === tab ? 'green' : '#FFF'} />
-      </TouchableOpacity>
-    );
+    const style = { ...styles.palletContent, ...this.props.style, height: CONTAINER_HEIGHT, width: CONTAINER_WIDTH };
 
     return (
-      <View style={{ ...styles.palletContent, ...style, height: CONTAINER_HEIGHT, width: CONTAINER_WIDTH }} {...this.gestureBindings} >
+      <View style={style} {...this.gestureBindings} >
         <View style={styles.iconColumn}>
-          <IconButton tab="Activities" Icon={HikingIcon} />
-          <IconButton tab="Marker" Icon={MarkerIcon} />
+          <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
+          <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
         </View>
         <ART.Surface
           width={CONTROL_WIDTH}
@@ -265,8 +265,8 @@ class Arcs extends React.Component {
           </ART.Group>
         </ART.Surface>
         <View style={styles.iconColumn}>
-          <IconButton tab="Medications" Icon={MedicineIcon} />
-          <IconButton tab="Notes" Icon={NoteIcon} />
+          <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
+          <IconButton tab="Notes" currentTab={this.props.currentTab} Icon={NoteIcon} onPress={this.handlePress} />
         </View>
       </View>
     );
@@ -291,6 +291,8 @@ const styles = {
     justifyContent: 'space-around',
     alignContent: 'center',
     alignItems: 'stretch',
+    paddingBottom: 4,
+    paddingHorizontal: 4,
   },
 
   iconButton: {
@@ -302,6 +304,7 @@ const styles = {
     justifyContent: 'center',
     alignContent: 'center',
     alignItems: 'center',
+    borderRadius: 5,
   },
 
   arcText: {

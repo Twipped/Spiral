@@ -26,9 +26,6 @@ export const BGCOLOR_9 = '#efeff0';
 
 export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 46;
-export const MB_BUTTON_PRESSED_PROPS = { fill: BRAND_COLOR_DARK, stroke: '#FFF', strokeWidth: 4 };
-export const MB_BUTTON_INACTIVE_PROPS = { fill: BRAND_COLOR_LIGHT, stroke: '#FFF', strokeWidth: 3, color: BRAND_COLOR_DARK };
-export const MB_BUTTON_ACTIVE_PROPS = { fill: BRAND_COLOR_LIGHT, stroke: '#000', strokeWidth: 3, color: BRAND_COLOR_DARK };
 
 export const MB_ARCH_SPACING = 5;
 export const MB_ARC_LENGTH_FACTOR = 0.5;
@@ -146,7 +143,7 @@ export const MB_CONDITIONS = {
     description: 'How strong is your desire to initiate sex.',
     options: [
       [ -1, 'Absent', <FontAwesome name="minus-circle" size={MB_EMOJI_SIZE} color={COLOR_RED} /> ],
-      [  0, 'Normal', <FontAwesome name="circle" size={MB_EMOJI_SIZE} color='yellow' /> ],
+      [  0, 'Normal', <FontAwesome name="circle" size={MB_EMOJI_SIZE} color="yellow" /> ],
       [  1, 'Horny',  <FontAwesome name="plus-circle" size={MB_EMOJI_SIZE} color={COLOR_GREEN} /> ],
     ],
     default: 0,
