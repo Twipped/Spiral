@@ -2,6 +2,8 @@
 import React from 'react';
 import { SafeAreaView, Dimensions, ART } from 'react-native';
 import { BrainIcon } from '../Icons';
+import Rect from './shapes/Rect';
+import Circle from './shapes/Circle';
 
 import {
   BRAND_COLOR_DARK,
@@ -9,34 +11,6 @@ import {
   MB_BUTTON_RADIUS,
   MB_ARCH_SPACING,
 } from '../constants';
-
-function Circle (props) {
-  const { radius, r, ...rest } = props;
-  const rad = r || radius || 0;
-
-  const path = ART.Path()
-    .move(rad, 0)
-    .arc(0, rad * 2, rad)
-    .arc(0, rad * -2, rad);
-
-  rest.x = (rest.x || 0) - rad;
-  rest.y = (rest.y || 0) - rad;
-
-  return <ART.Shape {...rest} d={path} />;
-}
-
-function Rect (props) {
-  const { width, height, ...rest } = props;
-
-  const path = ART.Path()
-    .move(0, 0)
-    .line(width, 0)
-    .line(0, height)
-    .line(-width, 0)
-    .line(0, -height);
-
-  return <ART.Shape {...rest} d={path} />;
-}
 
 class ThumbButton extends React.PureComponent {
 
