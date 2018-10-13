@@ -67,6 +67,7 @@ class ThumbButton extends React.PureComponent {
       stroke: '#FFF',
       strokeWidth: 3,
       color: BRAND_COLOR_DARK,
+      r: MB_BUTTON_RADIUS - 1.5,
     };
     if (this.state.pressed) {
       BUTTON_PROPS.fill = BRAND_COLOR_DARK;
@@ -109,7 +110,7 @@ class ThumbButton extends React.PureComponent {
           style={this.props.style}
         >
           <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
-            <Circle cx={0} cy={0} r={MB_BUTTON_RADIUS} {...BUTTON_PROPS} />
+            <Circle cx={0} cy={0} {...BUTTON_PROPS} />
             {!this.props.editing && <Rect fill={BUTTON_PROPS.stroke} x={-3}  y={-20} width={6}  height={40} />}
             {!this.props.editing && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
           </ART.Group>
