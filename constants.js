@@ -161,6 +161,20 @@ export const MB_CONDITIONS = {
     ],
     default: 0,
   },
+  'vocal-quality': {
+    name: 'vocal-quality',
+    caption: 'Vocal Tone Quality',
+    type: 'PlusMinus',
+    tags: [ 'Transgender' ],
+    description: 'How satisfied are you with the quality of your voice?',
+    options: [
+      [ -2, 'Awful' ],
+      [  0, 'Acceptable' ],
+      [  1, 'Good' ],
+      [  2, 'Excellent' ],
+    ],
+    default: 0,
+  },
   'body-confidence': {
     name: 'body-confidence',
     caption: 'Body Confidence',
