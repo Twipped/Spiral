@@ -86,11 +86,11 @@ function InnerArcs (props) {
 
       let pathProps;
       let arc;
-      if (props.pressedTarget === key) {
+      if (props.pressedTarget === moodName) {
         const c = color(mood.fill).alpha(0.5).hsl().toString();
         arc = arcInactive;
         pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
-      } else if ('tab/' + props.currentTarget === key) {
+      } else if (props.currentTarget === moodName) {
         arc = arcActive;
         pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS };
       } else {
@@ -104,7 +104,7 @@ function InnerArcs (props) {
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arcInactive.centroid(slice);
 
-      props.registerShape({ nodeName: key, nodeType: 'path', ...pathProps });
+      props.registerShape({ nodeName: moodName, nodeType: 'path', ...pathProps });
 
       const transform = ART.Transform()
         .rotate((angle * 180 / Math.PI));
@@ -114,6 +114,7 @@ function InnerArcs (props) {
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
             <Text x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText}>{mood.name}</Text>
+
             <Text x={0} y={-styles.arcCount.fontSize / 2} alignment="center" fill={countColor} style={styles.arcCount}>{count && String(count)}</Text>
           </ART.Group>
         </ART.Group>
@@ -124,7 +125,7 @@ function InnerArcs (props) {
 
 class IconButton extends React.PureComponent {
   onPress = () => {
-    if (this.props.onPress) this.props.onPress('tab/' + this.props.tab);
+    if (this.props.onPress) this.props.onPress(this.props.tab);
   }
 
   render () {
@@ -221,7 +222,7 @@ class Arcs extends React.Component {
   }
 
   handlePress = (buttonName) => {
-    if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName && buttonName.split('/')[1]);
+    if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName);
   }
 
   render () {
