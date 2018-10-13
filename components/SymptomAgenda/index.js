@@ -52,7 +52,6 @@ class SymptomAgenda extends Agenda {
     }, {});
 
     set(marks, [ selectedDayKey, 'selected' ], true);
-    console.log(marks);
     return marks;
   }
 
