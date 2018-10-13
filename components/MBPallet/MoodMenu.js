@@ -263,8 +263,8 @@ const styles = {
 
 function buildStyles (fillColor, textColor, flags) {
   const button = {
-    height: 30,
-    borderRadius: 0,
+    height: 44,
+    borderRadius: 22,
     borderWidth: 2,
     justifyContent: 'center',
     alignItems: 'center',
@@ -287,7 +287,7 @@ function buildStyles (fillColor, textColor, flags) {
       width: flags.pill + '%',
       flexGrow: 1,
       flexShrink: 1,
-      marginTop: 3,
+      marginTop: 5,
       marginBottom: 5,
       marginLeft: 4,
       marginRight: 4,
