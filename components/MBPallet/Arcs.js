@@ -20,6 +20,7 @@ import {
   MB_MOOD_ACTIVE_PROPS,
   MB_MOOD_PRESSED_PROPS,
   MB_ARC_SIDEBUTTON_WIDTH,
+  BGCOLOR_2,
 } from '../../constants';
 
 const MAX_STROKE = Math.max(
@@ -138,10 +139,12 @@ class IconButton extends React.PureComponent {
 
     if (selected) {
       style.backgroundColor = '#FFF';
+    } else if (!Icon) {
+      style.backgroundColor = BGCOLOR_2;
     }
 
     const color = selected ? '#000' : '#FFF';
-    const textStyle = { ...styles.iconButtonText, color }
+    const textStyle = { ...styles.iconButtonText, color };
 
     return (
       <TouchableOpacity style={style} onPress={this.onPress}>
