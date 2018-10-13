@@ -189,7 +189,7 @@ class Arcs extends React.Component {
   };
 
   gestureBindings = {
-    onStartShouldSetResponderCapture: (ev) => {
+    onStartShouldSetResponder: (ev) => {
       const node = ReactNativeComponentTree.getInstanceFromNode(ev.target);
       if (node.type !== 'ARTSurfaceView') return false;
 
@@ -259,21 +259,23 @@ class Arcs extends React.Component {
     const style = { ...styles.palletContent, ...this.props.style, height: CONTAINER_HEIGHT, width: CONTAINER_WIDTH };
 
     return (
-      <View style={style} {...this.gestureBindings} >
+      <View style={style} hitSlop={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={styles.iconColumn}>
           <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
           <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
         </View>
-        <ART.Surface
-          width={CONTROL_WIDTH}
-          height={CONTROL_HEIGHT}
-          viewBox={viewBox}
-          preserveAspectRatio="XMidYMid meet"
-        >
-          <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
-            <InnerArcs {...props} counts={this.props.entry.moodCounts} />
-          </ART.Group>
-        </ART.Surface>
+        <View {...this.gestureBindings} >
+          <ART.Surface
+            width={CONTROL_WIDTH}
+            height={CONTROL_HEIGHT}
+            viewBox={viewBox}
+            preserveAspectRatio="XMidYMid meet"
+          >
+            <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
+              <InnerArcs {...props} counts={this.props.entry.moodCounts} />
+            </ART.Group>
+          </ART.Surface>
+        </View>
         <View style={styles.iconColumn}>
           <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
           <IconButton tab="Notes" currentTab={this.props.currentTab} Icon={NoteIcon} onPress={this.handlePress} />
