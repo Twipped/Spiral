@@ -1,7 +1,7 @@
 /* eslint new-cap:0 */
 
 import React from 'react';
-import { View, Dimensions, ART, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Dimensions, ART, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { observer } from 'mobx-react/native';
 import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import { material } from 'react-native-typography';
@@ -12,6 +12,7 @@ import pathfinder from '../../lib/pathfinder';
 
 import {
   MB_BUTTON_RADIUS,
+  MB_MAX_BUTTON_STROKE,
   MB_MOODS,
   MB_ARC_LENGTH_FACTOR,
   MB_INNER_ARC_PADDING,
@@ -27,7 +28,7 @@ const MAX_STROKE = Math.max(
   MB_MOOD_INACTIVE_PROPS.strokeWidth
 );
 
-function Text (props) {
+function SmartText (props) {
   const { style, fontSize, fontWeight, fontFamily, fontStyle, textAnchor, fill, ...rest } = props;
 
   const alignment = [
@@ -116,9 +117,8 @@ function InnerArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <Text x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText}>{mood.name}</Text>
-
-            <Text x={0} y={-styles.arcCount.fontSize / 2} alignment="center" fill={countColor} style={styles.arcCount}>{count && String(count)}</Text>
+            <SmartText x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText}>{mood.name}</SmartText>
+            <SmartText x={0} y={-styles.arcCount.fontSize / 2} alignment="center" fill={countColor} style={styles.arcCount}>{count && String(count)}</SmartText>
           </ART.Group>
         </ART.Group>
       );
@@ -133,16 +133,19 @@ class IconButton extends React.PureComponent {
 
   render () {
     const { tab, currentTab, Icon } = this.props;
-    const style = { ...styles.iconButton };
+    const style = { ...styles.iconButton, ...this.props.style };
     const selected = tab === currentTab;
 
     if (selected) {
       style.backgroundColor = '#FFF';
     }
 
+    const color = selected ? '#000' : '#FFF';
+    const textStyle = { ...styles.iconButtonText, color }
+
     return (
       <TouchableOpacity style={style} onPress={this.onPress}>
-        <Icon width={MB_ARC_SIDEBUTTON_WIDTH} color={selected ? '#000' : '#FFF'} />
+        {Icon ? <Icon width={MB_ARC_SIDEBUTTON_WIDTH} color={color} /> : <Text style={textStyle}>{tab}</Text>}
       </TouchableOpacity>
     );
   }
@@ -225,7 +228,7 @@ class Arcs extends React.Component {
   }
 
   handlePress = (buttonName) => {
-    if (this.props.onTabSwitch) this.props.onTabSwitch(buttonName);
+    if (this.props.onTabSwitch && buttonName) this.props.onTabSwitch(buttonName);
   }
 
   render () {
@@ -238,8 +241,6 @@ class Arcs extends React.Component {
       CONTROL_HEIGHT,
       CONTROL_CENTER_X,
       CONTROL_CENTER_Y,
-      CONTAINER_HEIGHT,
-      CONTAINER_WIDTH,
     } = dimensions;
 
     const viewBox = [
@@ -260,16 +261,16 @@ class Arcs extends React.Component {
       CONTROL_HEIGHT - MB_BUTTON_RADIUS - MAX_STROKE
     );
 
-    const style = { ...styles.palletContent, ...this.props.style, height: CONTAINER_HEIGHT, width: CONTAINER_WIDTH };
+    const style = { ...styles.palletContent, ...this.props.style };
 
     return (
-      <View style={style} hitSlop={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <View style={style}>
         <View style={styles.iconColumn}>
-          <IconButton tab="Body" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
+          <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
           <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
         </View>
-        <View {...this.gestureBindings} >
-          <ART.Surface
+        <View>
+          <View {...this.gestureBindings}><ART.Surface
             width={CONTROL_WIDTH}
             height={CONTROL_HEIGHT}
             viewBox={viewBox}
@@ -278,7 +279,11 @@ class Arcs extends React.Component {
             <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
               <InnerArcs {...props} counts={this.props.entry.moodCounts} />
             </ART.Group>
-          </ART.Surface>
+          </ART.Surface></View>
+          <View style={styles.underRow}>
+            <IconButton tab="Sex" currentTab={this.props.currentTab} onPress={this.handlePress} style={{ paddingRight: MB_BUTTON_RADIUS }} />
+            <IconButton tab="Body" currentTab={this.props.currentTab} onPress={this.handlePress} style={{ paddingLeft: MB_BUTTON_RADIUS }} />
+          </View>
         </View>
         <View style={styles.iconColumn}>
           <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
@@ -301,6 +306,14 @@ const styles = {
     alignItems: 'center',
   },
 
+  underRow: {
+    height: MB_BUTTON_RADIUS,
+    marginHorizontal: MB_MAX_BUTTON_STROKE,
+    marginTop: MB_MAX_BUTTON_STROKE / 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+
   iconColumn: {
     flex: 1,
     flexDirection: 'column',
@@ -321,6 +334,10 @@ const styles = {
     alignContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
+  },
+
+  iconButtonText: {
+    ...StyleSheet.flatten(material.body2),
   },
 
   arcText: {

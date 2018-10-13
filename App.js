@@ -2,21 +2,34 @@ import React from 'react';
 import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
 import { StatusBar } from 'react-native';
-import { createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
 import { observer } from 'mobx-react/native';
 
-import CalendarView from './views/Calendar';
+import CalendarStore from './stores/CalendarStore';
+import AgendaView from './views/Calendar/Agenda';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
-import { EntryEditor } from './views/Calendar/Entry';
+import EntryView, { EntryEditor, EntryHeaderTitle } from './views/Calendar/Entry';
+
+function getActiveRouteName (navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
 
 const TabbedNavigator = createBottomTabNavigator(
   {
     Home: {
-      screen: CalendarView,
+      screen: (props) => (<AgendaView {...props} calendarStore={CalendarStore} />),
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <FontAwesome
@@ -52,6 +65,36 @@ const TabbedNavigator = createBottomTabNavigator(
   }
 );
 
+const ModalNavigator = createStackNavigator(
+  {
+    CalendarHome: {
+      screen: TabbedNavigator,
+      navigationOptions: () => ({ title: 'Spiral', headerBackTitle: 'Done' }),
+    },
+    CalendarEntry: {
+      screen: (props) => (<EntryView {...props} calendarStore={CalendarStore} />),
+      navigationOptions: {
+        headerTitle: <EntryHeaderTitle />,
+      },
+    },
+  },
+  {
+    initialRouteName: 'CalendarHome',
+    mode: 'modal',
+    /* The header config from HomeScreen is now here */
+    navigationOptions: {
+      barStyle: 'dark-content',
+      headerStyle: {
+        backgroundColor: BRAND_COLOR,
+      },
+      headerTintColor: '#FFF',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
+  }
+);
+
 function onThumbButtonPress () {
   if (EntryEditor.entry && EntryEditor.currentTab !== 'Mind') {
     EntryEditor.currentTab = 'Mind';
@@ -67,13 +110,17 @@ const App = observer(function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <TabbedNavigator
+      <ModalNavigator
         ref={(navigatorRef) => {
           navigate.setTopLevelNavigator(navigatorRef);
         }}
+        onNavigationStateChange={(prevState, currentState) => {
+          const currentScreen = getActiveRouteName(currentState);
+          if (currentScreen !== 'CalendarEntry') EntryEditor.currentTab = null;
+        }}
       />
       <ThumbButton
-        editing={!!EntryEditor.entry}
+        editing={!!EntryEditor.currentTab}
         selected={EntryEditor.currentTab === 'Mind'}
         onPress={onThumbButtonPress}
       />

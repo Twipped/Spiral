@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
 import { observable } from 'mobx';
 import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
@@ -13,7 +13,7 @@ import {
 } from '../../constants';
 
 export const EntryEditor = observable({
-  currentTab: 'Mind',
+  currentTab: null,
   currentHour: null,
   entry: null,
 
@@ -113,10 +113,10 @@ class EntryView extends React.Component {
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
         <InvertibleScrollView inverted style={{ flex: 1 }}>{tabbedComponent}</InvertibleScrollView>
         <Arcs onTabSwitch={this.onTabSwitch} entry={EntryEditor.entry} currentTab={EntryEditor.currentTab} />
-      </View>
+      </SafeAreaView>
     );
   }
 }

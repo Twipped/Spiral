@@ -35,6 +35,11 @@ export const MB_ARC_SIDEBUTTON_WIDTH = 40;
 export const MB_MOOD_INACTIVE_PROPS = { stroke: '#333', strokeWidth: 1 };
 export const MB_MOOD_PRESSED_PROPS  = { stroke: '#333', strokeWidth: 1 };
 export const MB_MOOD_ACTIVE_PROPS   = { stroke: '#FFF', strokeWidth: 4 };
+export const MB_MAX_BUTTON_STROKE = Math.max(
+  MB_MOOD_PRESSED_PROPS.strokeWidth,
+  MB_MOOD_ACTIVE_PROPS.strokeWidth,
+  MB_MOOD_INACTIVE_PROPS.strokeWidth
+);
 export const MB_MOOD_TEXT_PROPS = {
   fontSize: 14,
   fontWeight: 'bold',
@@ -83,9 +88,6 @@ export const MB_MOODS = {
     'Guilt', 'Shame', 'Vulnerable',
   ] },
   Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
-    { caption: 'General', symptoms: [
-      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
-    ] },
     { caption: 'Head and Neck', symptoms: [
       'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
     ] },
@@ -94,6 +96,9 @@ export const MB_MOODS = {
     ] },
     { caption: 'Abdomen and Digestion', symptoms: [
       'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
+    ] },
+    { caption: 'General', symptoms: [
+      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
     ] },
   ] },
 };
