@@ -12,7 +12,7 @@ their body.
 
 This application is still in very early development and is iterating fairly quickly.
 
-See the [React Native Readme](RN_README.md) for instructions on how to get started installing
+See the [React Native Readme](RN-README.md) for instructions on how to get started installing
 and developing within this project.
 
 ## Contributing
