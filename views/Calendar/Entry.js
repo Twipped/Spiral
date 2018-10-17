@@ -3,8 +3,8 @@ import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
 import { observable } from 'mobx';
 import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
-import Arcs from '../../components/MBPallet/Arcs';
-import { MoodMenu, BodyMenu, MindMenu } from '../../components/MBPallet/MoodMenu';
+import MBPallet from '../../components/MBPallet';
+import { MoodMenu, BodyMenu, MindMenu } from '../../components/MoodMenu';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
 
@@ -115,7 +115,7 @@ class EntryView extends React.Component {
     return (
       <SafeAreaView style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
         <InvertibleScrollView inverted style={{ flex: 1 }}>{tabbedComponent}</InvertibleScrollView>
-        <Arcs onTabSwitch={this.onTabSwitch} entry={EntryEditor.entry} currentTab={EntryEditor.currentTab} />
+        <MBPallet onTabSwitch={this.onTabSwitch} entry={EntryEditor.entry} currentTab={EntryEditor.currentTab} />
       </SafeAreaView>
     );
   }

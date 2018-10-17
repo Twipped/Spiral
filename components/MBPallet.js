@@ -7,9 +7,9 @@ import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/Reac
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import Color from 'color';
-import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../../Icons';
-import pathfinder from '../../lib/pathfinder';
-import Circle from '../shapes/Circle';
+import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../Icons';
+import pathfinder from '../lib/pathfinder';
+import Circle from './shapes/Circle';
 
 import {
   MB_BUTTON_RADIUS,
@@ -22,7 +22,7 @@ import {
   MB_MOOD_PRESSED_PROPS,
   MB_ARC_SIDEBUTTON_WIDTH,
   BGCOLOR_2,
-} from '../../constants';
+} from '../constants';
 
 const MAX_STROKE = Math.max(
   MB_MOOD_PRESSED_PROPS.strokeWidth,
@@ -156,7 +156,7 @@ class IconButton extends React.PureComponent {
 }
 
 @observer
-class Arcs extends React.Component {
+class MBPallet extends React.Component {
 
   constructor () {
     super();
@@ -298,7 +298,7 @@ class Arcs extends React.Component {
   }
 };
 
-export default Arcs;
+export default MBPallet;
 
 const styles = {
 

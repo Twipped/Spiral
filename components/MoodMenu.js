@@ -1,18 +1,17 @@
 
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
-import { Button, Card, CardItem } from 'native-base';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
 import Collapsible from 'react-native-collapsible';
 import { map, chunk } from 'lodash';
 
-import Condition from '../Conditions';
+import Condition from './Conditions';
 
 import {
   BRAND_COLOR_DARK,
   BRAND_COLOR_LIGHT,
-} from '../../constants';
+} from '../constants';
 
 class MoodButton extends React.PureComponent {
 

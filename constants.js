@@ -47,7 +47,7 @@ export const MB_MOOD_TEXT_PROPS = {
   alignment: 'center',
 };
 export const MB_MOODS = {
-  Anger: { name: 'Anger', fill: COLOR_RED, color: '#f1a0a0', emotions: [
+  Anger: { name: 'Anger', fill: COLOR_RED, color: '#fceaea', emotions: [
     'Angry',
     'Disrespected', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant',
