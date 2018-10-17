@@ -3,14 +3,15 @@ import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
 import { observable } from 'mobx';
 import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
-import MBPallet from '../../components/MBPallet';
-import { MoodMenu, BodyMenu, MindMenu } from '../../components/MoodMenu';
+import MBPallet from '../components/MBPallet';
+import { MoodMenu, BodyMenu, MindMenu } from '../components/MoodMenu';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
+import CalendarStore from '../stores/CalendarStore';
 
 import {
   MB_MOODS,
-} from '../../constants';
+} from '../constants';
 
 export const EntryEditor = observable({
   currentTab: null,
@@ -51,7 +52,7 @@ class EntryView extends React.Component {
 
     EntryEditor.currentTab = 'Mind';
     EntryEditor.currentHour = currentHour;
-    EntryEditor.entry = props.calendarStore.getHour(year, month, day, hour, true);
+    EntryEditor.entry = CalendarStore.getHour(year, month, day, hour, true);
   }
 
   componentWillUnmount () {

@@ -14,7 +14,7 @@ const SettingsView = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'SettingsMain',
+    // initialRouteName: 'SettingsMain',
     /* The header config from HomeScreen is now here */
     navigationOptions: {
       barStyle: 'dark-content',

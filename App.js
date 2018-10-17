@@ -1,18 +1,20 @@
 import React from 'react';
 import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
-import { StatusBar } from 'react-native';
+import { View, StatusBar, Button } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
 import { observer } from 'mobx-react/native';
 
 import CalendarStore from './stores/CalendarStore';
-import AgendaView from './views/Calendar/Agenda';
+import AgendaView from './views/Agenda';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
-import EntryView, { EntryEditor, EntryHeaderTitle } from './views/Calendar/Entry';
+import EntryView, { EntryEditor, EntryHeaderTitle } from './views/Entry';
+import ForecastView from './views/Forecast';
+import AnalyticsView from './views/Analytics';
 
 function getActiveRouteName (navigationState) {
   if (!navigationState) {
@@ -28,12 +30,42 @@ function getActiveRouteName (navigationState) {
 
 const TabbedNavigator = createBottomTabNavigator(
   {
-    Home: {
-      screen: (props) => (<AgendaView {...props} calendarStore={CalendarStore} />),
+    History: {
+      screen: AgendaView,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <FontAwesome
             name="calendar"
+            color={tintColor}
+            size={24}
+          />
+        ),
+      }),
+    },
+    Forecast: {
+      screen: ForecastView,
+      navigationOptions: () => ({
+        tabBarIcon: ({ tintColor }) => (
+          <MaterialCommunityIcons
+            name="weather-lightning"
+            color={tintColor}
+            size={24}
+          />
+        ),
+      }),
+    },
+    AddEntry: {
+      screen: () => <View />,
+      navigationOptions: () => ({
+        tabBarLabel: ' ',
+      }),
+    },
+    Analytics: {
+      screen: AnalyticsView,
+      navigationOptions: () => ({
+        tabBarIcon: ({ tintColor }) => (
+          <MaterialCommunityIcons
+            name="chart-areaspline"
             color={tintColor}
             size={24}
           />
@@ -65,32 +97,45 @@ const TabbedNavigator = createBottomTabNavigator(
   }
 );
 
-const ModalNavigator = createStackNavigator(
-  {
-    CalendarHome: {
-      screen: TabbedNavigator,
-      navigationOptions: () => ({ title: 'Spiral', headerBackTitle: 'Done' }),
+const EntryModal = createStackNavigator({
+  CalendarEntry: {
+    screen: EntryView,
+    navigationOptions: ({navigation}) => ({
+      headerTitle: <EntryHeaderTitle />,
+      headerRight: (
+        <Button
+          onPress={() => navigation.pop()}
+          title="Done"
+          color="#fff"
+        />
+      ),
+    }),
+  },
+},
+{
+  navigationOptions: {
+    barStyle: 'dark-content',
+    headerStyle: {
+      backgroundColor: BRAND_COLOR,
     },
-    CalendarEntry: {
-      screen: (props) => (<EntryView {...props} calendarStore={CalendarStore} />),
-      navigationOptions: {
-        headerTitle: <EntryHeaderTitle />,
-      },
+    headerTintColor: '#FFF',
+    headerTitleStyle: {
+      fontWeight: 'bold',
     },
   },
+});
+
+const ModalNavigator = createStackNavigator(
   {
-    initialRouteName: 'CalendarHome',
+    TabbedNavigator,
+    EntryModal,
+  },
+  {
+    // initialRouteName: 'CalendarHome',
     mode: 'modal',
     /* The header config from HomeScreen is now here */
     navigationOptions: {
-      barStyle: 'dark-content',
-      headerStyle: {
-        backgroundColor: BRAND_COLOR,
-      },
-      headerTintColor: '#FFF',
-      headerTitleStyle: {
-        fontWeight: 'bold',
-      },
+      header: null,
     },
   }
 );

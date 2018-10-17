@@ -5,8 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import CalendarStore from '../../stores/CalendarStore';
 import Promise from 'bluebird';
 
-// @observer
-class SettingsMain extends React.PureComponent {
+class SettingsMain extends React.Component {
 
   backupExport = async () => {
     const data = await CalendarStore.export();
