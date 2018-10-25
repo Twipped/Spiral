@@ -1,63 +1,44 @@
 {
   "name": "Spiral",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "license": "SEE LICENSE IN LICENSE.TXT",
-  "devDependencies": {
-    "babel-eslint": "~10.0.1",
-    "eslint": "~5.6.1",
-    "eslint-config-twipped": "~2.5.0",
-    "eslint-plugin-jest": "~21.24.0",
-    "eslint-plugin-node": "~7.0.1",
-    "eslint-plugin-promise": "~4.0.1",
-    "eslint-plugin-react": "~7.11.1",
-    "eslint-plugin-react-native": "~3.3.0",
-    "jest-expo": "~30.0.0",
-    "mock-async-storage": "~2.0.3",
-    "react-native-scripts": "~2.0.1",
-    "react-test-renderer": "~16.5.2"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
-    "start": "expo start",
-    "eject": "expo eject",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "test": "jest",
-    "lint": "eslint ./",
-    "lint-fix": "eslint --fix ./"
-  },
-  "jest": {
-    "preset": "jest-expo"
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
   },
   "dependencies": {
-    "@expo/vector-icons": "~8.0.0",
     "bluebird": "~3.5.2",
-    "color": "~3.0.0",
+    "color": "~3.1.0",
     "d3-shape": "~1.2.2",
     "deep-assign": "~2.0.0",
     "events": "~3.0.0",
-    "expo": "~30.0.1",
     "immutable": "~3.8.2",
     "lodash": "~4.17.11",
-    "mobx": "~5.5.0",
-    "mobx-react": "~5.2.8",
+    "mobx": "~5.5.2",
+    "mobx-react": "~5.3.5",
     "moment": "~2.22.2",
-    "native-base": "~2.8.0",
-    "react": "~16.5.2",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "native-base": "~2.8.1",
+    "react": "~16.6.0",
+    "react-native": "~0.57.3",
     "react-native-calendars": "~1.21.0",
-    "react-native-collapsible": "~1.0.1",
-    "react-native-elements": "~0.19.1",
+    "react-native-collapsible": "~1.2.1",
     "react-native-emoji": "~1.3.1",
     "react-native-invertible-scroll-view": "~1.1.1",
-    "react-native-svg": "~7.0.3",
+    "react-native-svg": "~8.0.8",
     "react-native-typography": "~1.4.0",
-    "react-native-vector-icons": "https://github.com/oblador/react-native-vector-icons.git",
-    "react-navigation": "~2.17.0",
-    "react-navigation-header-buttons": "~2.1.0",
-    "react-navigation-props-mapper": "~0.3.0",
+    "react-native-vector-icons": "~6.0.2",
+    "react-navigation": "~2.18.1",
     "serializr": "~1.3.0",
     "svg-intersections": "~0.4.0"
+  },
+  "devDependencies": {
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "0.48.1",
+    "react-test-renderer": "16.6.0-alpha.8af6728",
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }

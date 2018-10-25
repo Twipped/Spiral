@@ -3,7 +3,6 @@
 import React from 'react';
 import { View, Dimensions, ART, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { observer } from 'mobx-react/native';
-import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import Color from 'color';
@@ -201,9 +200,6 @@ class MBPallet extends React.Component {
 
   gestureBindings = {
     onStartShouldSetResponder: (ev) => {
-      const node = ReactNativeComponentTree.getInstanceFromNode(ev.target);
-      if (node.type !== 'ARTSurfaceView') return false;
-
       const [ x, y ] = this.evToXY(ev);
       const match = pathfinder(x, y, this.currentPaths);
       return !!match;

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Emoji from 'react-native-emoji';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export const BRAND_COLOR = '#973999';
 export const BRAND_COLOR_DARK = '#990099';

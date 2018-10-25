@@ -119,9 +119,9 @@ export class MindMenu extends React.Component {
       <View style={{ ...styles.main, ...this.props.style }}>
         {Object.values(this.props.conditions).map((condition, rowi) => (
           <View key={`mindmenurow-${rowi}`} >
-            {rowi && <View style={{ backgroundColor: BRAND_COLOR_DARK, marginVertical: 10, marginHorizontal: 10, height: 3, borderRadius: 1 }} />}
+            {!!rowi && <View style={{ backgroundColor: BRAND_COLOR_DARK, marginVertical: 10, marginHorizontal: 10, height: 3, borderRadius: 1 }} />}
             <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>{condition.caption}</Text>
-            {condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
+            {!!condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
             <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
           </View>
         ))}

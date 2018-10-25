@@ -3,7 +3,9 @@ import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
 import { View, StatusBar, Button } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
 import { observer } from 'mobx-react/native';
@@ -58,6 +60,9 @@ const TabbedNavigator = createBottomTabNavigator(
       screen: () => <View />,
       navigationOptions: () => ({
         tabBarLabel: ' ',
+        tabBarIcon: ({ tintColor }) => (
+          <View />
+        ),
       }),
     },
     Analytics: {

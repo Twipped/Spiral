@@ -1,7 +1,7 @@
 import React from 'react';
 import { Clipboard, Alert } from 'react-native';
 import { Container, Separator, Content, Button, List, ListItem, Text, Icon, Left, Body, Right, Switch } from 'native-base';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CalendarStore from '../../stores/CalendarStore';
 import Promise from 'bluebird';
 

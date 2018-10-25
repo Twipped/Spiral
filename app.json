@@ -1,23 +1,4 @@
 {
-  "expo": {
-    "name": "Spiral",
-    "icon": "./graphics/icon.png",
-    "version": "1.0.0",
-    "slug": "spiral-biocycle-tracker",
-    "privacy": "unlisted",
-    "platforms": ["ios"],
-    "orientation": "portrait",
-    "primaryColor": "#973999",
-    "scheme": "spiral",
-    "splash": {
-      "backgroundColor": "#973999"
-    },
-    "ios": {
-      "bundleIdentifier": "com.twippedtech.spiral"
-    },
-    "android": {
-      "package": "com.twippedtech.spiral"
-    },
-    "sdkVersion": "30.0.0"
-  }
+  "name": "Spiral",
+  "displayName": "Spiral"
 }
