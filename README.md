@@ -12,8 +12,18 @@ their body.
 
 This application is still in very early development and is iterating fairly quickly.
 
-See the [React Native Readme](RN-README.md) for instructions on how to get started installing
-and developing within this project.
+## Launching in Development
+
+Spiral is constructed in React Native, _without_ the use of the Expo runtime. This means you must have Node.js and the `react-native` utility installed to launch the app.
+
+**Setup**
+From a shell command inside the project folder, execute `npm install` to install all the
+needed dependencies. Once that is complete, run `npm start` to initialize the React Native
+bundler. You must keep this process running to use the app in the iOS or Android simulators.
+
+You may now open the XCode project in the `ios` folder, and run it from there, or open another
+terminal shell and run `react-native run-ios` from inside the project folder root. This will
+build the application and launch the iOS simulator.
 
 ## Contributing
 
