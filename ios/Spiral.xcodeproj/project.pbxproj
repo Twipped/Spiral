@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -45,6 +46,7 @@
 		39C975FB056A4B9C89A1E9D5 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C20E6C29793403AB715FABE /* FontAwesome5_Brands.ttf */; };
 		3EA165669021463A8056C729 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 33DBFAF663E543DA90B415A7 /* SimpleLineIcons.ttf */; };
 		4E9A69A62182237700CC3516 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E9A697A218222F600CC3516 /* libART.a */; };
+		4E9A6A0F218238DC00CC3516 /* AppIcon.appiconset in Resources */ = {isa = PBXBuildFile; fileRef = 4E9A69E3218238DC00CC3516 /* AppIcon.appiconset */; };
 		6DCEF8786ED9428AB48A1C78 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31A7A947648D4BB89C3E58B5 /* FontAwesome5_Solid.ttf */; };
 		777132D951974085AE864C60 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 34E108C9AA5B4226BD4928F3 /* Foundation.ttf */; };
 		7DC937CC6E18445D8BB87428 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A403DC3C049E4581A486B527 /* AntDesign.ttf */; };
@@ -415,6 +417,7 @@
 		3E201E7910FA453988575B80 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		4C20E6C29793403AB715FABE /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		4E9A6974218222F500CC3516 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
+		4E9A69E3218238DC00CC3516 /* AppIcon.appiconset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppIcon.appiconset; sourceTree = "<group>"; };
 		4F029CBC61F84F699CB346F0 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		5313D2BB87A74383B3B9DFAE /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/native-base/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		5DE95C0C5C8647799A00332E /* Roboto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto.ttf; path = "../node_modules/native-base/Fonts/Roboto.ttf"; sourceTree = "<group>"; };
@@ -579,6 +582,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				4E9A69E3218238DC00CC3516 /* AppIcon.appiconset */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
@@ -1271,6 +1275,7 @@
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				CF8E52F1BD7C47EE89702101 /* Entypo.ttf in Resources */,
 				1F4CC076286A4B8C98ABEBC5 /* EvilIcons.ttf in Resources */,
+				4E9A6A0F218238DC00CC3516 /* AppIcon.appiconset in Resources */,
 				B008A55A7CF24EB18A74393A /* Feather.ttf in Resources */,
 				80CD96CB4373496DBE122D05 /* FontAwesome.ttf in Resources */,
 				777132D951974085AE864C60 /* Foundation.ttf in Resources */,
@@ -1470,6 +1475,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = Q77K89B55T;
@@ -1496,6 +1502,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Q77K89B55T;
 				HEADER_SEARCH_PATHS = (
