@@ -1,11 +1,13 @@
 
 import React from 'react';
 import PlusMinus from './PlusMinus';
+import Temperature from './Temperature';
 import { View } from 'react-native';
 
 
 const Conditions = {
   PlusMinus,
+  Temperature,
   Decimal: View,
 };
 

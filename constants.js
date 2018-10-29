@@ -14,16 +14,17 @@ export const COLOR_YELLOW = '#FFB900';
 export const COLOR_GREEN = '#5EBD3E';
 export const COLOR_BLUE = '#009CDF';
 
-export const BGCOLOR_0 = '#1e2124';
-export const BGCOLOR_1 = '#282b30';
-export const BGCOLOR_2 = '#36393e';
-export const BGCOLOR_3 = '#424549';
-export const BGCOLOR_4 = '#5a5e64';
-export const BGCOLOR_5 = '#72787f';
-export const BGCOLOR_6 = '#8c9197';
-export const BGCOLOR_7 = '#a7abb0';
-export const BGCOLOR_8 = '#cbcdd0';
-export const BGCOLOR_9 = '#efeff0';
+export const BGCOLOR_0  = '#1e2124';
+export const BGCOLOR_1  = '#282b30';
+export const BGCOLOR_2  = '#36393e';
+export const BGCOLOR_3  = '#424549';
+export const BGCOLOR_4  = '#5a5e64';
+export const BGCOLOR_5  = '#72787f';
+export const BGCOLOR_6  = '#8c9197';
+export const BGCOLOR_7  = '#a7abb0';
+export const BGCOLOR_8  = '#cbcdd0';
+export const BGCOLOR_9  = '#efeff0';
+export const BGCOLOR_10 = '#ffffff';
 
 export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 46;
@@ -106,21 +107,9 @@ export const MB_MOODS = {
 
 export const MB_EMOJI_SIZE = 30;
 export const MB_CONDITIONS = {
-  'sleep': {
-    name: 'sleep',
-    caption: 'Sleep Quality',
-    description: 'How well did you sleep last night?',
-    type: 'PlusMinus',
-    options: [
-      [ -1, 'Poor', <Emoji name="thumbsdown" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  0, 'OK',   <Emoji name="ok_hand" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  1, 'Good', <Emoji name="thumbsup" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-    ],
-  },
-  'temperature':         { name: 'temperature', caption: 'Basal Body Temperature', type: 'Decimal' },
-  'weight':              { name: 'weight', caption: 'Weight', type: 'Decimal' },
   'appetite': {
     name: 'appetite',
+    className: 'mind',
     caption: 'Appetite',
     type: 'PlusMinus',
     options: [
@@ -134,6 +123,7 @@ export const MB_CONDITIONS = {
   },
   'sex-crave': {
     name: 'sex-crave',
+    className: 'mind',
     caption: 'Sexual Thirst',
     type: 'PlusMinus',
     tags: [ 'Allosexual' ],
@@ -148,6 +138,7 @@ export const MB_CONDITIONS = {
   },
   'sex-drive': {
     name: 'sex-drive',
+    className: 'mind',
     caption: 'Sex Drive',
     type: 'PlusMinus',
     tags: [ 'Allosexual' ],
@@ -161,6 +152,7 @@ export const MB_CONDITIONS = {
   },
   'gender-dysphoria': {
     name: 'gender-dysphoria',
+    className: 'mind',
     caption: 'Gender Dysphoria',
     type: 'PlusMinus',
     tags: [ 'Transgender' ],
@@ -174,6 +166,7 @@ export const MB_CONDITIONS = {
   },
   'vocal-quality': {
     name: 'vocal-quality',
+    className: 'mind',
     caption: 'Vocal Tone Quality',
     type: 'PlusMinus',
     tags: [ 'Transgender' ],
@@ -188,6 +181,7 @@ export const MB_CONDITIONS = {
   },
   'body-confidence': {
     name: 'body-confidence',
+    className: 'mind',
     caption: 'Body Confidence',
     type: 'PlusMinus',
     options: [
@@ -201,6 +195,7 @@ export const MB_CONDITIONS = {
   },
   'social-anxiety': {
     name: 'social-anxiety',
+    className: 'mind',
     caption: 'Social Anxiety',
     type: 'PlusMinus',
     options: [
@@ -212,6 +207,7 @@ export const MB_CONDITIONS = {
   },
   'emotional-stability': {
     name: 'emotional-stability',
+    className: 'mind',
     caption: 'Emotional Stability',
     type: 'PlusMinus',
     description: 'How rapidly are you shifting between strong moods.',
@@ -224,6 +220,7 @@ export const MB_CONDITIONS = {
   },
   'general-mood': {
     name: 'general-mood',
+    className: 'mind',
     caption: 'General Mood',
     type: 'PlusMinus',
     options: [
@@ -234,6 +231,32 @@ export const MB_CONDITIONS = {
       [  2, 'Very Happy', <Emoji name="grin" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
     ],
     default: 0,
+  },
+
+
+  'sleep': {
+    name: 'sleep',
+    className: 'body',
+    caption: 'Sleep Quality',
+    description: 'How well did you sleep last night?',
+    type: 'PlusMinus',
+    options: [
+      [ -1, 'Poor', <Emoji name="thumbsdown" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  0, 'OK',   <Emoji name="ok_hand" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [  1, 'Good', <Emoji name="thumbsup" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+    ],
+  },
+  'temperature':         {
+    name: 'temperature',
+    className: 'body',
+    caption: 'Basal Body Temperature',
+    type: 'Temperature',
+  },
+
+  'weight': {
+    name: 'weight',
+    caption: 'Weight',
+    type: 'Decimal',
   },
 
 

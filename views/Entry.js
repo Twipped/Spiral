@@ -4,7 +4,7 @@ import { observable } from 'mobx';
 import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import MBPallet from '../components/MBPallet';
-import { MoodMenu, BodyMenu, MindMenu } from '../components/MoodMenu';
+import { MoodMenu, BodyMenu, ConditionMenu } from '../components/Menus';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
 import CalendarStore from '../stores/CalendarStore';
@@ -92,19 +92,28 @@ class EntryView extends React.Component {
       );
       break;
     case 'Body':
-      tabbedComponent = (
+      tabbedComponent = [
+        <ConditionMenu
+          key="body-conditions"
+          conditions={EntryEditor.entry.conditions}
+          className="body"
+          onChange={this.onSetCondition}
+        />,
         <BodyMenu
+          key="body-menu"
           entryEmotions={EntryEditor.entry._emotions}
           mood={MB_MOODS[tabName]}
           onToggleEmotion={this.onToggleEmotion}
-        />
-      );
+        />,
+      ];
       break;
 
     case 'Mind':
       tabbedComponent = (
-        <MindMenu
+        <ConditionMenu
+          key="mind-conditions"
           conditions={EntryEditor.entry.conditions}
+          className="mind"
           onChange={this.onSetCondition}
         />
       );
@@ -115,7 +124,9 @@ class EntryView extends React.Component {
 
     return (
       <SafeAreaView style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
-        <InvertibleScrollView inverted style={{ flex: 1 }}>{tabbedComponent}</InvertibleScrollView>
+        <InvertibleScrollView ref={(sv) => { this.scrollview = sv; }} inverted style={{ flex: 1 }}>
+          {tabbedComponent}
+        </InvertibleScrollView>
         <MBPallet onTabSwitch={this.onTabSwitch} entry={EntryEditor.entry} currentTab={EntryEditor.currentTab} />
       </SafeAreaView>
     );

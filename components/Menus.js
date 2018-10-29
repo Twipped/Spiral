@@ -99,7 +99,7 @@ export const BodyMenu = observer(({ mood, entryEmotions, onToggleEmotion, ...pro
   return <View style={{ ...styles.main, ...props.style }}>{groups}</View>;
 });
 
-export class MindMenu extends React.Component {
+export class ConditionMenu extends React.Component {
   state = {
     activeCondition: null,
     previousCondition: null,
@@ -115,26 +115,52 @@ export class MindMenu extends React.Component {
   render () {
     if (!this.props.conditions) return null;
 
+    const HR = () => (
+      <View
+        style={{
+          backgroundColor: BRAND_COLOR_DARK,
+          marginVertical: 10,
+          marginHorizontal: 10,
+          height: 3,
+          borderRadius: 1,
+        }}
+      />
+    );
+
+    const className = this.props.className;
+
+    let conditions = Object.values(this.props.conditions).map((condition, rowi) => {
+      if (className && condition.className !== className) return null;
+
+      return (
+        <View key={`condition-row-${rowi}`} >
+          <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>{condition.caption}</Text>
+          {!!condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
+          <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
+        </View>
+      );
+    }).filter(Boolean);
+
+    // insert horizontal dividers
+    conditions = conditions.reduce((arr, item, index) => {
+      if (index) arr.push(<HR key={`hr-row-${index}`} />);
+      arr.push(item);
+      return arr;
+    }, []);
+
     return (
       <View style={{ ...styles.main, ...this.props.style }}>
-        {Object.values(this.props.conditions).map((condition, rowi) => (
-          <View key={`mindmenurow-${rowi}`} >
-            {!!rowi && <View style={{ backgroundColor: BRAND_COLOR_DARK, marginVertical: 10, marginHorizontal: 10, height: 3, borderRadius: 1 }} />}
-            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>{condition.caption}</Text>
-            {!!condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
-            <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
-          </View>
-        ))}
+        {conditions}
       </View>
     );
   }
 }
 
-export class MindMenuCollapsed extends React.Component {
+export class ConditionMenuCollapsed extends React.Component {
   state = {
     activeCondition: null,
     previousCondition: null,
-  };
+  }
 
   handleTabSwitch = ({ collapsed, conditionName }) => {
     this.setState({
