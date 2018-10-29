@@ -33,11 +33,19 @@
     "svg-intersections": "~0.4.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44",
+    "babel-eslint": "~10.0.1",
     "babel-jest": "23.6.0",
+    "eslint": "~5.6.1",
+    "eslint-config-twipped": "~2.5.0",
+    "eslint-plugin-jest": "~21.24.0",
+    "eslint-plugin-node": "~7.0.1",
+    "eslint-plugin-promise": "~4.0.1",
+    "eslint-plugin-react": "~7.11.1",
+    "eslint-plugin-react-native": "~3.3.0",
     "jest": "23.6.0",
     "metro-react-native-babel-preset": "0.48.1",
-    "react-test-renderer": "16.6.0-alpha.8af6728",
-    "@babel/plugin-proposal-decorators": "^7.0.0-beta.44"
+    "react-test-renderer": "16.6.0-alpha.8af6728"
   },
   "jest": {
     "preset": "react-native"
