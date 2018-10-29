@@ -54,8 +54,7 @@ export const MB_MOODS = {
     'Disrespected', 'Embarrassed', 'Persecuted',
     'Bitter', 'Disgruntled', 'Indignant',
     'Horrified', 'Violated', 'Frustrated',
-    'Annoyed', 'Mad', 'Furious',
-    'Aggressive', 'Hostile', 'Snappy',
+    'Aggressive', 'Annoyed', 'Hostile',
     'Jealous', 'Envious', 'Spiteful',
   ] },
   Anxiety: { name: 'Anxiety', fill: COLOR_ORANGE, color: '#000099', emotions: [
@@ -63,17 +62,16 @@ export const MB_MOODS = {
     'Stressed', 'Overwhelmed', 'Rushed',
     'Nervous', 'Insecure', 'Worried',
     'Fearful', 'Emotional', 'Impatient',
-
+    'Tired', 'Unfocused', 'Distracted',
   ] },
   Neutral: { name: 'Neutral', fill: COLOR_YELLOW, color: '#000', emotions: [
     'Neutral',
+    'Calm', 'Content', 'Peaceful',
     'Apathetic', 'Numb', 'Bored',
     'Blah', 'Empty', 'Unmotivated',
-    'Tired', 'Unfocused', 'Distracted',
   ] },
   Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000000', emotions: [
     'Happy',
-    'Calm', 'Content', 'Peaceful',
     'Confident', 'Proud', 'Motivated',
     'Inspired', 'Courageous', 'Hopeful',
     'Loving', 'Thankful', 'Intimate',
@@ -82,12 +80,12 @@ export const MB_MOODS = {
   ] },
   Sad: { name: 'Sad', fill: COLOR_BLUE, color: '#000', emotions: [
     'Sad',
-    'Disappointed', 'Disillusioned', 'Depressed',
-    'Embarrassed', 'Rejected', 'Ignored',
+    'Rejected', 'Ignored', 'Vulnerable',
     'Lonely', 'Isolated', 'Abandoned',
     'Fragile', 'Grief', 'Weepy',
     'Anguish', 'Despair', 'Powerless',
-    'Guilt', 'Shame', 'Vulnerable',
+    'Guilt', 'Shame', 'Embarrassed',
+    'Disappointed', 'Disillusioned', 'Depressed',
   ] },
   Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
     { caption: 'Head and Neck', symptoms: [
