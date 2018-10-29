@@ -63,6 +63,7 @@ class EntryView extends React.Component {
 
   onTabSwitch = (tab) => {
     EntryEditor.currentTab = tab;
+    this.scrollview.scrollTo({ y: 0, animated: false });
   };
 
   onToggleEmotion = (emotionKey, selected) => {
