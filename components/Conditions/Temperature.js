@@ -167,7 +167,6 @@ export default class Temperature extends React.PureComponent {
 
   _onMomentumScrollEnd = (ev) => {
     this.momentumStarted = false;
-    console.log(ev.nativeEvent.contentOffset);
     if (!this.isScrollTo && !this.momentumStarted && !this.dragStarted) {
       this._scrollFix(ev);
     }
