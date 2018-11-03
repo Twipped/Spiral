@@ -4,6 +4,7 @@ import React from 'react';
 import Emoji from 'react-native-emoji';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import * as Emotions from './Icons/Emotions';
 
 export const BRAND_COLOR = '#973999';
 export const BRAND_COLOR_DARK = '#990099';
@@ -177,20 +178,6 @@ export const MB_CONDITIONS = {
     ],
     default: 0,
   },
-  'body-confidence': {
-    name: 'body-confidence',
-    className: 'mind',
-    caption: 'Body Confidence',
-    type: 'PlusMinus',
-    options: [
-      [ -2, 'Very Poor', <Emoji name="worried" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [ -1, 'Poor',      <Emoji name="disappointed" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  0, 'Average',   <Emoji name="relieved" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  1, 'Good',      <Emoji name="blush" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  2, 'Very Good', <Emoji name="grin" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-    ],
-    default: 0,
-  },
   'social-anxiety': {
     name: 'social-anxiety',
     className: 'mind',
@@ -216,17 +203,31 @@ export const MB_CONDITIONS = {
     ],
     default: 0,
   },
+  'body-confidence': {
+    name: 'body-confidence',
+    className: 'mind',
+    caption: 'Body Confidence',
+    type: 'PlusMinus',
+    options: [
+      [ -2, 'Very Poor', <Emotions.Sad height={MB_EMOJI_SIZE} color="white" /> ],
+      [ -1, 'Poor',      <Emotions.Uncomfortable height={MB_EMOJI_SIZE} color="white" /> ],
+      [  0, 'Average',   <Emotions.Neutral height={MB_EMOJI_SIZE} color="white" /> ],
+      [  1, 'Good',      <Emotions.Happy height={MB_EMOJI_SIZE} color="white" /> ],
+      [  2, 'Very Good', <Emotions.VeryHappy height={MB_EMOJI_SIZE} color="white" /> ],
+    ],
+    default: 0,
+  },
   'general-mood': {
     name: 'general-mood',
     className: 'mind',
     caption: 'General Mood',
     type: 'PlusMinus',
     options: [
-      [ -2, 'Sad',        <Emoji name="worried" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [ -1, 'Unhappy',    <Emoji name="disappointed" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  0, 'Neutral',    <Emoji name="neutral_face" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  1, 'Happy',      <Emoji name="relieved" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  2, 'Very Happy', <Emoji name="grin" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [ -2, 'Sad',        <Emotions.Sad height={MB_EMOJI_SIZE} color="white" /> ],
+      [ -1, 'Unhappy',    <Emotions.Uncomfortable height={MB_EMOJI_SIZE} color="white" /> ],
+      [  0, 'Neutral',    <Emotions.Neutral height={MB_EMOJI_SIZE} color="white" /> ],
+      [  1, 'Happy',      <Emotions.Happy height={MB_EMOJI_SIZE} color="white" /> ],
+      [  2, 'Very Happy', <Emotions.VeryHappy height={MB_EMOJI_SIZE} color="white" /> ],
     ],
     default: 0,
   },
