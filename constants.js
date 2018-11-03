@@ -27,6 +27,20 @@ export const BGCOLOR_8  = '#cbcdd0';
 export const BGCOLOR_9  = '#efeff0';
 export const BGCOLOR_10 = '#ffffff';
 
+export const BGCOLOR = [
+  BGCOLOR_0,
+  BGCOLOR_1,
+  BGCOLOR_2,
+  BGCOLOR_3,
+  BGCOLOR_4,
+  BGCOLOR_5,
+  BGCOLOR_6,
+  BGCOLOR_7,
+  BGCOLOR_8,
+  BGCOLOR_9,
+  BGCOLOR_10,
+];
+
 export const MB_PRESS_DURATION = 500;
 export const MB_BUTTON_RADIUS = 46;
 

@@ -4,13 +4,14 @@ import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
 import Collapsible from 'react-native-collapsible';
-import { map, chunk } from 'lodash';
+import { map, chunk, iteratee } from 'lodash';
 
 import Condition from './Conditions';
 
 import {
   BRAND_COLOR_DARK,
   BRAND_COLOR_LIGHT,
+  BGCOLOR,
 } from '../constants';
 
 class MoodButton extends React.PureComponent {
@@ -129,24 +130,19 @@ export class ConditionMenu extends React.Component {
 
     const className = this.props.className;
 
-    let conditions = Object.values(this.props.conditions).map((condition, rowi) => {
-      if (className && condition.className !== className) return null;
+    let conditions = Object.values(this.props.conditions);
+    if (className) {
+      // filter conditions by class name
+      conditions = conditions.filter(iteratee({ className }));
+    }
 
-      return (
-        <View key={`condition-row-${rowi}`} >
-          <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>{condition.caption}</Text>
-          {!!condition.description && <Text style={{ color: 'white', textAlign: 'center' }}>{condition.description}</Text>}
-          <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
-        </View>
-      );
-    }).filter(Boolean);
-
-    // insert horizontal dividers
-    conditions = conditions.reduce((arr, item, index) => {
-      if (index) arr.push(<HR key={`hr-row-${index}`} />);
-      arr.push(item);
-      return arr;
-    }, []);
+    conditions = conditions.map((condition, rowi) => (
+      <View key={`condition-row-${rowi}`} style={rowi % 2 ? styles.menuRowOdd : styles.menuRowEven}>
+        <Text style={styles.menuRowCaption}>{condition.caption}</Text>
+        {!!condition.description && <Text style={styles.menuRowDescription}>{condition.description}</Text>}
+        <Condition {...condition} onChange={this.props.onChange} value={condition.value} />
+      </View>
+    ));
 
     return (
       <View style={{ ...styles.main, ...this.props.style }}>
@@ -284,6 +280,28 @@ const styles = {
     marginLeft: 10,
   },
 
+  menuRowCaption: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+
+  menuRowDescription: {
+    color: 'white',
+    textAlign: 'center',
+  },
+
+  menuRowEven: {
+    backgroundColor: BGCOLOR[1],
+    paddingVertical: 2,
+    borderTopWidth: 1,
+    borderTopColor: BGCOLOR[3],
+  },
+  menuRowOdd: {
+    backgroundColor: BGCOLOR[2],
+    paddingVertical: 2,
+  },
 };
 
 function buildStyles (fillColor, textColor, flags) {

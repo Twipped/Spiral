@@ -5,12 +5,7 @@ import { View, TouchableOpacity, StyleSheet, Text, Platform, ScrollView } from '
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
-  BGCOLOR_0,
-  BGCOLOR_1,
-  BGCOLOR_2,
-  BGCOLOR_6,
-  BGCOLOR_8,
-  BGCOLOR_10,
+  BGCOLOR,
 } from '../../constants';
 
 class TemperatureItem extends React.PureComponent {
@@ -80,8 +75,8 @@ export default class Temperature extends React.PureComponent {
       height: this.state.height,
       left: pad,
       right: pad,
-      borderLeftColor: BGCOLOR_8,
-      borderRightColor: BGCOLOR_8,
+      borderLeftColor: BGCOLOR[8],
+      borderRightColor: BGCOLOR[8],
       borderLeftWidth: StyleSheet.hairlineWidth,
       borderRightWidth: StyleSheet.hairlineWidth,
     };
@@ -116,7 +111,7 @@ export default class Temperature extends React.PureComponent {
         <View style={styles.rightCap2} pointerEvents="none" />
         <View style={styles.rightCap3} pointerEvents="none" />
         {this.state.selectedIndex > -1 && <TouchableOpacity style={styles.clearButton} onPress={this._onClear}>
-          <MaterialCommunityIcons name="window-close" size={26} color={BGCOLOR_10} style={styles.clearButtonIcon} />
+          <MaterialCommunityIcons name="window-close" size={26} color={BGCOLOR[10]} style={styles.clearButtonIcon} />
         </TouchableOpacity>}
       </View>
     );
@@ -239,11 +234,11 @@ export default class Temperature extends React.PureComponent {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: BGCOLOR_2,
+    borderColor: BGCOLOR[2],
     borderRadius: 23,
     overflow: 'hidden',
     marginHorizontal: 10,
@@ -256,7 +251,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 20,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.9,
   },
 
@@ -266,7 +261,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 20,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.7,
   },
 
@@ -276,7 +271,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 30,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.5,
   },
 
@@ -286,7 +281,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 30,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.7,
   },
 
@@ -296,7 +291,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 20,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.7,
   },
 
@@ -306,7 +301,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 20,
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     opacity: 0.9,
   },
 
@@ -315,14 +310,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   itemText: {
-    color: BGCOLOR_6,
+    color: BGCOLOR[6],
   },
   itemTextSelected: {
-    color: BGCOLOR_10,
+    color: '#FFF',
   },
 
   clearButton: {
-    backgroundColor: BGCOLOR_0,
+    backgroundColor: BGCOLOR[0],
     position: 'absolute',
     top: 4,
     right: 4,
@@ -330,7 +325,7 @@ const styles = StyleSheet.create({
     width: 36,
     borderRadius: 18,
     borderWidth: 2,
-    borderColor: BGCOLOR_10,
+    borderColor: BGCOLOR[10],
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',

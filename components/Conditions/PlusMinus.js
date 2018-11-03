@@ -5,10 +5,7 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { material } from 'react-native-typography';
 
 import {
-  BGCOLOR_0,
-  BGCOLOR_1,
-  BGCOLOR_2,
-  BGCOLOR_4,
+  BGCOLOR,
 } from '../../constants';
 
 class Option extends React.PureComponent {
@@ -69,11 +66,11 @@ const styles = {
   container: {
     height: 46,
     flexDirection: 'row',
-    backgroundColor: BGCOLOR_1,
+    backgroundColor: BGCOLOR[0],
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: BGCOLOR_2,
+    borderColor: BGCOLOR[3],
     borderRadius: 23,
     marginHorizontal: 10,
     marginVertical: 5,
@@ -93,10 +90,10 @@ const styles = {
 
   optionTouchableActive: {
     flex: 1,
-    backgroundColor: BGCOLOR_4,
+    backgroundColor: BGCOLOR[4],
     borderRadius: 28,
     borderWidth: 1,
-    borderColor: BGCOLOR_0,
+    borderColor: BGCOLOR[0],
     marginLeft: 0,
     marginRight: 0,
     height: 44,
@@ -106,7 +103,7 @@ const styles = {
     shadowOpacity: 0.31,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 0 },
-    shadowColor: BGCOLOR_0,
+    shadowColor: BGCOLOR[0],
     paddingHorizontal: 5,
   },
 
