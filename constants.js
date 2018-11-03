@@ -1,7 +1,6 @@
 /* eslint object-property-newline:0 */
 
 import React from 'react';
-import Emoji from 'react-native-emoji';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as Emotions from './Icons/Emotions';
@@ -134,6 +133,19 @@ export const MB_CONDITIONS = {
     ],
     default: 0,
   },
+  'emotional-stability': {
+    name: 'emotional-stability',
+    className: 'mind',
+    caption: 'Emotional Stability',
+    type: 'PlusMinus',
+    description: 'How rapidly are you shifting between strong moods.',
+    options: [
+      [  0, 'Stable' ],
+      [ -1, 'Unstable' ],
+      [ -2, 'Wild' ],
+    ],
+    default: 0,
+  },
   'sex-crave': {
     name: 'sex-crave',
     className: 'mind',
@@ -201,19 +213,6 @@ export const MB_CONDITIONS = {
       [  0, 'None'  ],
       [ -1, 'Low'  ],
       [ -2, 'High'  ],
-    ],
-    default: 0,
-  },
-  'emotional-stability': {
-    name: 'emotional-stability',
-    className: 'mind',
-    caption: 'Emotional Stability',
-    type: 'PlusMinus',
-    description: 'How rapidly are you shifting between strong moods.',
-    options: [
-      [  0, 'Stable' ],
-      [ -1, 'Unstable' ],
-      [ -2, 'Wild' ],
     ],
     default: 0,
   },
