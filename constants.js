@@ -240,11 +240,26 @@ export const MB_CONDITIONS = {
     description: 'How well did you sleep last night?',
     type: 'PlusMinus',
     options: [
-      [ -1, 'Poor', <Emoji name="thumbsdown" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  0, 'OK',   <Emoji name="ok_hand" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
-      [  1, 'Good', <Emoji name="thumbsup" style={{ fontSize: MB_EMOJI_SIZE }} /> ],
+      [ -1, 'Poor' ],
+      [  0, 'OK' ],
+      [  1, 'Good' ],
     ],
   },
+  'energy': {
+    name: 'energy',
+    className: 'body',
+    caption: 'Energy Level',
+    type: 'PlusMinus',
+    options: [
+      [ -2, 'Very Low', <MaterialIcons name="exposure-neg-2" size={MB_EMOJI_SIZE} color="white" /> ],
+      [ -1, 'Low', <MaterialIcons name="exposure-neg-1" size={MB_EMOJI_SIZE} color="white" /> ],
+      [  0, 'Average' ],
+      [  1, 'High', <MaterialIcons name="exposure-plus-1" size={MB_EMOJI_SIZE} color="white" /> ],
+      [  2, 'Very High', <MaterialIcons name="exposure-plus-2" size={MB_EMOJI_SIZE} color="white" /> ],
+    ],
+    default: 0,
+  },
+
   'temperature':         {
     name: 'temperature',
     className: 'body',
