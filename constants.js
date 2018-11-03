@@ -253,6 +253,7 @@ export const MB_CONDITIONS = {
 
   'weight': {
     name: 'weight',
+    className: 'body',
     caption: 'Weight',
     type: 'Decimal',
   },

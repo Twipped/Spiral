@@ -2,13 +2,14 @@
 import React from 'react';
 import PlusMinus from './PlusMinus';
 import Temperature from './Temperature';
+import Decimal from './Decimal';
 import { View } from 'react-native';
 
 
 const Conditions = {
   PlusMinus,
   Temperature,
-  Decimal: View,
+  Decimal,
 };
 
 export default function ({ type, ...props }) {
