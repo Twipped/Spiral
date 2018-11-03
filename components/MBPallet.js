@@ -1,7 +1,7 @@
 /* eslint new-cap:0 */
 
 import React from 'react';
-import { View, Dimensions, ART, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Dimensions, ART, StyleSheet, TouchableOpacity, Text, Animated, Keyboard } from 'react-native';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
@@ -163,7 +163,36 @@ class MBPallet extends React.Component {
     this.state = {
       pressedTarget: null,
     };
+
+
+    const { CONTROL_HEIGHT } = this.dimensions();
+    this.keyboardHeight = new Animated.Value(CONTROL_HEIGHT);
   }
+
+  componentWillMount () {
+    this._keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+    this._keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+  }
+
+  componentWillUnmount () {
+    this._keyboardWillShowSub.remove();
+    this._keyboardWillHideSub.remove();
+  }
+
+  _keyboardWillShow = (event) => {
+    Animated.timing(this.keyboardHeight, {
+      duration: event.duration,
+      toValue: event.endCoordinates.height,
+    }).start();
+  };
+
+  _keyboardWillHide = (event) => {
+    const { CONTROL_HEIGHT } = this.dimensions();
+    Animated.timing(this.keyboardHeight, {
+      duration: event.duration,
+      toValue: CONTROL_HEIGHT,
+    }).start();
+  };
 
   lastPressDown = false;
 
@@ -261,10 +290,8 @@ class MBPallet extends React.Component {
       CONTROL_HEIGHT - MB_BUTTON_RADIUS - MAX_STROKE
     );
 
-    const style = { ...styles.palletContent, ...this.props.style };
-
     return (
-      <View style={style}>
+      <Animated.View style={[ styles.palletContent, this.props.style, { minHeight: this.keyboardHeight } ]}>
         <View style={styles.iconColumn}>
           <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
           <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
@@ -289,7 +316,7 @@ class MBPallet extends React.Component {
           <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
           <IconButton tab="Notes" currentTab={this.props.currentTab} Icon={NoteIcon} onPress={this.handlePress} />
         </View>
-      </View>
+      </Animated.View>
     );
   }
 };
@@ -303,7 +330,7 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
 
   underRow: {
