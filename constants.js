@@ -66,12 +66,12 @@ export const MB_MOODS = {
   ] },
   Neutral: { name: 'Neutral', fill: COLOR_YELLOW, color: '#000', emotions: [
     'Neutral',
-    'Calm', 'Content', 'Peaceful',
     'Apathetic', 'Numb', 'Bored',
     'Blah', 'Empty', 'Unmotivated',
   ] },
   Joy: { name: 'Joy', fill: COLOR_GREEN, color: '#000000', emotions: [
     'Happy',
+    'Calm', 'Content', 'Peaceful',
     'Confident', 'Proud', 'Motivated',
     'Inspired', 'Courageous', 'Hopeful',
     'Loving', 'Thankful', 'Intimate',
