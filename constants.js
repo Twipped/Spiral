@@ -100,7 +100,7 @@ export const MB_MOODS = {
     'Anguish', 'Despair', 'Powerless',
     'Guilt', 'Shame', 'Embarrassed',
     'Disappointed', 'Disillusioned', 'Depressed',
-  ] }
+  ] },
 };
 
 export const MB_EMOJI_SIZE = 30;
@@ -141,9 +141,8 @@ export const MB_CONDITIONS = {
     description: 'How strongly do you crave physical attention.',
     options: [
       [ -1, 'Stay Away', <FontAwesome name="minus-circle" size={MB_EMOJI_SIZE} color={COLOR_RED} />  ],
-      [  0, 'Meh',       <FontAwesome name="circle" size={MB_EMOJI_SIZE} color="yellow" /> ],
-      [  1, 'Want',      <FontAwesome name="plus-circle" size={MB_EMOJI_SIZE} color={COLOR_GREEN} />  ],
-      // [  2, 'Need',      <FontAwesome name="exclamation-circle" size={MB_EMOJI_SIZE} color="white" /> ],
+      [  0, 'Apathetic', <FontAwesome name="circle" size={MB_EMOJI_SIZE} color="yellow" /> ],
+      [  1, 'Thirsty',   <FontAwesome name="plus-circle" size={MB_EMOJI_SIZE} color={COLOR_GREEN} />  ],
     ],
     default: 0,
   },
