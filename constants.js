@@ -77,6 +77,7 @@ export const MB_MOODS = {
     'Nervous', 'Insecure', 'Worried',
     'Fearful', 'Emotional', 'Impatient',
     'Tired', 'Unfocused', 'Distracted',
+    'Guilt',
   ] },
   Neutral: { name: 'Neutral', fill: COLOR_YELLOW, color: '#000', emotions: [
     'Neutral',
@@ -100,6 +101,7 @@ export const MB_MOODS = {
     'Anguish', 'Despair', 'Powerless',
     'Guilt', 'Shame', 'Embarrassed',
     'Disappointed', 'Disillusioned', 'Depressed',
+    'Defeated',
   ] },
 };
 
