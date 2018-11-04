@@ -52,7 +52,7 @@ class HourRow extends React.Component {
     const state = this.props.state;
     const emotions = state && Array.from(state._emotions).sort().map((e) => {
       const [ mood, emotion ] = e.split('/');
-      const { fill, color } = MB_MOODS[mood];
+      const { fill, color } = MB_MOODS[mood] || {};
       return (
         <Badge key={'emotion/' + e} style={{ backgroundColor: fill, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
           <Text style={{ color }}>{emotion}</Text>
