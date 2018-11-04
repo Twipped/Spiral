@@ -1,15 +1,14 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
-import { xdateToData } from 'react-native-calendars/src/interface';
+import { FlatList, View, StyleSheet } from 'react-native';
 import Clock from '../../stores/Clock';
 import { ListItem, Body, Badge, Text, variables } from 'native-base';
-import { computed } from 'mobx';
 import { observer } from 'mobx-react/native';
-
+import { material } from 'react-native-typography';
+import { groupBy } from 'lodash';
 
 import {
   MB_MOODS,
-  BRAND_COLOR_LIGHT,
+  BGCOLOR,
 } from '../../constants';
 
 class HourText extends React.PureComponent {
@@ -50,7 +49,23 @@ class HourRow extends React.Component {
 
   render () {
     const state = this.props.state;
-    const emotions = state && Array.from(state._emotions).sort().map((e) => {
+
+    if (!state) {
+      return (
+        <ListItem onPress={this.handlePress}>
+          <HourText
+            hour={this.props.hour}
+            isNow={this.props.isNow}
+          />
+          <Body style={styles.emotionView} />
+        </ListItem>
+      );
+    }
+
+    const rawemotions = Array.from(state.emotions).sort();
+    let { emotions, body } = groupBy(rawemotions, (e) => (e.split('/')[0] === 'Body' ? 'body' : 'emotions'));
+
+    emotions = (emotions || []).map((e) => {
       const [ mood, emotion ] = e.split('/');
       const { fill, color } = MB_MOODS[mood] || {};
       return (
@@ -59,24 +74,34 @@ class HourRow extends React.Component {
         </Badge>
       );
     });
-    const conditions = state && Object.values(state.conditions).map((condition) => {
+
+    body = (body || []).map((e) => {
+      const name = e.split('/')[1];
+      return <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' }]}>{name}</Text></Text>;
+    });
+
+    let conditions = Object.values(state.conditions).map((condition) => {
       const { name, caption, valueLabel } = condition;
       if (condition.value === null || (condition.default === undefined && !condition.value)) return null;
       return (
-        <Badge key={'condition/' + name} style={{ backgroundColor: BRAND_COLOR_LIGHT, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
-          <Text style={{ color: 'white' }}>{caption}: {valueLabel}</Text>
-        </Badge>
+        <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' }]}>{caption}</Text>: {valueLabel}</Text>
       );
-    });
+    }).filter(Boolean);
+
+    conditions = body.concat(conditions);
+
     return (
-      <ListItem onPress={this.handlePress} >
-        <HourText
-          hour={this.props.hour}
-          isNow={this.props.isNow}
-        />
-        <Body style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          {emotions}{conditions}
-        </Body>
+      <ListItem onPress={this.handlePress} style={{ flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'row' }}>
+          <HourText
+            hour={this.props.hour}
+            isNow={this.props.isNow}
+          />
+          <Body style={styles.emotionView}>
+            {emotions}
+          </Body>
+        </View>
+        {conditions.length && <View style={styles.conditionView}>{conditions}</View> || null}
       </ListItem>
     );
   }
@@ -155,6 +180,30 @@ class HourList extends React.Component {
   };
 }
 
-
-
 export default HourList;
+
+var styles = StyleSheet.create({
+
+  emotionView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+
+  conditionView: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    backgroundColor: BGCOLOR[9],
+    marginTop: 10,
+    padding: 4,
+    borderRadius: 5,
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+
+  conditionText: {
+    ...material.caption,
+    marginHorizontal: 5,
+  },
+
+});
