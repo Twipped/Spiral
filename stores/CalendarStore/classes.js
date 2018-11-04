@@ -101,6 +101,10 @@ export class Hour {
     ));
   }
 
+  get emotions () {
+    return this._emotions;
+  }
+
   @computed
   get conditions () {
     return mapValues(MB_CONDITIONS, (c) => {

@@ -97,14 +97,10 @@ class EntryView extends React.Component {
         <ConditionMenu
           key="body-conditions"
           conditions={EntryEditor.entry.conditions}
+          emotions={EntryEditor.entry.emotions}
           className="body"
           onChange={this.onSetCondition}
-        />,
-        <BodyMenu
-          key="body-menu"
-          entryEmotions={EntryEditor.entry._emotions}
-          mood={MB_MOODS[tabName]}
-          onToggleEmotion={this.onToggleEmotion}
+          onToggle={this.onToggleEmotion}
         />,
       ];
       break;
@@ -114,8 +110,10 @@ class EntryView extends React.Component {
         <ConditionMenu
           key="mind-conditions"
           conditions={EntryEditor.entry.conditions}
+          emotions={EntryEditor.entry.emotions}
           className="mind"
           onChange={this.onSetCondition}
+          onToggle={this.onToggleEmotion}
         />
       );
       break;

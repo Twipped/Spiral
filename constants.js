@@ -100,21 +100,7 @@ export const MB_MOODS = {
     'Anguish', 'Despair', 'Powerless',
     'Guilt', 'Shame', 'Embarrassed',
     'Disappointed', 'Disillusioned', 'Depressed',
-  ] },
-  Body: { name: 'Body', fill: COLOR_YELLOW, color: '#000', groups: [
-    { caption: 'Head and Neck', symptoms: [
-      'Headache', 'Migraine', 'Neck Pain', 'Lightheaded', 'Dizziness', 'Hair Loss',
-    ] },
-    { caption: 'Chest', symptoms: [
-      'Breast Swelling', 'Tenderness', 'Breast Pain',
-    ] },
-    { caption: 'Abdomen and Digestion', symptoms: [
-      'Cramping', 'Bloating', 'Pressure Pain', 'Stomach Ache', 'Indigestion', 'Gas', 'Constipation', 'Loose Stool', 'Diarrhea',
-    ] },
-    { caption: 'General', symptoms: [
-      'Body Aches', 'Nausea', 'Hot Flashes', 'Joint Pain', 'Tight Muscles', 'Numbness',
-    ] },
-  ] },
+  ] }
 };
 
 export const MB_EMOJI_SIZE = 30;
@@ -245,6 +231,66 @@ export const MB_CONDITIONS = {
     default: 0,
   },
 
+
+  'body:head-neck': {
+    name: 'body:head-neck',
+    className: 'body',
+    caption: 'Head and Neck',
+    type: 'TogglePanel',
+    options: [
+      [ 'Body/Headache',    'Headache' ],
+      [ 'Body/Migraine',    'Migraine' ],
+      [ 'Body/Neck Pain',   'Neck Pain' ],
+      [ 'Body/Lightheaded', 'Lightheaded' ],
+      [ 'Body/Dizziness',   'Dizziness' ],
+      [ 'Body/Hair Loss',   'Hair Loss' ],
+    ],
+  },
+
+  'body:chest': {
+    name: 'body:chest',
+    className: 'body',
+    caption: 'Abdomen and Digestion',
+    type: 'TogglePanel',
+    options: [
+      [ 'Body/Breast Swelling',  'Breast Swelling' ],
+      [ 'Body/Tenderness',       'Tenderness' ],
+      [ 'Body/Breast Pain',      'Breast Pain' ],
+    ],
+  },
+
+  'body:abdomen-digestion': {
+    name: 'body:abdomen-digestion',
+    className: 'body',
+    caption: 'Abdomen and Digestion',
+    type: 'TogglePanel',
+    options: [
+      [ 'Body/Cramping',      'Cramping' ],
+      [ 'Body/Bloating',      'Bloating' ],
+      [ 'Body/Pressure Pain', 'Pressure Pain' ],
+      [ 'Body/Stomach Ache',  'Stomach Ache' ],
+      [ 'Body/Indigestion',   'Indigestion' ],
+      [ 'Body/Gas',           'Gas' ],
+      [ 'Body/Constipation',  'Constipation' ],
+      [ 'Body/Loose Stool',   'Loose Stool' ],
+      [ 'Body/Diarrhea',      'Diarrhea' ],
+    ],
+  },
+
+  'body:general-maladies': {
+    name: 'body:general-maladies',
+    className: 'body',
+    caption: 'General Maladies',
+    type: 'TogglePanel',
+    options: [
+      [ 'Body/Body Aches', 'Body Aches' ],
+      [ 'Body/Nausea', 'Nausea' ],
+      [ 'Body/Hot Flashes', 'Hot Flashes' ],
+      [ 'Body/Joint Pain', 'Joint Pain' ],
+      [ 'Body/Tight Muscles', 'Tight Muscles' ],
+      [ 'Body/Numbness', 'Numbness' ],
+    ],
+  },
 
   'sleep': {
     name: 'sleep',

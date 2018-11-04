@@ -3,6 +3,7 @@ import React from 'react';
 import PlusMinus from './PlusMinus';
 import Temperature from './Temperature';
 import Decimal from './Decimal';
+import TogglePanel from './TogglePanel';
 import { View } from 'react-native';
 
 
@@ -10,6 +11,7 @@ const Conditions = {
   PlusMinus,
   Temperature,
   Decimal,
+  TogglePanel,
 };
 
 export default function ({ type, ...props }) {
