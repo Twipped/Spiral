@@ -83,6 +83,7 @@ class HourRow extends React.Component {
         }
 
         const condition = Conditions.getByKey(key, state.values);
+        if (!condition) return;
         const { name, caption, valueLabel } = condition;
         return <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' } ]}>{caption}</Text>: {valueLabel}</Text>;
       })
