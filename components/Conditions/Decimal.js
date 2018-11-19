@@ -31,11 +31,11 @@ export default class Decimal extends React.PureComponent {
   }
 
   _onChange = (text) => {
-    this.props.onChange(this.props.name, text);
+    this.props.onChange(this.props.valueKey, text);
   }
 
   _onClear = () => {
-    this.props.onChange(this.props.name, null);
+    this.props.onChange(this.props.valueKey, null);
   }
 }
 

@@ -4,8 +4,6 @@ import PlusMinus from './PlusMinus';
 import Temperature from './Temperature';
 import Decimal from './Decimal';
 import TogglePanel from './TogglePanel';
-import { View } from 'react-native';
-
 
 const Conditions = {
   PlusMinus,

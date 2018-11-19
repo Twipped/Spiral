@@ -48,14 +48,15 @@ export default class PlusMinus extends React.PureComponent {
 
   handlePress = (value) => {
     if (!this.props.onChange) return;
-    this.props.onChange(this.props.name, value);
+    this.props.onChange(this.props.valueKey, value);
   }
 
   render () {
-
     return (
       <View style={styles.container}>
-        {this.props.options.map(([ v, label, control ], index) => <Option key={'option-' + index} label={control || label} value={v} selected={v === this.props.value} onPress={this.handlePress} />)}
+        {this.props.options.map(([ v, label, control ], index) => (
+          <Option key={'option-' + index} label={control || label} value={v} selected={v === this.props.value} onPress={this.handlePress} />
+        ))}
       </View>
     );
   }

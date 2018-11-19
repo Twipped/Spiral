@@ -32,6 +32,7 @@ class Conditions {
     const { name, className } = condition;
     const key = condition.key || `${condition.className}/${name}`;
     condition.key = key;
+    condition.valueKey = key;
 
     this.byKey.set(key, condition);
 
@@ -40,7 +41,7 @@ class Conditions {
     if (!this.byClass.has(className)) {
       this.byClass.set(className, new Set());
     }
-    this.byClass.get(className).add(name);
+    this.byClass.get(className).add(key);
 
     if (condition.toggles) {
       for (const [ toggleName, toggleLabel ] of condition.toggles) {
@@ -99,14 +100,10 @@ class Conditions {
     return { ...condition, value, valueLabel };
   }
 
-  getByClass (className, state) {
+  getForClass (className, state) {
     const set = this.byClass.get(className);
-    if (!set) return {};
-    const result = {};
-    set.forEach((name) => {
-      result[name] = this.get(name, state);
-    });
-    return result;
+    if (!set) return [];
+    return Array.from(set, (key) => this.getByKey(key, state));
   }
 
   getToggleLabel (toggleKey) {
@@ -417,7 +414,7 @@ conditions.add({
   name: 'anxiety:3',
   className: 'Anxiety',
   type: 'TogglePanel',
-  fillColor: COLOR_YELLOW,
+  fillColor: COLOR_ORANGE,
   textColor: '#000099',
   toggles: [
     [ 'Anxiety/Stressed',    'Stressed' ],
@@ -430,7 +427,7 @@ conditions.add({
   name: 'anxiety:2',
   className: 'Anxiety',
   type: 'TogglePanel',
-  fillColor: COLOR_YELLOW,
+  fillColor: COLOR_ORANGE,
   textColor: '#000099',
   toggles: [
     [ 'Anxiety/Nervous',     'Nervous' ],
@@ -446,7 +443,7 @@ conditions.add({
   name: 'anxiety:1',
   className: 'Anxiety',
   type: 'TogglePanel',
-  fillColor: COLOR_YELLOW,
+  fillColor: COLOR_ORANGE,
   textColor: '#000099',
   toggles: [
     [ 'Anxiety/Impatient',   'Impatient' ],
@@ -540,7 +537,6 @@ conditions.add({
     [ 'Joy/Excited',    'Excited' ],
     [ 'Joy/Energetic',  'Energetic' ],
     [ 'Joy/Hopeful',    'Hopeful' ],
-    [ 'Joy/Curious',    'Curious' ],
   ],
 });
 

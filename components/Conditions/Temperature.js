@@ -220,7 +220,7 @@ export default class Temperature extends React.PureComponent {
       this.setState({
         selectedIndex,
       });
-      this.props.onChange(this.props.name, selectedValue, selectedIndex);
+      this.props.onChange(this.props.valueKey, selectedValue, selectedIndex);
     }
   }
 
@@ -228,7 +228,7 @@ export default class Temperature extends React.PureComponent {
     this.setState({
       selectedIndex: -1,
     });
-    this.props.onChange(this.props.name, null, -1);
+    this.props.onChange(this.props.valueKey, null, -1);
   }
 }
 

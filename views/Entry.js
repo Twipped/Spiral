@@ -4,14 +4,12 @@ import { observable } from 'mobx';
 import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import MBPallet from '../components/MBPallet';
-import { MoodMenu, BodyMenu, ConditionMenu } from '../components/Menus';
+import ConditionMenu from '../components/ConditionMenu';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
 import CalendarStore from '../stores/CalendarStore';
+import Conditions from '../stores/Conditions';
 
-import {
-  MB_MOODS,
-} from '../constants';
 
 export const EntryEditor = observable({
   currentTab: null,
@@ -66,12 +64,9 @@ class EntryView extends React.Component {
     this.scrollview.scrollTo({ y: 0, animated: false });
   };
 
-  onToggleEmotion = (emotionKey, selected) => {
-    EntryEditor.entry.setEmotion(emotionKey, selected);
-  };
-
-  onSetCondition = (conditionKey, value) => {
-    EntryEditor.entry.setCondition(conditionKey, value);
+  onSetValue = (valueKey, value) => {
+    console.log('onSetValue', valueKey, value);
+    EntryEditor.entry.setValue(valueKey, value);
   };
 
   render () {
@@ -85,35 +80,29 @@ class EntryView extends React.Component {
     case 'Joy':
     case 'Sad':
       tabbedComponent = (
-        <MoodMenu
-          entryEmotions={EntryEditor.entry._emotions}
-          mood={MB_MOODS[tabName]}
-          onToggleEmotion={this.onToggleEmotion}
+        <ConditionMenu
+          conditions={Conditions.getForClass(tabName, EntryEditor.entry.values)}
+          hash={EntryEditor.entry.hash}
+          onChange={this.onSetValue}
         />
       );
       break;
     case 'Body':
-      tabbedComponent = [
+      tabbedComponent = (
         <ConditionMenu
-          key="body-conditions"
-          conditions={EntryEditor.entry.conditions}
-          emotions={EntryEditor.entry.emotions}
-          className="body"
-          onChange={this.onSetCondition}
-          onToggle={this.onToggleEmotion}
-        />,
-      ];
+          conditions={Conditions.getForClass('Body', EntryEditor.entry.values)}
+          hash={EntryEditor.entry.hash}
+          onChange={this.onSetValue}
+        />
+      );
       break;
 
     case 'Mind':
       tabbedComponent = (
         <ConditionMenu
-          key="mind-conditions"
-          conditions={EntryEditor.entry.conditions}
-          emotions={EntryEditor.entry.emotions}
-          className="mind"
-          onChange={this.onSetCondition}
-          onToggle={this.onToggleEmotion}
+          conditions={Conditions.getForClass('Mind', EntryEditor.entry.values)}
+          hash={EntryEditor.entry.hash}
+          onChange={this.onSetValue}
         />
       );
       break;
