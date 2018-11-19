@@ -11,14 +11,14 @@ export default function TogglePanel ({ name, fillColor, textColor, toggles, valu
   if (toggles.length === 2) pill = 45;
   if (toggles.length === 1) pill = 90;
 
-  const buttons = toggles.map(([ key, caption ]) => {
+  const buttons = toggles.map(([ key, caption, control ]) => {
     if (!Array.isArray(value)) throw new Error('Received a condition without toggle values.');
     const selected = value.includes(key);
     const onPress = () => onChange(key, selected ? null : true);
 
     const buttonProperties = {
       key,
-      caption,
+      caption: control || caption,
       fill: fillColor,
       textColor,
       selected,

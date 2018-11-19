@@ -16,13 +16,28 @@ export default class MoodButton extends React.PureComponent {
   render () {
     const { fill, textColor, caption, ...props } = this.props;
     const [ buttonStyle, textStyle ] = buildStyles(fill, textColor, { ...props });
+
+    let child;
+    switch (typeof caption) {
+    case 'string':
+    case 'number':
+      child = <Text style={textStyle}>{caption}</Text>;
+      break;
+    case 'function':
+    case 'object':
+      child = caption;
+      break;
+    default:
+      child = <Text style={textStyle}>[UNSUPPORTED]</Text>;
+    }
+
     return (
       <TouchableOpacity
         {...props}
         onPress={this.handlePress}
         style={buttonStyle}
       >
-        <Text style={textStyle}>{caption}</Text>
+        {child}
       </TouchableOpacity>
     );
   }

@@ -274,9 +274,9 @@ conditions.add({
   caption: 'Abdomen and Digestion',
   type: 'TogglePanel',
   toggles: [
-    [ 'Body/Breast Swelling',  'Breast Swelling' ],
-    [ 'Body/Tenderness',       'Tenderness' ],
-    [ 'Body/Breast Pain',      'Breast Pain' ],
+    [ 'Body/Breast Swelling',   'Breast Swelling',   'Swelling' ],
+    [ 'Body/Breast Tenderness', 'Breast Tenderness', 'Tenderness' ],
+    [ 'Body/Breast Pain',       'Breast Pain',       'Pain' ],
   ],
 });
 
