@@ -289,9 +289,6 @@ conditions.add({
   toggles: [
     [ 'Body/Cramping',      'Cramping' ],
     [ 'Body/Bloating',      'Bloating' ],
-    [ 'Body/Pressure Pain', 'Pressure Pain' ],
-    [ 'Body/Stomach Ache',  'Stomach Ache' ],
-    [ 'Body/Indigestion',   'Indigestion' ],
     [ 'Body/Gas',           'Gas' ],
     [ 'Body/Constipation',  'Constipation' ],
     [ 'Body/Loose Stool',   'Loose Stool' ],
@@ -306,12 +303,12 @@ conditions.add({
   type: 'PlusMinus',
   tags: [ 'Menstruation' ],
   options: [
-    [ 0, 'Nothing' ],
     [ 1, 'Spotting' ],
     [ 2, 'Light' ],
     [ 3, 'Medium' ],
     [ 4, 'Heavy' ],
   ],
+  default: 0,
 });
 
 conditions.add({
