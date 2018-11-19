@@ -5,6 +5,7 @@ import { ListItem, Body, Badge, Text, variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
 import { groupBy } from 'lodash';
+import Conditions from '../../stores/Conditions';
 
 import {
   MB_MOODS,
@@ -62,33 +63,32 @@ class HourRow extends React.Component {
       );
     }
 
-    const rawemotions = Array.from(state.emotions).sort();
-    let { emotions, body } = groupBy(rawemotions, (e) => (e.split('/')[0] === 'Body' ? 'body' : 'emotions'));
+    const valuesByClass = state.keysByClass;
 
-    emotions = (emotions || []).map((e) => {
-      const [ mood, emotion ] = e.split('/');
-      const { fill, color } = MB_MOODS[mood] || {};
-      return (
-        <Badge key={'emotion/' + e} style={{ backgroundColor: fill, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
-          <Text style={{ color }}>{emotion}</Text>
-        </Badge>
-      );
-    });
+    const emotions = [ 'Anger', 'Anxiety', 'Neutral', 'Joy', 'Sad' ].map((mood) =>
+      (valuesByClass[mood] || []).map((emotion) => {
+        const label = Conditions.getToggleLabel(emotion);
+        const { fillColor, textColor } = Conditions.getByToggle(emotion) || {};
+        return (
+          <Badge key={emotion} style={{ backgroundColor: fillColor, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
+            <Text style={{ color: textColor }}>{label}</Text>
+          </Badge>
+        );
+      })
+    ).flat();
 
-    body = (body || []).map((e) => {
-      const name = e.split('/')[1];
-      return <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' }]}>{name}</Text></Text>;
-    });
+    const conditions = [ 'Mind', 'Body' ].map((className) =>
+      (valuesByClass[className] || []).map((key) => {
+        const toggleLabel = Conditions.getToggleLabel(key);
+        if (toggleLabel) {
+          return <Text key={key} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' } ]}>{toggleLabel}</Text></Text>;
+        }
 
-    let conditions = Object.values(state.conditions).map((condition) => {
-      const { name, caption, valueLabel } = condition;
-      if (condition.value === null || (condition.default === undefined && !condition.value)) return null;
-      return (
-        <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' }]}>{caption}</Text>: {valueLabel}</Text>
-      );
-    }).filter(Boolean);
-
-    conditions = body.concat(conditions);
+        const condition = Conditions.getByKey(key, state.values);
+        const { name, caption, valueLabel } = condition;
+        return <Text key={name} style={styles.conditionText}><Text style={[ styles.conditionText, { fontWeight: '600' } ]}>{caption}</Text>: {valueLabel}</Text>;
+      })
+    ).flat();
 
     return (
       <ListItem onPress={this.handlePress} style={{ flexDirection: 'column' }}>
