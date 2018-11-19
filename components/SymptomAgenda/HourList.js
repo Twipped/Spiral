@@ -4,12 +4,11 @@ import Clock from '../../stores/Clock';
 import { ListItem, Body, Badge, Text, variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
-import { groupBy } from 'lodash';
 import Conditions from '../../stores/Conditions';
 
 import {
-  MB_MOODS,
   BGCOLOR,
+  MB_MOODS,
 } from '../../constants';
 
 class HourText extends React.PureComponent {
@@ -65,13 +64,12 @@ class HourRow extends React.Component {
 
     const valuesByClass = state.keysByClass;
 
-    const emotions = [ 'Anger', 'Anxiety', 'Neutral', 'Joy', 'Sad' ].map((mood) =>
-      (valuesByClass[mood] || []).map((emotion) => {
+    const emotions = Object.values(MB_MOODS).map((mood) =>
+      (valuesByClass[mood.name] || []).map((emotion) => {
         const label = Conditions.getToggleLabel(emotion);
-        const { fillColor, textColor } = Conditions.getByToggle(emotion) || {};
         return (
-          <Badge key={emotion} style={{ backgroundColor: fillColor, marginRight: 4, marginTop: 2, marginBottom: 2 }}>
-            <Text style={{ color: textColor }}>{label}</Text>
+          <Badge key={emotion} style={[ styles.emotionBadge, { backgroundColor: mood.fillColor } ]}>
+            <Text style={[ styles.emotionBadgeText, { color: mood.textColor } ]}>{label}</Text>
           </Badge>
         );
       })
@@ -187,6 +185,16 @@ var styles = StyleSheet.create({
   emotionView: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+
+  emotionBadge: {
+    marginRight: 4,
+    marginTop: 2,
+    marginBottom: 2,
+  },
+
+  emotionBadgeText: {
+    ...material.body1,
   },
 
   conditionView: {

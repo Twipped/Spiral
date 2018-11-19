@@ -57,5 +57,12 @@ export const MB_MOOD_TEXT_PROPS = {
   fill: '#111',
   alignment: 'center',
 };
+export const MB_MOODS = {
+  Anger:   { name: 'Anger',   fillColor: COLOR_RED,    textColor: '#fceaea' },
+  Anxiety: { name: 'Anxiety', fillColor: COLOR_ORANGE, textColor: '#000099' },
+  Neutral: { name: 'Neutral', fillColor: COLOR_YELLOW, textColor: '#000000' },
+  Joy:     { name: 'Joy',     fillColor: COLOR_GREEN,  textColor: '#000000' },
+  Sad:     { name: 'Sad',     fillColor: COLOR_BLUE,   textColor: '#000000' },
+};
 
 export const MB_EMOJI_SIZE = 30;

@@ -79,8 +79,7 @@ function InnerArcs (props) {
     .sort(null)
   ;
 
-  var { Body, ...moods } = MB_MOODS; // eslint-disable-line no-unused-vars
-  moods = Object.values(moods).map((m) => (m.factor || 1));
+  const moods = Object.values(MB_MOODS).map((m) => (m.factor || 1));
 
   return pie(moods)
     .map((slice, i) => {
@@ -92,19 +91,19 @@ function InnerArcs (props) {
       let pathProps;
       let arc;
       if (props.pressedTarget === moodName) {
-        const c = Color(mood.fill).alpha(0.5).hsl().toString();
+        const c = Color(mood.fillColor).alpha(0.5).hsl().toString();
         arc = arcInactive;
         pathProps = { fill: c, stroke: c, ...MB_MOOD_PRESSED_PROPS };
       } else if (props.currentTarget === moodName) {
         arc = arcActive;
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_ACTIVE_PROPS };
+        pathProps = { fill: mood.fillColor, stroke: mood.fillColor, ...MB_MOOD_ACTIVE_PROPS };
       } else {
         arc = props.currentTarget === 'Mind' ? arcActive : arcInactive;
-        pathProps = { fill: mood.fill, stroke: mood.fill, ...MB_MOOD_INACTIVE_PROPS };
+        pathProps = { fill: mood.fillColor, stroke: mood.fillColor, ...MB_MOOD_INACTIVE_PROPS };
       }
       pathProps.d = arc(slice);
 
-      const countColor = Color(mood.fill).darken(0.4).hsl().toString();
+      const countColor = Color(mood.fillColor).darken(0.4).hsl().toString();
 
       const angle = (slice.startAngle + slice.endAngle) / 2;
       const [ textX, textY ] = arcInactive.centroid(slice);
@@ -118,7 +117,7 @@ function InnerArcs (props) {
         <ART.Group key={key}>
           <ART.Shape {...pathProps} />
           <ART.Group x={textX} y={textY} transform={transform}>
-            <SmartText x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText} fill={mood.color} >{mood.name}</SmartText>
+            <SmartText x={0} y={ARC_TEXT_Y} alignment="center" style={styles.arcText} fill={mood.textColor} >{mood.name}</SmartText>
             {count && <Circle x={0} y={(ARC_THICKNESS / 2) - 15} r={5} fill={countColor} />}
           </ART.Group>
         </ART.Group>
