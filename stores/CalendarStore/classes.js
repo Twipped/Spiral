@@ -9,21 +9,7 @@ import {
   deserialize,
   update,
 } from 'serializr';
-import ObservableSet, { set } from '../../lib/observable-set';
-import { some, groupBy, mapValues } from 'lodash';
-
-function first (array, iteratee) {
-  for (const item of array) {
-    const r = iteratee(item);
-    if (r) return item;
-    if (r === false) return;
-  }
-}
-
-import {
-  MB_CONDITIONS,
-  MB_MOODS,
-} from '../../constants';
+import { each, some, groupBy, mapValues } from 'lodash';
 
 export class Hour {
   @serializable(primitive()) key = '';
@@ -32,13 +18,9 @@ export class Hour {
   @serializable(primitive()) day = '';
   @serializable(primitive()) hour = '';
 
-  @serializable(set(primitive()))
-  @observable
-  _emotions = new ObservableSet();
-
   @serializable(map(primitive()))
   @observable
-  _conditions = new Map();
+  values = new Map();
 
   constructor (year, month, day, hour) {
     this.year = String(year);
@@ -54,79 +36,35 @@ export class Hour {
 
   @computed
   get hasData () {
-    return !!this._emotions.size || !!this._conditions.size;
+    return !!this.values.size;
   }
 
   @computed
   get hash () {
-    const emotions = this._emotions.size && Array.from(this._emotions).join(',') || '';
-    const conditions = this._conditions.size && Array.from(this._conditions).flat(1).join(',');
-    return emotions + ';' + conditions;
+    return this.values.size && Array.from(this.values).flat(1).join(',');
   }
 
   @computed
-  get moodCounts () {
-    const moodGroups = groupBy(Array.from(this._emotions), (e) => e.split('/')[0]);
+  get tabCounts () {
+    const moodGroups = groupBy(Array.from(this.values.keys()), (k) => k.split('/')[0]);
     const moodCounts = mapValues(moodGroups, (m) => m.length);
-    moodCounts.Conditions = this._conditions.size;
     return moodCounts;
   }
 
-  @action
-  setEmotion (emotionKey, on) {
-    if (typeof on === 'undefined') on = !this._emotions.has(emotionKey);
-    if (!on) this._emotions.delete(emotionKey);
-    if (on) this._emotions.add(emotionKey);
+  @computed
+  get keysByClass () {
+    return groupBy(Array.from(this.values.keys()), (k) => k.split('/')[0]);
   }
 
   @action
-  setCondition (conditionKey, value) {
+  setValue (conditionKey, value) {
     if (value === null) {
-      this._conditions.delete(conditionKey);
+      this.values.delete(conditionKey);
       return;
     }
-    this._conditions.set(conditionKey, value);
+    this.values.set(conditionKey, value);
   }
 
-  @computed
-  get moods () {
-    return mapValues(MB_MOODS, (m) => (
-      m.emotions.map((e) => ({
-        mood: m.name,
-        emotion: e,
-        fill: m.fill,
-        color: m.color,
-        value: this.emotions.has(`${m.name}/${e}`),
-      }))
-    ));
-  }
-
-  get emotions () {
-    return this._emotions;
-  }
-
-  @computed
-  get conditions () {
-    return mapValues(MB_CONDITIONS, (c) => {
-      const value = this._conditions.has(c.name)
-        ? this._conditions.get(c.name)
-        : null
-      ;
-
-      let valueLabel = null;
-      if (value !== null) {
-        if (c.options) {
-          valueLabel = first(c.options, ([ v, l ]) =>
-            (v === value ? l : null)
-          )[1];
-        } else {
-          valueLabel = value;
-        }
-      }
-
-      return { ...c, value, valueLabel };
-    });
-  }
 }
 
 export class Day {
@@ -171,7 +109,7 @@ export class Day {
 }
 
 export class Month {
-  static version = '0.0.2';
+  static version = '0.0.3';
 
   @serializable(primitive()) version = Month.version;
   @serializable(primitive()) key = '';
@@ -241,8 +179,51 @@ function upgradeSerializedVersion (data) {
     return data;
   }
 
-  if (!data.version) {
+  if (!data.version || !upgrades[data.version]) {
     return {};
   }
+
+  const oldVersion = data.version;
+  data = upgrades[data.version](data);
+  console.log('Upgraded month from ' + oldVersion, data);
+  return data;
 }
 
+const upgrades = {
+  '0.0.2': function (data) {
+    const keyMap = {
+      'appetite':            'Mind/appetite',
+      'emotional-stability': 'Mind/emotional-stability',
+      'sex-crave':           'Mind/sex-crave',
+      'sex-drive':           'Mind/sex-drive',
+      'gender-dysphoria':    'Mind/gender-dysphoria',
+      'vocal-quality':       'Mind/vocal-quality',
+      'social-anxiety':      'Mind/social-anxiety',
+      'body-confidence':     'Mind/body-confidence',
+      'general-mood':        'Mind/general-mood',
+      'sleep':               'Body/sleep',
+      'energy':              'Body/energy',
+      'temperature':         'Body/temperature',
+      'weight':              'Body/weight',
+    };
+
+    if (!data.days) return data;
+    each(data.days, (day) => {
+      each(day.hours, (hour) => {
+        hour.values = {};
+        each(hour._emotions, (emotion) => {
+          hour.values[emotion] = true;
+        });
+        each(hour._conditions, (value, condition) => {
+          if (value === null) return;
+          const key = keyMap[condition];
+          hour.values[key] = value;
+        });
+        delete hour._emotions;
+        delete hour._conditions;
+      });
+    });
+    data.version = '0.0.3';
+    return data;
+  },
+};

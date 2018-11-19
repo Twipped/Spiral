@@ -304,7 +304,7 @@ class MBPallet extends React.Component {
             preserveAspectRatio="XMidYMid meet"
           >
             <ART.Group x={CONTROL_CENTER_X} y={CONTROL_CENTER_Y}>
-              <InnerArcs {...props} counts={this.props.entry.moodCounts} />
+              <InnerArcs {...props} counts={this.props.entry.tabCounts} />
             </ART.Group>
           </ART.Surface></View>
           <View style={styles.underRow}>
