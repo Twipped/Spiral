@@ -271,8 +271,9 @@ conditions.add({
 conditions.add({
   name: 'body:chest',
   className: 'Body',
-  caption: 'Abdomen and Digestion',
+  caption: 'Breasts',
   type: 'TogglePanel',
+  tag: [ 'Breasts' ],
   toggles: [
     [ 'Body/Breast Swelling',   'Breast Swelling',   'Swelling' ],
     [ 'Body/Breast Tenderness', 'Breast Tenderness', 'Tenderness' ],
