@@ -38,7 +38,7 @@
     "babel-eslint": "~10.0.1",
     "babel-jest": "23.6.0",
     "eslint": "~5.6.1",
-    "eslint-config-twipped": "~2.5.0",
+    "eslint-config-twipped": "~2.6.0",
     "eslint-plugin-jest": "~21.24.0",
     "eslint-plugin-node": "~7.0.1",
     "eslint-plugin-promise": "~4.0.1",
