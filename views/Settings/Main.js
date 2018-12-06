@@ -10,6 +10,7 @@ class SettingsMain extends React.Component {
   backupExport = async () => {
     const data = await CalendarStore.export();
     await Clipboard.setString(data);
+    Alert.alert('Export Complete', 'Your Spiral data has been exported to the clipboard.');
   }
 
   backupImport = async () => {
