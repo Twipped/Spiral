@@ -22,7 +22,7 @@ export default createStackNavigator(
     },
   },
   {
-    navigationOptions: {
+    defaultNavigationOptions: {
       barStyle: 'dark-content',
       headerStyle: {
         backgroundColor: BRAND_COLOR,

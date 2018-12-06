@@ -2,7 +2,7 @@ import React from 'react';
 import { BRAND_COLOR } from './constants';
 import { Root } from 'native-base';
 import { View, StatusBar, Button } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createAppContainer, createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,8 +10,8 @@ import { dateToData } from './lib/common';
 import navigate from './lib/navigate';
 import { observer } from 'mobx-react/native';
 
-import CalendarStore from './stores/CalendarStore';
-import AgendaView from './views/Agenda';
+// import CalendarStore from './stores/CalendarStore';
+import HistoryView from './views/History';
 import SettingsView from './views/Settings';
 import ThumbButton from './components/ThumbButton';
 import EntryView, { EntryEditor, EntryHeaderTitle } from './views/Entry';
@@ -33,7 +33,7 @@ function getActiveRouteName (navigationState) {
 const TabbedNavigator = createBottomTabNavigator(
   {
     History: {
-      screen: AgendaView,
+      screen: HistoryView,
       navigationOptions: () => ({
         tabBarIcon: ({ tintColor }) => (
           <FontAwesome
@@ -118,7 +118,7 @@ const EntryModal = createStackNavigator({
   },
 },
 {
-  navigationOptions: {
+  defaultNavigationOptions: {
     barStyle: 'dark-content',
     headerStyle: {
       backgroundColor: BRAND_COLOR,
@@ -139,11 +139,13 @@ const ModalNavigator = createStackNavigator(
     // initialRouteName: 'CalendarHome',
     mode: 'modal',
     /* The header config from HomeScreen is now here */
-    navigationOptions: {
+    defaultNavigationOptions: {
       header: null,
     },
   }
 );
+
+const AppContainer = createAppContainer(ModalNavigator);
 
 function onThumbButtonPress () {
   if (EntryEditor.entry && EntryEditor.currentTab !== 'Mind') {
@@ -160,7 +162,7 @@ const App = observer(function App () {
         barStyle="light-content"
         backgroundColor={BRAND_COLOR}
       />
-      <ModalNavigator
+      <AppContainer
         ref={(navigatorRef) => {
           navigate.setTopLevelNavigator(navigatorRef);
         }}
