@@ -1,6 +1,7 @@
 import React from 'react';
 import { Agenda } from 'react-native-calendars';
 import { xdateToData } from 'react-native-calendars/src/interface';
+import dateToData from '../../lib/dateToData';
 import { observer } from 'mobx-react/native';
 import moment from 'moment';
 import { set } from 'lodash';
@@ -12,22 +13,29 @@ class SymptomAgenda extends Agenda {
 
   constructor (props, ...args) {
     super(props, ...args);
+    this.onDayChange = this.onDayChange.bind(this);
+
+    const months = [
+      moment().subtract(1, 'month'),
+      moment(),
+      moment().add(1, 'month'),
+    ].map((m) => dateToData(m.toDate()));
+    this.state.monthsNeeded = months;
+    this.state.monthsNeededKey = months.map((m) => m.dateString).join(',');
 
     const d = new Date();
     props.calendarStore.ensureMonthLoaded(d.getFullYear(), d.getMonth() + 1);
   }
 
   renderReservations () {
-    const { year, month, day } = xdateToData(this.state.selectedDay);
-
     return (
       <HourList
-        year={year}
-        month={month}
-        day={day}
+        selectedDay={xdateToData(this.state.selectedDay)}
         onHourSelected={this.props.onHourSelected}
         calendarStore={this.props.calendarStore}
-        dayState={this.props.calendarStore.getDay(year, month, day)}
+        monthsNeeded={this.state.monthsNeeded}
+        monthsNeededKey={this.state.monthsNeededKey}
+        onDayChange={this.onDayChange}
       />
     );
   };
@@ -56,10 +64,12 @@ class SymptomAgenda extends Agenda {
   }
 
   onVisibleMonthsChange (months) {
-    months.forEach(({ year, month }) => {
+    var monthsNeededKey = [];
+    months.forEach(({ year, month, dateString }) => {
       this.props.calendarStore.ensureMonthLoaded(year, month);
+      monthsNeededKey.push(dateString);
     });
-    this.setState({ monthsNeeded: months });
+    this.setState({ monthsNeeded: months, monthsNeededKey: monthsNeededKey.join(',') });
   }
 
 }
