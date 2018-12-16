@@ -65,16 +65,7 @@ class HourList extends React.Component {
       this.onRowLayoutChange(item, height, delta);
     };
 
-    const component = (
-      <DayRow
-        {...item}
-        onLayout={onLayout}
-        onHourSelected={this.props.onHourSelected}
-        calendarStore={this.props.calendarStore}
-      />
-    );
-
-    item.component = component;
+    item.onLayout = onLayout;
 
     this.days.set(dateString, item);
     return item;
@@ -113,6 +104,76 @@ class HourList extends React.Component {
     const scrollY = event.nativeEvent.contentOffset.y;
     console.log('onScroll', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
     this.scrollY = scrollY - this.frameHeight;
+    if (this.humanScroll) this.onHumanScroll();
+  }
+
+  onListTouch = () => {
+    this.humanScroll = true;
+    return false;
+  }
+
+  onScrollEndDrag = (event) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    console.log('onScrollEndDrag', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
+    this.scrollY = scrollY - this.frameHeight;
+    if (this.humanScroll) this.onHumanScroll();
+    this.humanScroll = false;
+  }
+
+  onMomentumScrollBegin = (event) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    console.log('onMomentumScrollBegin', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
+    this.scrollY = scrollY - this.frameHeight;
+    if (this.humanScroll) this.onHumanScroll();
+    this.humanScroll = true;
+  }
+
+  onMomentumScrollEnd = (event) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    console.log('onMomentumScrollEnd', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
+    this.scrollY = scrollY - this.frameHeight;
+    if (this.humanScroll) this.onHumanScroll();
+    this.humanScroll = false;
+  }
+
+  onHumanScroll () {
+    var offset = 0;
+    let index = -1;
+    let targetDay = null;
+    let targetIndex = -1;
+    let targetId = 0;
+    let targetDelta = 0;
+    for (const item of this.daysToRender) {
+      index++;
+      const { height } = item;
+
+      if (offset + (height / 2) >= this.scrollY) {
+        targetDay = item;
+        targetIndex = index;
+        targetId = item.id;
+        targetDelta = this.scrollY - offset;
+        break;
+      }
+
+      offset += height;
+    }
+
+    const sameDay = targetDay
+      && this.selectedDay.year === targetDay.year
+      && this.selectedDay.month === targetDay.month
+      && this.selectedDay.day === targetDay.day
+    ;
+
+    if (targetDay && !sameDay) {
+      this.targetedDay   = targetDay;
+      this.targetedIndex = targetIndex;
+      this.targetedId    = targetId;
+      this.targetY       = Math.round(offset) + targetDelta;
+      this.targetDelta   = targetDelta;
+      // this.props.onDayChange(targetDay);
+    }
+
+    console.log('onHumanScroll', { current: this.scrollY, target: this.targetY, delta: this.targetDelta, day: targetDay && targetDay.dateString });
   }
 
   computeDaysToRender (monthsNeeded) {
@@ -151,14 +212,9 @@ class HourList extends React.Component {
     this.targetedDay   = targetDay || days[0];
     this.targetedIndex = targetIndex;
     this.targetedId    = targetId;
-    this.targetY       = Math.round(targetY);
+    this.targetY       = Math.round(targetY) + this.targetDelta;
     console.log('computeDaysToRender', { targetDay: targetDay.dateString, index: targetIndex, targetY });
   }
-
-  // componentDidMount () {
-  //   // console.log('componentDidMount', this.selectedIndex);
-  //   this.onLayoutRefresh();
-  // }
 
   componentDidUpdate = () => {
     console.log('componentDidUpdate', { current: this.scrollY, target: this.targetY });
@@ -178,89 +234,17 @@ class HourList extends React.Component {
     return yes;
   }
 
-  // onLayoutRefresh = () => {
-  //   if (this.selectedIndex === -1) {
-  //     console.log('onLayoutRefresh', this.selectedIndex, this.scrollNeeded);
-  //     return;
-  //   }
-  //   var offset = 0;
-  //   for (let i = 0; i < this.selectedIndex && i < this.daysRendered.length; i++) {
-  //     var key = this.daysRendered[i] && this.daysRendered[i].key;
-  //     offset += this.heights.get(key) || 0;
-  //   }
-  //   this.humanScroll = false;
-  //   this.scrollview.scrollTo({ x: 0, y: offset, animated: false });
-  //   this.scrollNeeded = false;
-  //   console.log('onLayoutRefresh', this.selectedIndex, offset);
-  // }
-
-  // updateScrollPosition () {
-  //   let top = 0;
-  //   let scrollIndex = -1;
-  //   each(this.daysRendered, (day, index) => {
-  //     var h = this.heights.get(day.key) || 0;
-  //     if (top + (h / 2) >= this.yOffset) {
-  //       scrollIndex = index;
-  //       return false;
-  //     }
-  //     top += h;
-  //   });
-
-  //   const day = scrollIndex > -1 && this.daysRendered[scrollIndex];
-  //   if (!day) return;
-
-  //   if (!isSameDay(day, this.selectedDay) && this.humanScroll) {
-  //     this.selectedDay = { ...day };
-  //     this.selectedIndex = scrollIndex;
-  //     this.props.onDayChange({ ...day });
-  //   }
-  // }
-
-  // onScroll = (event) => {
-  //   const yOffset = event.nativeEvent.contentOffset.y;
-  //   if (this.props.onScroll) this.props.onScroll(yOffset);
-  //   this.yOffset = yOffset;
-  // }
-
-  // onLayout = (event) => {
-  //   this.frameHeight = event.nativeEvent.layout.height;
-  //   const maxOffset = this.contentHeight - this.frameHeight;
-  //   if (maxOffset < this.yOffset) {
-  //     this.yOffset = maxOffset;
-  //   }
-  //   this.updateScrollPosition();
-  // }
-
-
-  // onScrollEndDrag = (event) => {
-  //   this.yOffset = event.nativeEvent.contentOffset.y;
-  //   this.updateScrollPosition();
-  // }
-
-  // onListTouch = () => {
-  //   this.humanScroll = true;
-  //   return false;
-  // }
-
-  // onContentSizeChange = (contentWidth, contentHeight) => {
-  //   this.contentHeight = contentHeight;
-  //   const maxOffset = this.contentHeight - this.frameHeight;
-  //   if (maxOffset < this.yOffset) {
-  //     this.yOffset = maxOffset;
-  //   }
-  //   this.updateScrollPosition();
-  //   console.log('onContentSizeChange', contentWidth, contentHeight);
-  // }
-
-
-
-  // onFullyRendered () {
-  //   console.log('Fully rendered');
-  // }
-
   render () {
 
-    const days = this.daysToRender.map((item) => item.component);
+    const days = this.daysToRender.map((item, index) => (
+      <DayRow
+        {...item}
+        index={index}
+        onLayout={item.onLayout}
+        onHourSelected={this.props.onHourSelected}
+        calendarStore={this.props.calendarStore}
+      />
+    ));
     this.scrollToTargetDefered();
     return (
       <View style={[ styles.container, this.props.style ]}>
@@ -272,6 +256,8 @@ class HourList extends React.Component {
           onScroll={this.onScroll}
           onScrollEndDrag={this.onScrollEndDrag}
           onMoveShouldSetResponderCapture={this.onListTouch}
+          onMomentumScrollBegin={this.onMomentumScrollBegin}
+          onMomentumScrollEnd={this.onMomentumScrollEnd}
           scrollEventThrottle={100}
         >
           <View style={{ height: this.frameHeight }} />
