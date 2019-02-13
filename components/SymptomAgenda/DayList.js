@@ -15,6 +15,9 @@ function isSameDay (day1, day2) {
   );
 }
 
+import {
+  MB_BUTTON_RADIUS,
+} from '../../constants';
 
 class DayList extends React.Component {
 
@@ -261,6 +264,7 @@ class DayList extends React.Component {
           onMomentumScrollBegin={this.onMomentumScrollBegin}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
           scrollEventThrottle={200}
+          ListHeaderComponent={<View style={{ height: MB_BUTTON_RADIUS }} />}
 
         />
       </View>
