@@ -9,14 +9,23 @@ import CalendarStore from '../stores/CalendarStore';
 class Agenda extends React.PureComponent {
 
   onHourSelected = (hour) => {
+    console.log(hour);
     this.props.navigation.navigate('CalendarEntry', { hour });
   };
 
   render () {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setDate(today.getDate() + 1);
+
     return (
       <View style={styles.container}>
         <SymptomAgenda
-          selected={new Date()}
+          maxDate={today}
+          futureScrollRange={0}
+          selected={today}
           calendarStore={CalendarStore}
           onHourSelected={this.onHourSelected}
         />

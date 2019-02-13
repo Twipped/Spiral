@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import { Card, CardItem, Body, Badge, Text, variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
@@ -12,7 +12,7 @@ import {
 
 class HourText extends React.PureComponent {
   render () {
-    const { isNow, ...props } = this.props;
+    const { isNow, style, ...props } = this.props;
     let hour = this.props.hour;
     let ampm = 'am';
     hour = Number(hour);
@@ -35,7 +35,7 @@ class HourText extends React.PureComponent {
       color: isNow ? variables.brandPrimary : '#a7a7a7',
       fontSize: variables.noteFontSize,
     };
-    return <View style={styles}><Text style={textStyle} {...props}>{text}</Text></View>;
+    return <View style={[ styles, style ]}><Text style={textStyle} {...props}>{text}</Text></View>;
   }
 }
 
@@ -43,7 +43,7 @@ class HourText extends React.PureComponent {
 class HourRow extends React.Component {
 
   handlePress = () => {
-    if (this.props.onHourSelected) this.props.onHourSelected(this.props.pressTarget);
+    if (this.props.onHourSelected) this.props.onHourSelected(this.props.state);
   }
 
   render () {
@@ -81,14 +81,23 @@ class HourRow extends React.Component {
     ).flat();
 
     return (
-      <Card onPress={this.handlePress}>
-        <CardItem >
-          <HourText hour={state.hour} />
-          <View style={styles.emotionView}>{emotions}</View>
-        </CardItem>
-        <CardItem style={{ flexDirection: 'column' }}>
-          {conditions.length && <View style={styles.conditionView}>{conditions}</View> || null}
-        </CardItem>
+      <Card style={styles.card}>
+        <TouchableHighlight onPress={this.handlePress}><View>
+          { emotions.length > 2 ?
+            <CardItem style={{ flexDirection: 'column' }}>
+              <HourText hour={state.hour} style={{ alignSelf: 'flex-start', marginBottom: 5 }} />
+              {emotions.length && <View style={styles.emotionView}>{emotions}</View> || null}
+            </CardItem>
+            :
+            <CardItem style={styles.emotionView}>
+              <HourText hour={state.hour} />
+              {emotions}
+            </CardItem>
+          }
+          {conditions.length && <CardItem>
+            <View style={styles.conditionView}>{conditions}</View>
+          </CardItem> || null}
+        </View></TouchableHighlight>
       </Card>
     );
   }
@@ -99,7 +108,12 @@ export default HourRow;
 
 var styles = StyleSheet.create({
 
+  card: {
+    marginRight: 5,
+  },
+
   emotionView: {
+    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
@@ -119,7 +133,6 @@ var styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     backgroundColor: BGCOLOR[9],
-    marginTop: 10,
     padding: 4,
     borderRadius: 5,
     alignItems: 'flex-start',

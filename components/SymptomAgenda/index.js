@@ -5,7 +5,7 @@ import dateToData from '../../lib/dateToData';
 import { observer } from 'mobx-react/native';
 import moment from 'moment';
 import { set } from 'lodash';
-import HourList from './HourList';
+import DayList from './DayList';
 
 
 @observer
@@ -18,7 +18,6 @@ class SymptomAgenda extends Agenda {
     const months = [
       moment().subtract(1, 'month'),
       moment(),
-      moment().add(1, 'month'),
     ].map((m) => dateToData(m.toDate()));
     this.state.monthsNeeded = months;
     this.state.monthsNeededKey = months.map((m) => m.dateString).join(',');
@@ -29,7 +28,8 @@ class SymptomAgenda extends Agenda {
 
   renderReservations () {
     return (
-      <HourList
+      <DayList
+        maxDate={xdateToData(this.props.maxDate)}
         selectedDay={xdateToData(this.state.selectedDay)}
         onHourSelected={this.props.onHourSelected}
         calendarStore={this.props.calendarStore}

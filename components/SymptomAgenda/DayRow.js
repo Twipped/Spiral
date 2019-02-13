@@ -1,10 +1,11 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { observer } from 'mobx-react/native';
 import moment from 'moment';
 import dateToData from '../../lib/dateToData';
 import HourRow from './HourRow';
-import { material } from 'react-native-typography';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 
 function isSameDay (day1, day2) {
   if (day1 instanceof Date) day1 = dateToData(day1);
@@ -24,12 +25,19 @@ class DayRow extends React.Component {
     if (this.props.onLayout) this.props.onLayout(ev, this.props);
   }
 
+  onAddEntry = () => {
+    const { year, month, day } = this.props;
+    if (this.props.onHourSelected) this.props.onHourSelected({ year, month, day, hour: 12 });
+  }
+
   render () {
     const { year, month, day } = this.props;
     const date = moment([ year, month - 1, day ]);
     const isToday = isSameDay(date, new Date());
     const content = [];
     const dayState = this.props.calendarStore.getDay(year, month, day);
+    const isOdd = this.props.index % 2
+
     if (dayState) {
       dayState.hours.forEach((hourState) => {
         if (!hourState.hasData) return;
@@ -43,18 +51,32 @@ class DayRow extends React.Component {
       });
     }
 
+    const hasRows = !!content.length;
+
+    if (!hasRows) {
+      content.push(
+        <FontAwesome
+          name="chevron-left"
+          color="#ccc"
+          size={18}
+          key={1}
+        />,
+        <Text key={2} style={styles.clueText}>Tap to add an entry</Text>
+      );
+    }
+
 
     return (
       <View
-        style={[ styles.rowContainer, this.props.index % 2 ? styles.rowContainerOdd : undefined ]}
+        style={[ styles.rowContainer, isOdd ? styles.rowContainerOdd : undefined ]}
         onLayout={this.onLayout}
       >
-        <View style={styles.day}>
+        <TouchableOpacity onPress={this.onAddEntry}><View style={styles.day}>
           <Text allowFontScaling={false} style={[ styles.dayText, isToday && styles.today ]}>{date.format('MMM')}</Text>
           <Text allowFontScaling={false} style={[ styles.dayNum,  isToday && styles.today ]}>{date.format('Do')}</Text>
           <Text allowFontScaling={false} style={[ styles.dayText, isToday && styles.today ]}>{date.format('ddd')}</Text>
-        </View>
-        <View style={{ flex: 1 }}>
+        </View></TouchableOpacity>
+        <View style={hasRows ? styles.dayContent : styles.dayContentEmpty}>
           {content}
         </View>
       </View>
@@ -68,6 +90,7 @@ export default DayRow;
 var styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
+    minHeight: 95,
   },
   rowContainerOdd: {
     backgroundColor: 'rgba(0,0,0,0.05)',
@@ -90,6 +113,22 @@ var styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginTop: 15,
     marginBottom: 15,
+  },
+  dayContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  dayContentEmpty: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: 20,
+  },
+  clueText: {
+    color: '#ccc',
+    fontSize: 14,
+    marginLeft: 5,
   },
   today: {
     color: '#00adf5',

@@ -1,16 +1,9 @@
 import React from 'react';
-import { Text, View, ScrollView, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 // import Clock from '../../stores/Clock';
 import dateToData from '../../lib/dateToData';
-// import { ListItem, Body, Badge, Text, variables } from 'native-base';
 import moment from 'moment';
 import DayRow from './DayRow';
-// import ActivityIndicator from './ActivityIndicator.js';
-import { debounce, each } from 'lodash';
-
-// import {
-//   BGCOLOR,
-// } from '../../constants';
 
 function isSameDay (day1, day2) {
   if (day1 instanceof Date) day1 = dateToData(day1);
@@ -23,15 +16,14 @@ function isSameDay (day1, day2) {
 }
 
 
-
-class HourList extends React.Component {
+class DayList extends React.Component {
 
   constructor (props) {
     super(props);
 
     this.days = new Map();
     this.daysToRender = [];
-    this.selectedDay = this.props.selectedDay;
+    this.selectedDay = props.selectedDay;
     this.targetedDay = null;
     this.targetedIndex = -1;
     this.targetedId = 0;
@@ -42,9 +34,51 @@ class HourList extends React.Component {
     this.frameHeight = 0;
     this.contentHeight = 0;
 
-    console.log('constructor', props.monthsNeededKey, props.selectedDay && props.selectedDay.dateString);
-    this.computeDaysToRender(props.monthsNeeded);
+    const { months, hash } = this.computeMonthsNeeded(props.selectedDay, props.maxDate);
+    this.months = months;
+    this.monthHash = hash;
+
+    this.computeDaysToRender(months, props.maxDate);
   }
+
+  shouldComponentUpdate (nextProps) {
+    const dayChanged = !isSameDay(nextProps.selectedDay, this.selectedDay);
+
+    if (!dayChanged) return false;
+
+    this.selectedDay = nextProps.selectedDay;
+
+    const { months, hash } = this.computeMonthsNeeded(nextProps.selectedDay, nextProps.maxDate);
+
+    this.months = months;
+    this.monthHash = hash;
+    this.computeDaysToRender(months, nextProps.maxDate);
+    if (!this.humanScroll) this.scrollToTarget();
+    return true;
+  }
+
+  computeMonthsNeeded (day, maxDay) {
+    if (day instanceof Date) day = dateToData(day);
+    if (maxDay instanceof Date) maxDay = dateToData(maxDay);
+
+    const month = moment([ day.year, day.month - 1, 1 ]).subtract(1, 'month');
+    const finalMonth = moment([ maxDay.year, maxDay.month - 1, 1 ]);
+    const months = [
+      { year: month.year(), month: month.month() + 1, hash: month.format('YYYY-MM') },
+    ];
+
+    while (month.isBefore(finalMonth)) {
+      month.add(1, 'month');
+      months.push({ year: month.year(), month: month.month() + 1, hash: month.format('YYYY-MM') });
+    }
+
+    months.reverse();
+
+    const hash = months.map((m) => m.hash).join(',');
+    // console.log('computeMonthsNeeded', hash);
+    return { months, hash };
+  }
+
 
   ensureDay (year, month, day) {
     const dateString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -52,58 +86,28 @@ class HourList extends React.Component {
     if (this.days.has(dateString)) return this.days.get(dateString);
 
     const item = {
-      id, year, month, day, dateString, key: dateString, height: 0, rendered: false,
+      id, year, month, day, dateString, key: dateString, height: 95, rendered: false,
     };
 
-    const onLayout = (event) => {
+    item.onLayout = (event) => {
       var height = event.nativeEvent.layout.height;
       if (!height) return; // ignore if the row hasn't rendered
       item.rendered = true;
-      const delta = height - item.height; // how has the row's height changed
       item.height = height;
-
-      this.onRowLayoutChange(item, height, delta);
     };
-
-    item.onLayout = onLayout;
 
     this.days.set(dateString, item);
     return item;
   }
 
   scrollToTarget = () => {
-    this.scrollview.scrollTo({ x: 0, y: this.targetY + this.frameHeight, animated: false });
+    this.scrollview.scrollToOffset({ offset: this.targetY, animated: true });
   }
 
-  scrollToTargetDefered = debounce(this.scrollToTarget, 100);
-
-  onRowLayoutChange ({ id }, height, delta) {
-    // if the changing row is after the current top row, we don't care.
-    if (id >= this.targetId) return;
-
-    this.targetY = Math.round(this.targetY + delta);
-    this.scrollToTargetDefered();
-  }
-
-  onContentSizeChange = (contentWidth, contentHeight) => {
-    this.contentHeight = contentHeight;
-    const maxOffset = this.contentHeight - this.frameHeight;
-
-    console.log('onContentSizeChange', { target: this.targetY, current: this.scrollY, contentHeight: this.contentHeight, frameHeight: this.frameHeight, maxOffset });
-
-    this.scrollToTarget();
-  }
-
-  onLayout = (event) => {
-    this.frameHeight = event.nativeEvent.layout.height;
-    const maxOffset = this.contentHeight - this.frameHeight;
-    console.log('onLayout', { target: this.targetY, current: this.scrollY, contentHeight: this.contentHeight, frameHeight: this.frameHeight, maxOffset });
-  }
 
   onScroll = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    console.log('onScroll', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
-    this.scrollY = scrollY - this.frameHeight;
+    this.scrollY = scrollY;
     if (this.humanScroll) this.onHumanScroll();
   }
 
@@ -114,26 +118,36 @@ class HourList extends React.Component {
 
   onScrollEndDrag = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    console.log('onScrollEndDrag', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
-    this.scrollY = scrollY - this.frameHeight;
+    this.scrollY = scrollY;
     if (this.humanScroll) this.onHumanScroll();
     this.humanScroll = false;
+    this.onScrollEnded();
   }
 
   onMomentumScrollBegin = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    console.log('onMomentumScrollBegin', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
-    this.scrollY = scrollY - this.frameHeight;
+    this.scrollY = scrollY;
     if (this.humanScroll) this.onHumanScroll();
     this.humanScroll = true;
   }
 
   onMomentumScrollEnd = (event) => {
     const scrollY = event.nativeEvent.contentOffset.y;
-    console.log('onMomentumScrollEnd', { received: scrollY, current: this.scrollY, target: this.targetY, human: this.humanScroll });
-    this.scrollY = scrollY - this.frameHeight;
+    this.scrollY = scrollY;
     if (this.humanScroll) this.onHumanScroll();
     this.humanScroll = false;
+    this.onScrollEnded();
+  }
+
+  onScrollEnded () {
+    const { months, hash } = this.computeMonthsNeeded(this.selectedDay, this.props.maxDate);
+    if (this.monthHash === hash) return;
+
+    this.months = months;
+    this.monthHash = hash;
+    this.humanScroll = false;
+    this.computeDaysToRender(months, this.props.maxDate);
+    this.forceUpdate();
   }
 
   onHumanScroll () {
@@ -168,24 +182,30 @@ class HourList extends React.Component {
       this.targetedDay   = targetDay;
       this.targetedIndex = targetIndex;
       this.targetedId    = targetId;
-      this.targetY       = Math.round(offset) + targetDelta;
+      this.targetY       = offset + targetDelta;
       this.targetDelta   = targetDelta;
-      // this.props.onDayChange(targetDay);
+      this.selectedDay   = targetDay;
+      this.props.onDayChange(targetDay);
     }
-
-    console.log('onHumanScroll', { current: this.scrollY, target: this.targetY, delta: this.targetDelta, day: targetDay && targetDay.dateString });
   }
 
-  computeDaysToRender (monthsNeeded) {
+  computeDaysToRender (monthsNeeded, maxDate) {
     let index = 0;
     let targetDay = null;
     let targetIndex = -1;
     let targetId = 0;
     let targetY = 0;
+
+    const maxid = Number(`${maxDate.year}${String(maxDate.month).padStart(2, '0')}${String(maxDate.day).padStart(2, '0')}`);
+
     const days = (monthsNeeded || []).reduce((results, m) => {
       const { year, month } = m;
       const daysInMonth = moment([ year, month - 1, 1 ]).endOf('month').date();
-      for (let day = 1; day <= daysInMonth; day++) {
+      for (let day = daysInMonth; day > 0; day--) {
+        const dayid = Number(`${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}`);
+        // skip dates past maxDate
+        if (dayid > maxid) continue;
+
         index++;
         const item = this.ensureDay(year, month, day);
         results.push(item);
@@ -212,64 +232,43 @@ class HourList extends React.Component {
     this.targetedDay   = targetDay || days[0];
     this.targetedIndex = targetIndex;
     this.targetedId    = targetId;
-    this.targetY       = Math.round(targetY) + this.targetDelta;
-    console.log('computeDaysToRender', { targetDay: targetDay.dateString, index: targetIndex, targetY });
+    this.targetY       = targetY;
   }
 
-  componentDidUpdate = () => {
-    console.log('componentDidUpdate', { current: this.scrollY, target: this.targetY });
-  }
-
-  shouldComponentUpdate (nextProps) {
-    var yes = (
-      this.props.monthsNeededKey !== nextProps.monthsNeededKey
-      || !isSameDay(nextProps.selectedDay, this.selectedDay)
-    );
-    console.log('shouldComponentUpdate', yes, { currentDay: this.selectedDay && this.selectedDay.dateString, next: nextProps.selectedDay && nextProps.selectedDay.dateString });
-    if (yes) {
-      this.selectedDay = nextProps.selectedDay;
-      this.computeDaysToRender(nextProps.monthsNeeded);
-      this.scrollToTarget();
-    }
-    return yes;
-  }
+  renderDay = ({ item, index }) => (
+    <DayRow
+      {...item}
+      index={index}
+      onLayout={item.onLayout}
+      onHourSelected={this.props.onHourSelected}
+      calendarStore={this.props.calendarStore}
+    />
+  )
 
   render () {
-
-    const days = this.daysToRender.map((item, index) => (
-      <DayRow
-        {...item}
-        index={index}
-        onLayout={item.onLayout}
-        onHourSelected={this.props.onHourSelected}
-        calendarStore={this.props.calendarStore}
-      />
-    ));
-    this.scrollToTargetDefered();
     return (
       <View style={[ styles.container, this.props.style ]}>
-        <ScrollView
+        <FlatList
           ref={(el) => (this.scrollview = el)}
-          onLayout={this.onLayout}
-          onContentSizeChange={this.onContentSizeChange}
+
+          data={this.daysToRender}
+          renderItem={this.renderDay}
+          inverted
 
           onScroll={this.onScroll}
           onScrollEndDrag={this.onScrollEndDrag}
           onMoveShouldSetResponderCapture={this.onListTouch}
           onMomentumScrollBegin={this.onMomentumScrollBegin}
           onMomentumScrollEnd={this.onMomentumScrollEnd}
-          scrollEventThrottle={100}
-        >
-          <View style={{ height: this.frameHeight }} />
-          {days}
-          <View style={{ height: this.frameHeight }} />
-        </ScrollView>
+          scrollEventThrottle={200}
+
+        />
       </View>
     );
   };
 }
 
-export default HourList;
+export default DayList;
 
 var styles = StyleSheet.create({
 

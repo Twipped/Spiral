@@ -105,7 +105,7 @@ const TabbedNavigator = createBottomTabNavigator(
 const EntryModal = createStackNavigator({
   CalendarEntry: {
     screen: EntryView,
-    navigationOptions: ({navigation}) => ({
+    navigationOptions: ({ navigation }) => ({
       headerTitle: <EntryHeaderTitle />,
       headerRight: (
         <Button
