@@ -20,7 +20,7 @@ export const EntryEditor = observable({
     var title;
     const { year, month, day, hour } = EntryEditor.currentHour;
     const start = moment([ year, month - 1, day, hour, 0, 0 ]);
-    const end = moment([ year, month - 1, day, hour + 1, 0, 0 ]);
+    const end = moment(start).add(1, 'hour');
     const range = start.format('h:mma') + ' - ' + end.format('h:mma');
 
     const relativeDays = moment().diff(start, 'days');

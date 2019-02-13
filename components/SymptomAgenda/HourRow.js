@@ -43,7 +43,8 @@ class HourText extends React.PureComponent {
 class HourRow extends React.Component {
 
   handlePress = () => {
-    if (this.props.onHourSelected) this.props.onHourSelected(this.props.state);
+    const { year, month, day, hour } = this.props.state;
+    if (this.props.onHourSelected) this.props.onHourSelected({ year, month, day, hour });
   }
 
   render () {
