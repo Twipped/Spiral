@@ -26,9 +26,8 @@ class HourText extends React.PureComponent {
     const text = `${hour}:00${ampm}`;
     const styles = {
       alignSelf: 'center',
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
       flexDirection: 'row',
-      width: 60,
       marginRight: 5,
     };
     const textStyle = {
@@ -85,7 +84,7 @@ class HourRow extends React.Component {
       <Card style={styles.card}>
         <TouchableHighlight onPress={this.handlePress}><View>
           { emotions.length > 2 ?
-            <CardItem style={{ flexDirection: 'column' }}>
+            <CardItem style={{ flexDirection: 'column', alignItems: 'stretch' }}>
               <HourText hour={state.hour} style={{ alignSelf: 'flex-start', marginBottom: 5 }} />
               {emotions.length && <View style={styles.emotionView}>{emotions}</View> || null}
             </CardItem>
@@ -95,7 +94,7 @@ class HourRow extends React.Component {
               {emotions}
             </CardItem>
           }
-          {conditions.length && <CardItem>
+          {conditions.length && <CardItem style={{ paddingTop: 0 }}>
             <View style={styles.conditionView}>{conditions}</View>
           </CardItem> || null}
         </View></TouchableHighlight>
@@ -127,6 +126,7 @@ var styles = StyleSheet.create({
 
   emotionBadgeText: {
     ...material.body1,
+    fontSize: 12,
   },
 
   conditionView: {
