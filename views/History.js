@@ -5,11 +5,12 @@ import { createStackNavigator } from 'react-navigation';
 import { BRAND_COLOR } from '../constants';
 import SymptomAgenda from '../components/SymptomAgenda';
 import CalendarStore from '../stores/CalendarStore';
+import { observer } from 'mobx-react/native';
 
-class Agenda extends React.PureComponent {
+@observer
+class AgendaView extends React.Component {
 
   onHourSelected = (hour) => {
-    console.log(hour);
     this.props.navigation.navigate('CalendarEntry', { hour });
   };
 
@@ -24,6 +25,7 @@ class Agenda extends React.PureComponent {
       <View style={styles.container}>
         <SymptomAgenda
           maxDate={today}
+          markedDates={CalendarStore.markings}
           futureScrollRange={0}
           selected={today}
           calendarStore={CalendarStore}
@@ -34,10 +36,15 @@ class Agenda extends React.PureComponent {
   }
 }
 
+const d = new Date();
+CalendarStore.ensureMonthLoaded(d.getFullYear(), d.getMonth() + 1);
+d.setMonth(d.getMonth() - 1);
+CalendarStore.ensureMonthLoaded(d.getFullYear(), d.getMonth() + 1);
+
 const AV = createStackNavigator(
   {
     Agenda: {
-      screen: Agenda,
+      screen: AgendaView,
       navigationOptions: {
         title: 'History',
       },

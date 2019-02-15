@@ -1,6 +1,6 @@
 
 import { AsyncStorage } from 'react-native';
-import { action, observable, reaction } from 'mobx';
+import { action, observable, reaction, computed } from 'mobx';
 import { Month } from './classes';
 import Promise from 'bluebird';
 import deepAssign from 'deep-assign';
@@ -10,6 +10,22 @@ export class CalendarStore {
   reactions = {};
   ensured = {};
   static writeIsPending = Promise.resolve();
+
+  @computed
+  get markings () {
+    var results = {};
+    this.months.forEach(({ days }) => days.forEach((d) => {
+      if (!d.hasData) return;
+
+      const { year, month, day } = d;
+      const dayKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+      results[dayKey] = {
+        marked: true,
+      };
+    }));
+    return results;
+  }
 
   @action
   createMonth (year, month, overwrite) {
