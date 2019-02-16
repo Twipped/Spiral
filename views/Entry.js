@@ -29,14 +29,14 @@ export const EntryEditor = observable({
     else if (relativeDays === 1) title = 'Yesterday';
     else if (relativeDays < 7) title = start.format('[Last] dddd');
     else title = start.format('MMM Do');
-    return `${title}, ${range}`;
+    return [ title, range ];
   },
 });
 
 export const EntryHeaderTitle = observer(() => (
   <View>
-    <Text style={styles.headerTitle}>{EntryEditor.title}</Text>
-    <Text style={styles.headerSubtitle}>{EntryEditor.currentTab}</Text>
+    <Text style={styles.headerTitle}>{EntryEditor.title[0]}</Text>
+    <Text style={styles.headerSubtitle}>{EntryEditor.title[1]}</Text>
   </View>
 ));
 
