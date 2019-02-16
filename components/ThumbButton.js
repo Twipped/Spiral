@@ -10,6 +10,7 @@ import {
   BRAND_COLOR_LIGHT,
   MB_BUTTON_RADIUS,
   MB_ARCH_SPACING,
+  BGCOLOR,
 } from '../constants';
 
 class ThumbButton extends React.PureComponent {
@@ -66,7 +67,7 @@ class ThumbButton extends React.PureComponent {
       fill: BRAND_COLOR_LIGHT,
       stroke: '#FFF',
       strokeWidth: 3,
-      color: BRAND_COLOR_DARK,
+      color: BGCOLOR[0],
       r: MB_BUTTON_RADIUS - 1.5,
     };
     if (this.state.pressed) {
@@ -74,9 +75,12 @@ class ThumbButton extends React.PureComponent {
     }
     if (this.props.editing) {
       BUTTON_PROPS.stroke = '#000';
-      BUTTON_PROPS.color = '#000';
+      BUTTON_PROPS.color = BRAND_COLOR_LIGHT;
+      BUTTON_PROPS.fill = BGCOLOR[0];
       if (this.props.selected) {
-        BUTTON_PROPS.stroke = '#FFF';
+        // BUTTON_PROPS.stroke = '#FFF';
+        BUTTON_PROPS.color = BGCOLOR[0];
+        BUTTON_PROPS.fill = BGCOLOR[10];
       }
     }
 

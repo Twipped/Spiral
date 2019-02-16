@@ -98,7 +98,7 @@ function InnerArcs (props) {
         arc = arcActive;
         pathProps = { fill: mood.fillColor, stroke: mood.fillColor, ...MB_MOOD_ACTIVE_PROPS };
       } else {
-        arc = props.currentTarget === 'Mind' ? arcActive : arcInactive;
+        arc = arcInactive;
         pathProps = { fill: mood.fillColor, stroke: mood.fillColor, ...MB_MOOD_INACTIVE_PROPS };
       }
       pathProps.d = arc(slice);
