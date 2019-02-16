@@ -132,7 +132,6 @@ class EntryView extends React.Component {
           ref={(sv) => { this.scrollview = sv; }}
           inverted
           style={{ flex: 1 }}
-          contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}
         >
           {tabbedComponent}
         </InvertibleScrollView>
