@@ -265,6 +265,7 @@ conditions.add({
     [ 'Body/Lightheaded', 'Lightheaded' ],
     [ 'Body/Dizziness',   'Dizziness' ],
     [ 'Body/Hair Loss',   'Hair Loss' ],
+    [ 'Body/Acne',        'Acne' ],
   ],
 });
 
@@ -382,7 +383,7 @@ conditions.add({
     [ 'Anger/Persecuted',   'Persecuted' ],
     [ 'Anger/Bitter',       'Bitter' ],
     [ 'Anger/Disgruntled',  'Disgruntled' ],
-    [ 'Anger/Indignant',    'Indignant' ],
+    [ 'Anger/Grouchy',      'Grouchy' ],
     [ 'Anger/Horrified',    'Horrified' ],
     [ 'Anger/Violated',     'Violated' ],
     [ 'Anger/Frustrated',   'Frustrated' ],
