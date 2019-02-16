@@ -148,8 +148,8 @@ const ModalNavigator = createStackNavigator(
 const AppContainer = createAppContainer(ModalNavigator);
 
 function onThumbButtonPress () {
-  if (EntryEditor.entry && EntryEditor.currentTab !== 'Mind') {
-    EntryEditor.currentTab = 'Mind';
+  if (EntryEditor.entry && EntryEditor.currentTab !== 'Date & Time') {
+    EntryEditor.currentTab = 'Date & Time';
   } else if (!EntryEditor.entry) {
     navigate('CalendarEntry', { hour: dateToData(new Date()) });
   }
@@ -173,7 +173,7 @@ const App = observer(function App () {
       />
       <ThumbButton
         editing={!!EntryEditor.currentTab}
-        selected={EntryEditor.currentTab === 'Mind'}
+        selected={EntryEditor.currentTab === 'Date & Time'}
         onPress={onThumbButtonPress}
       />
     </Root>

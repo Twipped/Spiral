@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SafeAreaView, Dimensions, ART } from 'react-native';
-import { BrainIcon } from '../Icons';
+import { ClockIcon } from '../Icons';
 import Rect from './shapes/Rect';
 import Circle from './shapes/Circle';
 
@@ -115,7 +115,13 @@ class ThumbButton extends React.PureComponent {
             {!this.props.editing && <Rect fill={BUTTON_PROPS.stroke} x={-20} y={-3}  width={40} height={6} />}
           </ART.Group>
         </ART.Surface>
-        {this.props.editing && <BrainIcon width={MB_BUTTON_RADIUS * 1.5} color={BUTTON_PROPS.color} style={{ position: 'absolute', left: 0, right: 0, top: 0, height: MB_BUTTON_RADIUS * 2 }} />}
+        {this.props.editing &&
+          <ClockIcon
+            width={MB_BUTTON_RADIUS * 1.5}
+            color={BUTTON_PROPS.color}
+            style={{ position: 'absolute', left: 0, right: 0, top: CONTROL_CENTER_X - MB_BUTTON_RADIUS, height: MB_BUTTON_RADIUS * 2 }}
+          />
+        }
       </SafeAreaView>
     );
   }

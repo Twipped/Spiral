@@ -106,6 +106,14 @@ class EntryView extends React.Component {
         />
       );
       break;
+
+    case 'Date & Time':
+      tabbedComponent = (
+        <View
+          onChange={this.onSetValue}
+        />
+      );
+      break;
     default:
       break; // nope
     }

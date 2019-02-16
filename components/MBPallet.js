@@ -6,7 +6,7 @@ import { observer } from 'mobx-react/native';
 import { material } from 'react-native-typography';
 import * as d3 from 'd3-shape';
 import Color from 'color';
-import { HikingIcon, MedicineIcon, NoteIcon, MarkerIcon } from '../Icons';
+import { HikingIcon, MedicineIcon, NoteIcon, SexIcon } from '../Icons';
 import pathfinder from '../lib/pathfinder';
 import Circle from './shapes/Circle';
 
@@ -293,7 +293,7 @@ class MBPallet extends React.Component {
       <Animated.View style={[ styles.palletContent, this.props.style, { minHeight: this.keyboardHeight } ]}>
         <View style={styles.iconColumn}>
           <IconButton tab="Activities" currentTab={this.props.currentTab} Icon={HikingIcon} onPress={this.handlePress} />
-          <IconButton tab="Marker" currentTab={this.props.currentTab} Icon={MarkerIcon} onPress={this.handlePress} />
+          <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
         </View>
         <View>
           <View {...this.gestureBindings}><ART.Surface
@@ -307,12 +307,12 @@ class MBPallet extends React.Component {
             </ART.Group>
           </ART.Surface></View>
           <View style={styles.underRow}>
-            <IconButton tab="Sex" currentTab={this.props.currentTab} onPress={this.handlePress} style={{ paddingRight: MB_BUTTON_RADIUS }} />
+            <IconButton tab="Mind" currentTab={this.props.currentTab} onPress={this.handlePress} style={{ paddingRight: MB_BUTTON_RADIUS }} />
             <IconButton tab="Body" currentTab={this.props.currentTab} onPress={this.handlePress} style={{ paddingLeft: MB_BUTTON_RADIUS }} />
           </View>
         </View>
         <View style={styles.iconColumn}>
-          <IconButton tab="Medications" currentTab={this.props.currentTab} Icon={MedicineIcon} onPress={this.handlePress} />
+          <IconButton tab="Sex" currentTab={this.props.currentTab} Icon={SexIcon} onPress={this.handlePress} />
           <IconButton tab="Notes" currentTab={this.props.currentTab} Icon={NoteIcon} onPress={this.handlePress} />
         </View>
       </Animated.View>
