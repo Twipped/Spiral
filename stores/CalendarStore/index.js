@@ -33,7 +33,7 @@ export class CalendarStore {
     if (!overwrite && this.months.has(key)) {
       return this.months.get(key);
     }
-    if (!this.ensured[key]) throw new Error('Tried to create a month without ensuring it exists first.');
+    if (!this.ensured[key]) throw new Error(`Tried to create a month without ensuring it exists first: ${year}-${month}`);
 
     const state = new Month(year, month);
 

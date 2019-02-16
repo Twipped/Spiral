@@ -5,6 +5,7 @@ import { variables } from 'native-base';
 import { observer } from 'mobx-react/native';
 import MBPallet from '../components/MBPallet';
 import ConditionMenu from '../components/ConditionMenu';
+import DateTimePick from '../components/DateTimePick';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import moment from 'moment';
 import CalendarStore from '../stores/CalendarStore';
@@ -65,8 +66,13 @@ class EntryView extends React.Component {
   };
 
   onSetValue = (valueKey, value) => {
-    console.log('onSetValue', valueKey, value);
     EntryEditor.entry.setValue(valueKey, value);
+  };
+
+  onChangeDate = (year, month, day, hour) => {
+    var state = CalendarStore.getHour(year, month, day, hour, true);
+    EntryEditor.currentHour = { year, month, day, hour };
+    EntryEditor.entry = state;
   };
 
   render () {
@@ -109,8 +115,10 @@ class EntryView extends React.Component {
 
     case 'Date & Time':
       tabbedComponent = (
-        <View
-          onChange={this.onSetValue}
+        <DateTimePick
+          calendarStore={CalendarStore}
+          onChange={this.onChangeDate}
+          currentHour={EntryEditor.currentHour}
         />
       );
       break;
@@ -120,7 +128,12 @@ class EntryView extends React.Component {
 
     return (
       <SafeAreaView style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
-        <InvertibleScrollView ref={(sv) => { this.scrollview = sv; }} inverted style={{ flex: 1 }}>
+        <InvertibleScrollView
+          ref={(sv) => { this.scrollview = sv; }}
+          inverted
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}
+        >
           {tabbedComponent}
         </InvertibleScrollView>
         <MBPallet onTabSwitch={this.onTabSwitch} entry={EntryEditor.entry} currentTab={EntryEditor.currentTab} />
