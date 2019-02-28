@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { SafeAreaView, Dimensions, ART } from 'react-native';
-import { ClockIcon } from '../Icons';
+import { StopFullIcon } from '../Icons';
 import Rect from './shapes/Rect';
 import Circle from './shapes/Circle';
 
@@ -75,13 +75,13 @@ class ThumbButton extends React.PureComponent {
     }
     if (this.props.editing) {
       BUTTON_PROPS.stroke = '#000';
-      BUTTON_PROPS.color = BRAND_COLOR_LIGHT;
+      BUTTON_PROPS.color = '#FFF';
       BUTTON_PROPS.fill = BGCOLOR[0];
-      if (this.props.selected) {
-        // BUTTON_PROPS.stroke = '#FFF';
-        BUTTON_PROPS.color = BGCOLOR[0];
-        BUTTON_PROPS.fill = BGCOLOR[10];
-      }
+      // if (this.props.selected) {
+      //   // BUTTON_PROPS.stroke = '#FFF';
+      //   BUTTON_PROPS.color = BGCOLOR[0];
+      //   BUTTON_PROPS.fill = BGCOLOR[10];
+      // }
     }
 
     const Window = Dimensions.get('window');
@@ -120,8 +120,8 @@ class ThumbButton extends React.PureComponent {
           </ART.Group>
         </ART.Surface>
         {this.props.editing &&
-          <ClockIcon
-            width={MB_BUTTON_RADIUS * 1.5}
+          <StopFullIcon
+            width={MB_BUTTON_RADIUS * 0.7}
             color={BUTTON_PROPS.color}
             style={{ position: 'absolute', left: 0, right: 0, top: CONTROL_CENTER_X - MB_BUTTON_RADIUS, height: MB_BUTTON_RADIUS * 2 }}
           />

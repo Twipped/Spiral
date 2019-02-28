@@ -33,8 +33,8 @@ export const EntryEditor = observable({
   },
 });
 
-export const EntryHeaderTitle = observer(() => (
-  <View>
+export const EntryHeaderTitle = observer((props) => (
+  <View onPress={props.onPress}>
     <Text style={styles.headerTitle}>{EntryEditor.title[0]}</Text>
     <Text style={styles.headerSubtitle}>{EntryEditor.title[1]}</Text>
   </View>

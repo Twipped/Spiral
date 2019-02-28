@@ -148,6 +148,52 @@ export const ClockIcon = ({ color, width, height, style, ...props }) => (
   </View>
 );
 
+export const StopXIcon = ({ color, width, height, style, ...props }) => (
+  <View {...props} style={{ ...styles.icon, ...style }}>
+    <Svg
+      width={width || height}
+      height={height || width}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <G>
+        <Path fill={color} d="M50,2.5C23.8,2.5,2.5,23.8,2.5,50S23.8,97.5,50,97.5S97.5,76.2,97.5,50S76.2,2.5,50,2.5z M67.4,22.2L50,39.6L32.6,22.2    c5-3.2,11-5,17.4-5S62.3,19.1,67.4,22.2z M22.2,32.6L39.6,50L22.2,67.4c-3.2-5-5-11-5-17.4S19.1,37.7,22.2,32.6z M32.6,77.8    L50,60.4l17.4,17.4c-5,3.2-11,5-17.4,5S37.7,80.9,32.6,77.8z M77.8,67.4L60.4,50l17.4-17.4c3.2,5,5,11,5,17.4S80.9,62.3,77.8,67.4z" />
+      </G>
+    </Svg>
+  </View>
+);
+
+export const StopIcon = ({ color, width, height, style, ...props }) => (
+  <View {...props} style={{ ...styles.icon, ...style }}>
+    <Svg
+      width={width || height}
+      height={height || width}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <G>
+        <Path fill={color} d="M49.991,7.956c23.171,0,42.021,18.852,42.021,42.022S73.162,92,49.991,92C26.82,92,7.969,73.149,7.969,49.979  S26.82,7.956,49.991,7.956 M49.991,2.956c-25.97,0-47.022,21.053-47.022,47.022S24.021,97,49.991,97s47.021-21.052,47.021-47.021  S75.961,2.956,49.991,2.956L49.991,2.956z" />
+        <Path fill={color} d="M67.5,63.512c0,2.147-1.741,3.889-3.889,3.889H36.389c-2.148,0-3.889-1.741-3.889-3.889V36.289  c0-2.147,1.741-3.889,3.889-3.889h27.223c2.147,0,3.889,1.741,3.889,3.889V63.512z" />
+      </G>
+    </Svg>
+  </View>
+);
+
+export const StopFullIcon = ({ color, width, height, style, ...props }) => (
+  <View {...props} style={{ ...styles.icon, ...style }}>
+    <Svg
+      width={width || height}
+      height={height || width}
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <G>
+        <Path fill={color} d="M89.64449 100 L10.3549 100 C4.659673 100 0 95.34033 0 89.64572 L0 10.35551 C0 4.659674 4.659673 0 10.3549 0 L89.6451 0 C95.34032 0 100 4.659674 100 10.3549 L100 89.64511 C99.99998 95.34033 95.34032 100 89.64449 100 Z" />
+      </G>
+    </Svg>
+  </View>
+);
+
 const styles = {
   icon: {
     flexDirection: 'column',

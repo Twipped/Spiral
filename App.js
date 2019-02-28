@@ -60,7 +60,7 @@ const TabbedNavigator = createBottomTabNavigator(
       screen: () => <View />,
       navigationOptions: () => ({
         tabBarLabel: ' ',
-        tabBarIcon: ({ tintColor }) => (
+        tabBarIcon: () => (
           <View />
         ),
       }),
@@ -106,11 +106,11 @@ const EntryModal = createStackNavigator({
   CalendarEntry: {
     screen: EntryView,
     navigationOptions: ({ navigation }) => ({
-      headerTitle: <EntryHeaderTitle />,
+      headerTitle: <EntryHeaderTitle onPress={() => { EntryEditor.currentTab = 'Date & Time'; }} />,
       headerRight: (
         <Button
-          onPress={() => navigation.pop()}
-          title="Done"
+          onPress={() => { EntryEditor.currentTab = 'Date & Time'; }}
+          title="Change"
           color="#fff"
         />
       ),
@@ -148,8 +148,8 @@ const ModalNavigator = createStackNavigator(
 const AppContainer = createAppContainer(ModalNavigator);
 
 function onThumbButtonPress () {
-  if (EntryEditor.entry && EntryEditor.currentTab !== 'Date & Time') {
-    EntryEditor.currentTab = 'Date & Time';
+  if (EntryEditor.entry) {
+    navigate.pop();
   } else if (!EntryEditor.entry) {
     navigate('CalendarEntry', { hour: dateToData(new Date()) });
   }
