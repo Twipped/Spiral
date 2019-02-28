@@ -89,6 +89,15 @@ export class Day {
   }
 
   @computed
+  get hoursSorted () {
+    var sorted = new Map();
+    Array.from(this.hours.keys())
+      .sort((a, b) => a - b)
+      .forEach((k) => sorted.set(k, this.hours.get(k)));
+    return sorted;
+  }
+
+  @computed
   get hasData () {
     return !!this.hours.size && some([ ...this.hours.values() ], (h) => h.hasData);
   }

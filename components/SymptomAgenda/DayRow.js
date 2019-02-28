@@ -36,10 +36,10 @@ class DayRow extends React.Component {
     const isToday = isSameDay(date, new Date());
     const content = [];
     const dayState = this.props.calendarStore.getDay(year, month, day);
-    const isOdd = this.props.index % 2
+    const isOdd = this.props.index % 2;
 
     if (dayState) {
-      dayState.hours.forEach((hourState) => {
+      dayState.hoursSorted.forEach((hourState) => {
         if (!hourState.hasData) return;
         content.push(
           <HourRow
