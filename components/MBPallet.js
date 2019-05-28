@@ -32,11 +32,11 @@ const MAX_STROKE = Math.max(
 function SmartText (props) {
   const { style, fontSize, fontWeight, fontFamily, fontStyle, textAnchor, fill, ...rest } = props;
 
-  const alignment = [
+  const alignment = {
     'end': 'right',
     'start': 'left',
     'middle': 'center',
-  ][textAnchor || 'start'];
+  }[textAnchor || 'start'];
 
   const font = {
     ...style,
