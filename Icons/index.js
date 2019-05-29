@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { Svg, G, Path, Circle } from 'react-native-svg';
 
 export const BrainIcon = ({ color, width, height, style, ...props }) => (
+  // Brain by parkjisun from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -21,6 +22,7 @@ export const BrainIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const BodyIcon = ({ color, width, height, style, ...props }) => (
+  // patient profile by Hysen Drogu from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -39,6 +41,7 @@ export const BodyIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const MedicineIcon = ({ color, width, height, style, ...props }) => (
+  // Medicine by Atif Arshad from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -55,6 +58,7 @@ export const MedicineIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const HikingIcon = ({ color, width, height, style, ...props }) => (
+  // Hiking by Ealancheliyan s from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -72,6 +76,7 @@ export const HikingIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const NoteIcon = ({ color, width, height, style, ...props }) => (
+  // note by Markus from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -89,6 +94,7 @@ export const NoteIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const MarkerIcon = ({ color, width, height, style, ...props }) => (
+  // Marker by Alex Auda Samora from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -104,6 +110,7 @@ export const MarkerIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const SexIcon = ({ color, width, height, style, ...props }) => (
+  // Sex by Adrien Coquet from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -124,6 +131,7 @@ export const SexIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const ClockIcon = ({ color, width, height, style, ...props }) => (
+  // clock by Liswati from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -149,6 +157,7 @@ export const ClockIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const StopXIcon = ({ color, width, height, style, ...props }) => (
+  // Stop by Rose Alice Design from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
@@ -164,6 +173,7 @@ export const StopXIcon = ({ color, width, height, style, ...props }) => (
 );
 
 export const StopIcon = ({ color, width, height, style, ...props }) => (
+  // Stop by Paperclip from the Noun Project
   <View {...props} style={{ ...styles.icon, ...style }}>
     <Svg
       width={width || height}
