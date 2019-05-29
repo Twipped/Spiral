@@ -4,5 +4,8 @@
 		"react": {
 			"version": "16.0"
 		}
-	}
+	},
+  "rules": {
+    "node/no-unsupported-features/es-syntax": "off"
+  }
 }
