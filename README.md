@@ -28,3 +28,17 @@ build the application and launch the iOS simulator.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Supporters
+
+The following individuals provided financial support for this project through Patreon:
+
+- Alice Crawford
+- Aviva Pittle
+- Joel Egyud
+- Marie Janssen
+- Samantha Kepner
+- Stevie Strickland
+- Trinity Fox
+
+Thank you _so much_ for your support.
